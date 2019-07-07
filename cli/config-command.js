@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const PoppyRequestHandler = require('../lib/utils/PoppyRequestHandler');
+const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler;
 
 const Status = require('../tools/status'),
     createStatus = Status.createStatus,

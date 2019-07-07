@@ -2,7 +2,7 @@
 
 'use strict'
 
-const Script = require('../lib/Script');
+const Script = require('poppy-robot-core').Script;
 
 //////////////////////////////////
 //////////////////////////////////

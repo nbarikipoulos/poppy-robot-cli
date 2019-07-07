@@ -5,7 +5,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const RawMotorRequest = require('../lib/motor/RawMotorRequest');
+const RawMotorRequest = require('poppy-robot-core').RawMotorRequest;
 
 //////////////////////////////////
 // Option helper

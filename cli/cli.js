@@ -6,15 +6,15 @@
 
 const yargs = require('yargs');
 
-const Poppy = require('../lib/Poppy');
+const Poppy = require('poppy-robot-core').Poppy;
 
 const cliOptions = require('./cli-options'),
     OptionHelper = cliOptions.OptionHelper,
     getPoppyConfiguration = cliOptions.getPoppyConfiguration
 ;
 
-let epilogue = 'Poppy CLI. (c)2018 N. Barikipoulos. Released under the MIT license.\n'
-    + 'More details on http://github.com/nbarikipoulos/poppy-robot-client'
+let epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT license.\n'
+    + 'More details on http://github.com/nbarikipoulos/poppy-robot-cli'
 ;
 
 //////////////////////////////////
