@@ -1,0 +1,33 @@
+{
+  "name": "poppy-robot-cli",
+  "version": "3.0.0-beta.0",
+  "description": "CLI for Poppy (Ergo Jr) Robot.",
+  "bin": {
+    "poppy": "./bin/cli.js"
+  },
+  "homepage": "https://github.com/nbarikipoulos/poppy-robot-cli#readme",
+  "author": "Nicolas Barriquand <nicolas.barriquand@outlook.fr>",
+  "license": "MIT",
+  "keywords": [
+    "poppy",
+    "poppy Ergo Jr",
+    "pypot",
+    "dynamixel xl-320"
+  ],
+  "scripts": {
+    "gendoc": "markdown-toc -i README.md && cd doc/jsdoc2md && jsdoc2md -t api.hbs > ../api.md; echo",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "poppy-robot-core": "file:../poppy-robot-core",
+    "yargs": "^12.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nbarikipoulos/poppy-robot-cli.git"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  }
+}
