@@ -27,7 +27,7 @@
 
 const yargs = require('yargs');
 
-const cliOptions = require('./bin/cli-options'),
+const cliOptions = require('./cli/cli-options'),
     OptionHelper = cliOptions.OptionHelper,
     getPoppyConfiguration = cliOptions.getPoppyConfiguration
 ;
@@ -82,7 +82,7 @@ let createPoppy = (options) => {
 
 module.exports = {
     createScript,
-    createScript: core.createPoppy,
+    createPoppy: core.createPoppy,
     Script,
     Poppy,
     ExtMotorRequest,
