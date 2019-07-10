@@ -8,7 +8,7 @@ const yargs = require('yargs');
 
 const Poppy = require('poppy-robot-core').Poppy;
 
-const cliOptions = require('./cli-options'),
+const cliOptions = require('../cli/cli-options'),
     OptionHelper = cliOptions.OptionHelper,
     getPoppyConfiguration = cliOptions.getPoppyConfiguration
 ;
@@ -66,7 +66,7 @@ yargs
 //////////////////////////////////
 //////////////////////////////////
 
-require('./exec-commands')(yargs, {optionHelper, poppy});
+require('../cli/exec-commands')(yargs, {optionHelper, poppy});
 
 //////////////////////////////////
 //////////////////////////////////
@@ -74,7 +74,7 @@ require('./exec-commands')(yargs, {optionHelper, poppy});
 //////////////////////////////////
 //////////////////////////////////
 
-require('./query-commands')(yargs, {optionHelper, poppy});
+require('../cli/query-commands')(yargs, {optionHelper, poppy});
 
 //////////////////////////////////
 //////////////////////////////////
@@ -82,7 +82,7 @@ require('./query-commands')(yargs, {optionHelper, poppy});
 //////////////////////////////////
 //////////////////////////////////
 
-require('./config-command')(yargs, {optionHelper, poppy});
+require('../cli/config-command')(yargs, {optionHelper, poppy});
 
 //////////////////////////////////
 //////////////////////////////////
