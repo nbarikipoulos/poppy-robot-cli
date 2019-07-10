@@ -46,6 +46,8 @@ It provides:
 - Al last, it allows through a [discovering command](#discovering-robot-configuration) to set-up the target robot configuration (default settings are done for a Poppy Ergo Jr) which allows **using this project with any set of motors driven through the pypot library** _i.e._
 to extend it use to any robot of the [Poppy project](https://www.poppy-project.org/en/) family.
 
+Enjoy, ;)
+
 ## Table of Contents
 
 <!-- toc -->
