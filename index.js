@@ -81,8 +81,8 @@ let createPoppy = (options) => {
 //////////////////////////////////
 
 module.exports = {
-    createScript,
-    createPoppy: core.createPoppy,
+    createPoppy,
+    createScript: core.createScript,
     Script,
     Poppy,
     ExtMotorRequest,
