@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2019 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -24,7 +24,7 @@ class Status {
   }
 
   hasChildren () {
-    return this._children.length >= 0// FIXME
+    return this._children.length > 0
   }
 
   getLevel () {
