@@ -47,7 +47,7 @@ module.exports = (yargs, helper) => yargs.command(
 // ////////////////////////////////
 
 const query = async (argv, poppy) => {
-  const motors = argv.motor.includes('all')
+  const motorIds = argv.motor.includes('all')
     ? poppy.getAllMotorIds()
     : argv.motor
 
@@ -57,45 +57,31 @@ const query = async (argv, poppy) => {
   // Get data...
   //
 
-  const result = await _query(poppy, motors, registers)
+  const result = await poppy.query(motorIds, registers)
+    .catch(err => {
+      console.log('Err: Unable to perform querying. Check connection settings:')
+      console.log(`   Request URL: ${err.config.url}`)
+      return undefined
+    })
 
   //
   // ...And display them, if any
   //
-  if (result) {
-    const display = argv.I
-      ? {
-        rows: motors,
-        cols: registers,
-        cb: (row) => {
-          const o = {}
-          o[row] = Object.values(
-            result.find(obj => row === obj.motor)
-          )
-            .slice(1) // motor attribute
-            .map(v => _format(v)) // other attributes are register values
 
-          return o
-        }
-      }
-      : {
-        rows: registers,
-        cols: motors,
-        cb: (row) => {
-          const o = {}
-          o[row] = result.map(res => _format(res[row]))
-          return o
-        }
-      }
+  if (result) {
+    const rows = argv.I ? motorIds : registers
+    const cols = argv.I ? registers : motorIds
 
     const table = new Table({
-      head: [].concat('', ...display.cols)
+      head: [].concat('', ...cols)
     })
 
-    for (const row of display.rows) {
-      table.push(
-        display.cb.call(null, row)
-      )
+    for (const row of rows) {
+      table.push({
+        [row]: cols.map(col => _format(
+          argv.I ? result[row][col] : result[col][row])
+        )
+      })
     }
 
     // At last, let's display the result
@@ -104,31 +90,6 @@ const query = async (argv, poppy) => {
       table.toString()
     )
   }
-}
-
-const _query = async (poppy, motors, registers) => {
-  let res = []
-
-  await Promise.all(motors.map(async motor => {
-    // for(let motor of motors) {
-    const data = (await Promise.all(
-      registers.map(async register =>
-        poppy[motor].get(register)
-      )
-    ))
-      .reduce((acc, obj) => Object.assign(acc, obj),
-        { motor }
-      )
-
-    res.push(data)
-  }))
-    .catch(err => {
-      console.log('Err: Unable to perform querying. Check connection settings:')
-      console.log(`   Request URL: ${err.config.url}`)
-      res = null
-    })
-
-  return res
 }
 
 // ////////////////////////////////
