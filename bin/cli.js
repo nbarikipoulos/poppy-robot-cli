@@ -25,9 +25,8 @@ const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT 
 let poppy
 
 try {
-  poppy = new Poppy(
-    getPoppyConfiguration(yargs.argv)
-  )
+  const config = getPoppyConfiguration(yargs.argv)
+  poppy = new Poppy(config)
 } catch (error) {
   console.log('Unable to create Poppy object:')
   console.log(error.message)
