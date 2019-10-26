@@ -7,6 +7,8 @@ const yargs = cliBuilderHelper.yargs
 
 const Script = require('poppy-robot-core').Script
 
+const EXEC_CMD_GROUP_LABEL = 'Command Options:'
+
 // ////////////////////////////////
 // ////////////////////////////////
 // Public API
@@ -17,7 +19,6 @@ module.exports = (poppy) => yargs.command(
   'exec',
   'Execute command on Poppy. Type $0 exec <command> -h for help on each command.',
   (yargs) => {
-    // COMMANDS.forEach(cmd => yargs.command(
     for (const command of COMMANDS) {
       yargs.command(
         command.name,
@@ -80,7 +81,10 @@ const COMMANDS = [{
   name: 'compliant',
   desc: 'Set the compliant state of the selected motor(s)',
   builder: (yargs) => {
-    _toCmdOptions(['motor', 'compliant'])
+    cliBuilderHelper.addOptions(
+      EXEC_CMD_GROUP_LABEL,
+      ['motor', 'compliant']
+    )
 
     yargs
       .strict()
@@ -103,7 +107,11 @@ const COMMANDS = [{
   desc: 'Set the rotation speed of the selected motor(s).\n' +
     'Value must be in the [0, 1023] range',
   builder: (yargs) => {
-    _toCmdOptions(['motor', 'speed'], 'speed')
+    cliBuilderHelper.addOptions(
+      EXEC_CMD_GROUP_LABEL,
+      ['motor', 'speed'],
+      'speed'
+    )
 
     yargs
       .example(
@@ -120,7 +128,11 @@ const COMMANDS = [{
   name: 'rotate',
   desc: 'Rotate the target motor(s) by x degrees',
   builder: (yargs) => {
-    _toCmdOptions(['motor', 'rotate', 'wait'], 'rotate')
+    cliBuilderHelper.addOptions(
+      EXEC_CMD_GROUP_LABEL,
+      ['motor', 'rotate', 'wait'],
+      'rotate'
+    )
 
     yargs
       .example(
@@ -133,7 +145,11 @@ const COMMANDS = [{
   name: 'position',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
-    _toCmdOptions(['motor', 'position', 'wait'], 'position')
+    cliBuilderHelper.addOptions(
+      EXEC_CMD_GROUP_LABEL,
+      ['motor', 'position', 'wait'],
+      'position'
+    )
 
     yargs
       .example(
@@ -146,7 +162,10 @@ const COMMANDS = [{
   name: 'led',
   desc: 'Set the led of the selected motor(s)',
   builder: (yargs) => {
-    _toCmdOptions(['motor', 'led'])
+    cliBuilderHelper.addOptions(
+      EXEC_CMD_GROUP_LABEL,
+      ['motor', 'led']
+    )
 
     yargs
       .example(
@@ -160,18 +179,3 @@ const COMMANDS = [{
   },
   handler: (argv, poppy) => exec(poppy, 'led', argv.motor, { led: argv.value })
 }]
-
-// ////////////////////////////////
-// misc.
-// ////////////////////////////////
-
-const _toCmdOptions = (
-  optionsKeys,
-  ...mandatoryOptionsKeys
-) => {
-  cliBuilderHelper.addOptions(
-    'Command Options:',
-    optionsKeys,
-    ...mandatoryOptionsKeys
-  )
-}
