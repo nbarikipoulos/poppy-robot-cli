@@ -24,11 +24,8 @@
 
 'use strict'
 
-const yargs = require('yargs')
-
-const cliOptions = require('./cli/cli-options')
-const OptionHelper = cliOptions.OptionHelper
-const getPoppyConfiguration = cliOptions.getPoppyConfiguration
+const cliBuilderHelper = require('./cli/cli-options')
+const yargs = cliBuilderHelper.yargs
 
 const core = require('poppy-robot-core')
 const Script = core.Script
@@ -47,8 +44,7 @@ yargs
   .alias('h', 'help')
   .help('h')
 
-const optionHelper = new OptionHelper()
-optionHelper.addPoppyConfigurationOptions(yargs)
+cliBuilderHelper.addPoppyConfigurationOptions()
 
 yargs
   .wrap(yargs.terminalWidth())
@@ -61,7 +57,7 @@ yargs
 const createPoppy = (options) => {
   // First let's obtain the configuration
   const config = Object.assign({},
-    getPoppyConfiguration(yargs.argv), // read from .poppyrc and CLI
+    cliBuilderHelper.getPoppyConfiguration(yargs.argv), // read from .poppyrc and CLI
     options // from arguments
   )
 

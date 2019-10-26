@@ -5,279 +5,41 @@
 const fs = require('fs')
 const path = require('path')
 
-const RawMotorRequest = require('poppy-robot-core').RawMotorRequest
+const yargs = require('yargs')
 
-// ////////////////////////////////
-// Option helper
-// ////////////////////////////////
-
-// FIXME TO REWRITE !!!
-class OptionHelper {
-  // For CLI only, it needs a poppy instance
-  // to populate the motor options.
-  init (poppy) {
-    const motorIds = poppy.getAllMotorIds()
-
-    // Motor Ids
-
-    _OPTIONS.motor.details.choices.push(
-      ...motorIds
-    )
-
-    // Led values
-
-    const leds = RawMotorRequest.prototype.getLedValues()
-
-    const details = _OPTIONS.led.details
-    details.default = leds.shift()
-    details.choices = [details.default].concat(...leds)
-  }
-
-  get (optionKey) {
-    return _OPTIONS[optionKey]
-  }
-
-  addOptions (yargs, groupName, optionKeys, ...mandatoryOptionKeys) {
-    const opts = this._toObject(optionKeys)
-
-    for (const opt in opts) {
-      yargs.options(
-        opts[opt].key,
-        opts[opt].details
-      )
-    }
-
-    mandatoryOptionKeys.forEach(opt => yargs.demand(
-      opts[opt].key,
-      'This option is mandatory.'
-    ))
-
-    if (groupName) {
-      yargs.group( // Group all these options in one group.
-        optionKeys.map(opt => opts[opt].key),
-        groupName
-      )
-    }
-  }
-
-  addPoppyConfigurationOptions (yargs) {
-    this.addOptions(
-      yargs,
-      'Poppy Setting Options:',
-      ['ip', 'http_port', 'snap_port']
-    )
-  }
-
-  _toObject (keys) {
-    return keys.reduce(
-      (acc, key) => {
-        acc[key] = _OPTIONS[key]
-        return acc
-      },
-      Object.create(null)
-    )
-  }
-}
-
-// ////////////////////////////////
-// Argument "descriptors"
-// ////////////////////////////////
-
-const _OPTIONS = {
-  motor: {
-    key: 'm',
-    details: {
-      alias: 'motor',
-      type: 'array',
-      choices: ['all'], // init()
-      default: 'all',
-      describe: 'Name of the target motor(s). Type \'all\' to select all available motors.'
-    }
-  },
-  register: {
-    key: 'r',
-    details: {
-      alias: 'register',
-      type: 'array',
-      default: [
-        'compliant',
-        'lower_limit',
-        'present_position',
-        'goal_position',
-        'upper_limit',
-        'moving_speed',
-        'present_temperature'
-      ],
-      choices: [
-        'compliant',
-        'lower_limit',
-        'present_position',
-        'goal_position',
-        'upper_limit',
-        'moving_speed',
-        'present_temperature',
-        'led'
-      ],
-      describe: 'Select register value(s).'
-    }
-  },
-  invert: {
-    key: 'I',
-    details: {
-      alias: 'invert',
-      type: 'boolean',
-      default: 'false',
-      describe: 'Invert table presentation i.e. motors are displayed as row.'
-    }
-  },
-  compliant: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      type: 'string',
-      default: 'off',
-      choices: [
-        'on', // 'true'
-        'off' // 'false' => motor is "addressable"
-      ]
-    }
-  },
-  speed: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      nargs: 1,
-      type: 'number',
-      describe: 'Set the rotation speed of the selected motor(s).' +
-        ' Value must be in the [0,1023] range.'
-    }
-  },
-  rotate: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      nargs: 1,
-      type: 'number',
-      describe: 'Rotate the selected motor(s) by x degrees.'
-    }
-  },
-  position: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      nargs: 1,
-      type: 'number',
-      describe: 'Move the selected motor(s) to a given position.'
-    }
-  },
-  wait: {
-    key: 'w',
-    details: {
-      alias: 'wait',
-      type: 'boolean',
-      default: 'false',
-      describe: 'Wait until this command is finished.'
-    }
-  },
-  led: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      type: 'string',
-      default: undefined, // init()
-      choices: [], // init()
-      describe: 'The led color (or turn-off) value.'
-    }
-  },
-  ip: {
-    key: 'i',
-    details: {
-      alias: 'ip',
-      nargs: 1,
-      type: 'string',
-      default: 'poppy.local',
-      describe: 'Set the Poppy IP/hostname.'
-    }
-  },
-  http_port: {
-    key: 'p',
-    details: {
-      alias: 'http-port',
-      type: 'number',
-      nargs: 1,
-      default: 8080,
-      describe: 'Set the Poppy http server port.'
-    }
-  },
-  snap_port: {
-    key: 'P',
-    details: {
-      alias: 'snap-port',
-      type: 'number',
-      nargs: 1,
-      default: 6969,
-      describe: 'Set the Poppy snap server port.'
-    }
-  },
-  save_config: {
-    key: 's',
-    details: {
-      alias: 'save',
-      type: 'boolean',
-      default: false,
-      describe: 'Save settings to a local .poppyrc file'
-    }
-  },
-  motor_conf: {
-    key: 'M',
-    details: {
-      alias: 'motor-configuration',
-      type: 'boolean',
-      default: false,
-      describe: 'Display motor configuration.'
-    }
-  },
-  discover: {
-    key: 'D',
-    details: {
-      alias: 'discover',
-      type: 'boolean',
-      default: 'false',
-      describe: 'Discover the poppy robot motors.'
-    }
-  },
-  all: {
-    key: 'a',
-    details: {
-      alias: 'all',
-      type: 'boolean',
-      default: false,
-      describe: 'Include details about motors (angle limits)'
-    }
-  },
-  validate: {
-    key: 'v',
-    details: {
-      alias: 'validate',
-      type: 'boolean',
-      default: 'false',
-      describe: 'Check if the current used robot descriptor matches with the target Poppy.'
-    }
-  },
-  save_descriptor: {
-    key: 'S',
-    details: {
-      alias: 'Save',
-      type: 'string',
-      nargs: 1,
-      describe: 'Save discovered configuration to a descriptor file.'
-    }
-  }
-}
+// Arguments descriptors
+const ARGUMENT_DESC = require('./arguments')
 
 // ////////////////////////////////
 // Utility functions
 // ////////////////////////////////
+
+const addOptions = (
+  groupName,
+  optionKeys,
+  ...mandatoryOptionKeys
+) => {
+  const keys = []
+
+  for (const opt of optionKeys) {
+    const o = ARGUMENT_DESC[opt]
+    const key = o.key
+
+    keys.push(key)
+    yargs.options(key, o.details)
+
+    if (
+      mandatoryOptionKeys.includes(opt) // ...
+    ) {
+      yargs.demand(key, 'This option is mandatory.')
+    }
+  }
+
+  // Group all these options in one group.
+  if (groupName) {
+    yargs.group(keys, groupName)
+  }
+}
 
 const getPoppyConfiguration = (argv) => {
   const config = { connect: {} }
@@ -345,6 +107,17 @@ const getPoppyConfiguration = (argv) => {
 // ////////////////////////////////
 
 module.exports = {
-  OptionHelper,
+  yargs, // re-export
+  init: (poppy) => { // arf...
+    ARGUMENT_DESC.motor.details.choices.push(
+      ...poppy.getAllMotorIds()
+    )
+  },
+  get: (longKeyId) => ARGUMENT_DESC[longKeyId].key,
+  addOptions,
+  addPoppyConfigurationOptions: _ => addOptions(
+    'Poppy Setting Options:',
+    ['ip', 'http_port', 'snap_port']
+  ),
   getPoppyConfiguration
 }

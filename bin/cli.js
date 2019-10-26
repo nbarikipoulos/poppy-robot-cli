@@ -4,13 +4,10 @@
 
 'use strict'
 
-const yargs = require('yargs')
-
 const Poppy = require('poppy-robot-core').Poppy
 
-const cliOptions = require('../cli/cli-options')
-const OptionHelper = cliOptions.OptionHelper
-const getPoppyConfiguration = cliOptions.getPoppyConfiguration
+const cliBuilderHelper = require('../cli/cli-options')
+const yargs = cliBuilderHelper.yargs
 
 const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT license.\n' +
   'More details on http://github.com/nbarikipoulos/poppy-robot-cli'
@@ -25,7 +22,7 @@ const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT 
 let poppy
 
 try {
-  const config = getPoppyConfiguration(yargs.argv)
+  const config = cliBuilderHelper.getPoppyConfiguration(yargs.argv)
   poppy = new Poppy(config)
 } catch (error) {
   console.log('Unable to create Poppy object:')
@@ -35,8 +32,7 @@ try {
 
 // And then, instantiate helper for CLI use which need a Poppy instance
 // to dynamically fill the motor options with motor ids.
-const optionHelper = new OptionHelper()
-optionHelper.init(poppy)
+cliBuilderHelper.init(poppy)
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -61,7 +57,7 @@ yargs
 // ////////////////////////////////
 // ////////////////////////////////
 
-require('../cli/exec-commands')(yargs, { optionHelper, poppy })
+require('../cli/exec-commands')(poppy)
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -69,7 +65,7 @@ require('../cli/exec-commands')(yargs, { optionHelper, poppy })
 // ////////////////////////////////
 // ////////////////////////////////
 
-require('../cli/query-commands')(yargs, { optionHelper, poppy })
+require('../cli/query-commands')(poppy)
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -77,7 +73,7 @@ require('../cli/query-commands')(yargs, { optionHelper, poppy })
 // ////////////////////////////////
 // ////////////////////////////////
 
-require('../cli/config-command')(yargs, { optionHelper, poppy })
+require('../cli/config-command')(poppy)
 
 // ////////////////////////////////
 // ////////////////////////////////

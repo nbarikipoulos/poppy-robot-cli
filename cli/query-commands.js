@@ -2,6 +2,9 @@
 
 'use strict'
 
+const cliBuilderHelper = require('./cli-options')
+const yargs = cliBuilderHelper.yargs
+
 const Table = require('cli-table')
 
 // ////////////////////////////////
@@ -10,18 +13,16 @@ const Table = require('cli-table')
 // ////////////////////////////////
 // ////////////////////////////////
 
-module.exports = (yargs, helper) => yargs.command(
+module.exports = (poppy) => yargs.command(
   'query',
   'Query the state of Poppy motors.',
   (yargs) => {
-    const optionHelper = helper.optionHelper
-
-    optionHelper.addOptions(
-      yargs,
+    cliBuilderHelper.addOptions(
       'Query Options:',
       ['motor', 'register', 'invert']
     )
-    optionHelper.addPoppyConfigurationOptions(yargs)
+
+    cliBuilderHelper.addPoppyConfigurationOptions()
 
     yargs
       .example(
@@ -33,7 +34,7 @@ module.exports = (yargs, helper) => yargs.command(
         'Get the `present_position` and `upper_limit` register values of motors m1 and m6'
       )
   },
-  (argv) => query(argv, helper.poppy) // Main job
+  (argv) => query(argv, poppy) // Main job
 )
 
 // ////////////////////////////////

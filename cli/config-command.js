@@ -5,6 +5,9 @@
 const fs = require('fs')
 const path = require('path')
 
+const cliBuilderHelper = require('../cli/cli-options')
+const yargs = cliBuilderHelper.yargs
+
 const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
 
 const Status = require('../tools/status')
@@ -19,21 +22,17 @@ const toTree = require('../tools/tree').toTree
 // ////////////////////////////////
 // ////////////////////////////////
 
-module.exports = (yargs, helper) => yargs.command(
+module.exports = (poppy) => yargs.command(
   'config',
   'Display/Check/Discover the Poppy motor configuration.',
   (yargs) => {
-    const optionHelper = helper.optionHelper
-
-    optionHelper.addOptions(
-      yargs,
+    cliBuilderHelper.addOptions(
       'Query Options:',
       ['motor_conf', 'validate', 'discover', 'save_descriptor', 'all']
     )
-    optionHelper.addPoppyConfigurationOptions(yargs)
+    cliBuilderHelper.addPoppyConfigurationOptions()
 
-    helper.optionHelper.addOptions( // add save option
-      yargs,
+    cliBuilderHelper.addOptions( // add save option
       'Poppy Setting Options:',
       ['save_config']
     )
@@ -41,8 +40,8 @@ module.exports = (yargs, helper) => yargs.command(
     yargs
       .strict()
       .implies(
-        optionHelper.get('save_descriptor').key,
-        optionHelper.get('discover').key
+        cliBuilderHelper.get('save_descriptor'),
+        cliBuilderHelper.get('discover')
       )
       .example(
         '$0 config',
@@ -65,7 +64,7 @@ module.exports = (yargs, helper) => yargs.command(
         'Discover the Poppy motor configuration, save it to a descriptor file and set the .poppyrc file'
       )
   },
-  (argv) => main(argv, helper.poppy) // Main job
+  (argv) => main(argv, poppy) // Main job
 )
 
 // ////////////////////////////////
