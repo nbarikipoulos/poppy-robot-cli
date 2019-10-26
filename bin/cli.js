@@ -86,4 +86,4 @@ require('../cli/commands/config-command')(poppy)
 
 yargs
   .wrap(yargs.terminalWidth())
-  .argv
+  .parse()

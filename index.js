@@ -49,7 +49,7 @@ cliBuilderHelper.addPoppyConfigurationOptions()
 
 yargs
   .wrap(yargs.terminalWidth())
-  .argv
+  .parse()
 
 // ////////////////////////////////
 // Main object factories
