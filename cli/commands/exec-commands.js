@@ -2,7 +2,7 @@
 
 'use strict'
 
-const cliBuilderHelper = require('../cli/cli-helper')
+const cliBuilderHelper = require('../cli-helper')
 const yargs = cliBuilderHelper.yargs
 
 const Script = require('poppy-robot-core').Script

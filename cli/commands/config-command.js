@@ -5,16 +5,16 @@
 const fs = require('fs')
 const path = require('path')
 
-const cliBuilderHelper = require('../cli/cli-helper')
+const cliBuilderHelper = require('../cli-helper')
 const yargs = cliBuilderHelper.yargs
 
 const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
 
-const Status = require('../tools/status')
+const Status = require('../../tools/status')
 const createStatus = Status.createStatus
 const StatusEnum = Status.StatusEnum
 
-const toTree = require('../tools/tree').toTree
+const toTree = require('../../tools/tree').toTree
 
 // ////////////////////////////////
 // ////////////////////////////////
