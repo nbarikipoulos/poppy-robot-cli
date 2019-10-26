@@ -27,6 +27,10 @@ module.exports = (poppy) => yargs.command(
       )
     }
 
+    // Once again, in order to group these options
+    // in a nice way for each exec command.
+    cliBuilderHelper.addPoppyConfigurationOptions()
+
     yargs.demandCommand(1, 'Use at least one command')
   }
 )
