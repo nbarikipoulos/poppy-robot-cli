@@ -27,9 +27,6 @@ module.exports = (poppy) => yargs.command(
       )
     }
 
-    // Add poppy setting options
-    cliBuilderHelper.addPoppyConfigurationOptions()
-
     yargs.demandCommand(1, 'Use at least one command')
   }
 )

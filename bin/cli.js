@@ -51,6 +51,9 @@ yargs
   .help('h')
   .showHelpOnFail(true)
 
+// Add common cli options for poppy settings
+cliBuilderHelper.addPoppyConfigurationOptions()
+
 // ////////////////////////////////
 // ////////////////////////////////
 // Add executing command

@@ -22,8 +22,6 @@ module.exports = (poppy) => yargs.command(
       ['motor', 'register', 'invert']
     )
 
-    cliBuilderHelper.addPoppyConfigurationOptions()
-
     yargs
       .example(
         '$0 query -r compliant',

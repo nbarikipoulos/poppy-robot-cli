@@ -44,6 +44,7 @@ yargs
   .alias('h', 'help')
   .help('h')
 
+// Add common cli options for poppy settings
 cliBuilderHelper.addPoppyConfigurationOptions()
 
 yargs
