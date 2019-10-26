@@ -6,7 +6,7 @@
 
 const Poppy = require('poppy-robot-core').Poppy
 
-const cliBuilderHelper = require('../cli/cli-options')
+const cliBuilderHelper = require('../cli/cli-helper')
 const yargs = cliBuilderHelper.yargs
 
 const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT license.\n' +

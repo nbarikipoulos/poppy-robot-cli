@@ -2,7 +2,7 @@
 
 'use strict'
 
-const cliBuilderHelper = require('./cli-options')
+const cliBuilderHelper = require('./cli-helper')
 const yargs = cliBuilderHelper.yargs
 
 const Table = require('cli-table')

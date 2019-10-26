@@ -5,7 +5,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const cliBuilderHelper = require('../cli/cli-options')
+const cliBuilderHelper = require('../cli/cli-helper')
 const yargs = cliBuilderHelper.yargs
 
 const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
