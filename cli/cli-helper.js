@@ -113,11 +113,11 @@ module.exports = {
       ...poppy.getAllMotorIds()
     )
   },
-  get: (longKeyId) => ARGUMENT_DESC[longKeyId].key,
+  getArgDesc: (longKeyId) => ARGUMENT_DESC[longKeyId],
   addOptions,
   addPoppyConfigurationOptions: _ => addOptions(
     'Poppy Setting Options:',
-    ['ip', 'http_port', 'snap_port']
+    ['ip', 'httpPort', 'snapPort']
   ),
   getPoppyConfiguration
 }

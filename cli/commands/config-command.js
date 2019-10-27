@@ -28,19 +28,19 @@ module.exports = (poppy) => yargs.command(
   (yargs) => {
     cliBuilderHelper.addOptions(
       'Query Options:',
-      ['motor_conf', 'validate', 'discover', 'save_descriptor', 'all']
+      ['motorConf', 'validate', 'discover', 'saveDescriptor', 'all']
     )
 
     cliBuilderHelper.addOptions( // add save option
       'Poppy Setting Options:',
-      ['save_config']
+      ['saveConfig']
     )
 
     yargs
       .strict()
       .implies(
-        cliBuilderHelper.get('save_descriptor'),
-        cliBuilderHelper.get('discover')
+        cliBuilderHelper.getArgDesc('saveDescriptor').key,
+        cliBuilderHelper.getArgDesc('discover').key
       )
       .example(
         '$0 config',

@@ -128,7 +128,7 @@ module.exports = {
       describe: 'Set the Poppy IP/hostname.'
     }
   },
-  http_port: {
+  httpPort: {
     key: 'p',
     details: {
       alias: 'http-port',
@@ -138,7 +138,7 @@ module.exports = {
       describe: 'Set the Poppy http server port.'
     }
   },
-  snap_port: {
+  snapPort: {
     key: 'P',
     details: {
       alias: 'snap-port',
@@ -148,7 +148,7 @@ module.exports = {
       describe: 'Set the Poppy snap server port.'
     }
   },
-  save_config: {
+  saveConfig: {
     key: 's',
     details: {
       alias: 'save',
@@ -157,7 +157,7 @@ module.exports = {
       describe: 'Save settings to a local .poppyrc file'
     }
   },
-  motor_conf: {
+  motorConf: {
     key: 'M',
     details: {
       alias: 'motor-configuration',
@@ -193,7 +193,7 @@ module.exports = {
       describe: 'Check if the current used robot descriptor matches with the target Poppy.'
     }
   },
-  save_descriptor: {
+  saveDescriptor: {
     key: 'S',
     details: {
       alias: 'Save',
