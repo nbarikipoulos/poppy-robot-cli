@@ -70,10 +70,8 @@ const query = async (argv, poppy) => {
   if (result) {
     // Let's populate table to display
 
-    const invert = argv.I === true
-
-    const rows = invert ? motorIds : registers
-    const cols = invert ? registers : motorIds
+    const rows = argv.I ? motorIds : registers
+    const cols = argv.I ? registers : motorIds
 
     const table = new Table({
       head: [].concat('', ...cols)
@@ -82,7 +80,7 @@ const query = async (argv, poppy) => {
     for (const row of rows) {
       table.push({
         [row]: cols.map(col => _format(
-          invert ? result[row][col] : result[col][row])
+          argv.I ? result[row][col] : result[col][row])
         )
       })
     }

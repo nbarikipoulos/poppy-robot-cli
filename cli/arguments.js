@@ -46,7 +46,7 @@ module.exports = {
     details: {
       alias: 'invert',
       type: 'boolean',
-      default: 'false',
+      default: false,
       describe: 'Invert table presentation i.e. motors are displayed as row.'
     }
   },
@@ -95,7 +95,7 @@ module.exports = {
     details: {
       alias: 'wait',
       type: 'boolean',
-      default: 'false',
+      default: false,
       describe: 'Wait until this command is finished.'
     }
   },
@@ -171,7 +171,7 @@ module.exports = {
     details: {
       alias: 'discover',
       type: 'boolean',
-      default: 'false',
+      default: false,
       describe: 'Discover the poppy robot motors.'
     }
   },
@@ -189,7 +189,7 @@ module.exports = {
     details: {
       alias: 'validate',
       type: 'boolean',
-      default: 'false',
+      default: false,
       describe: 'Check if the current used robot descriptor matches with the target Poppy.'
     }
   },
