@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "gendoc": "$(npm bin)/markdown-toc -i README.md; echo",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard"
   },
   "dependencies": {
     "cli-table": "^0.3.1",
@@ -28,7 +28,8 @@
     "yargs": "^14.2.0"
   },
   "devDependencies": {
-    "markdown-toc": "^1.2.0"
+    "markdown-toc": "^1.2.0",
+    "standard": "*"
   },
   "repository": {
     "type": "git",
