@@ -108,8 +108,8 @@ const getArgDesc = (longKeyId) => ARGUMENT_DESC[longKeyId]
 module.exports = {
   yargs, // re-export
   init: (poppy) => { // arf...
-    ARGUMENT_DESC.motor.details.choices.push(
-      ...poppy.getAllMotorIds()
+    ARGUMENT_DESC.motor.details.choices = ['all'].concat(
+      poppy.getAllMotorIds()
     )
   },
   getArgDesc,
