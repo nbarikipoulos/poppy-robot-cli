@@ -22,7 +22,7 @@ const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT 
 let poppy
 
 try {
-  const config = cliBuilderHelper.getPoppyConfiguration(yargs.argv)
+  const config = cliBuilderHelper.getPoppyConfiguration()
   poppy = new Poppy(config)
 } catch (error) {
   console.log('Unable to create Poppy object:')

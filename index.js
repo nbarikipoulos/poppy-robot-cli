@@ -58,7 +58,7 @@ yargs
 const createPoppy = (options) => {
   // First let's obtain the configuration
   const config = Object.assign({},
-    cliBuilderHelper.getPoppyConfiguration(yargs.argv), // read from .poppyrc and CLI
+    cliBuilderHelper.getPoppyConfiguration(), // read from .poppyrc and CLI
     options // from arguments
   )
 

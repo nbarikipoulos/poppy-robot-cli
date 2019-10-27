@@ -21,15 +21,15 @@ const addOptions = (
 ) => {
   const keys = []
 
-  for (const opt of optionKeys) {
-    const o = ARGUMENT_DESC[opt]
-    const key = o.key
+  for (const longKey of optionKeys) {
+    const desc = getArgDesc(longKey)
+    const key = desc.key
 
     keys.push(key)
-    yargs.options(key, o.details)
+    yargs.options(key, desc.details)
 
     if (
-      mandatoryOptionKeys.includes(opt) // ...
+      mandatoryOptionKeys.includes(longKey) // ...
     ) {
       yargs.demand(key, 'This option is mandatory.')
     }
@@ -41,64 +41,63 @@ const addOptions = (
   }
 }
 
-const getPoppyConfiguration = (argv) => {
+const getPoppyConfiguration = () => {
+  //
+  // config object:{
+  //    descriptor: descriptor locator value,
+  //    connect: {
+  //      ip: hostname/ip value,
+  //      httpPort: pypot http server port,
+  //      snapPort: snap server port
+  //    }
+  // }
+  //
   const config = { connect: {} }
-
-  const ckeys = { // FIXME use _OPTIONS...
-    ip: { flags: ['i', 'ip'], default: 'poppy.local' },
-    httpPort: { flags: ['p', 'httpPort', 'http-port'], default: 8080 },
-    snapPort: { flags: ['P', 'snapPort', 'snap-port'], default: 6969 }
-  }
-
-  const tr = (tgt, src, fromCli = true) => { // arf...
-    for (const k in ckeys) {
-      const flags = ckeys[k].flags
-      const v = flags.find(elt => undefined != src[elt]) // FIXME !
-      if (v) {
-        if (fromCli) {
-          const isDefault = src[v] === ckeys[k].default
-          if (isDefault) {
-            const isSetFromCLI = process.argv // ensure it comes from cli, not default from yargs...
-              .slice(2) // not relevant
-              .map(elt => elt.replace(/^[-]+/, '')) // remove '-', '--'
-              .some(elt => flags.includes(elt)) // check if found
-
-            if (isSetFromCLI) {
-              delete tgt[k] // Remove it...
-            }
-          } else {
-            tgt[k] = src[v] // ...Affect it
-          }
-        } else { // we take everyting from the .poppyrc file
-          tgt[k] = src[v]
-        }
-      }
-    }
-  }
-
   //
   // First, let read configuration from local .poppyrc file, if any
   //
   try {
     const configFile = path.resolve(process.cwd(), '.poppyrc')
     const poppyrc = JSON.parse(fs.readFileSync(configFile, 'utf8'))
-
-    // Connexion settings
-    tr(config.connect, poppyrc.connect || {}, false)
-    // Robot descriptor
-    if (poppyrc.descriptor) {
-      config.descriptor = poppyrc.descriptor
-    }
+    Object.assign(
+      config,
+      poppyrc
+    )
   } catch (error) { /* Do nothing */ }
+  //
+  // On a second hand, let's obtain settings from the cli (connection settings only)
+  //
+  const longKeys = ['ip', 'httpPort', 'snapPort'] // Same as connect object properties
+  const connect = config.connect
 
-  // On a second hand, let's obtain settings from the cli.
-  // Note Poppy configuration is called before initializing the yargs context
-  // in CLI mode...
-
-  tr(config.connect, argv)
+  for (const longKey of longKeys) {
+    const desc = getArgDesc(longKey)
+    const key = desc.key
+    // Ensure that values have been filled in cli
+    // yargs.argv properties are set to default values if not provided
+    if (
+      process.argv.includes(`-${key}`, 2) ||
+      process.argv.includes(`--${desc.details.alias}`, 2)
+    ) {
+      connect[longKey] = yargs.argv[key]
+    }
+  }
+  //
+  // At last, let's clean default value of the result object up
+  //
+  longKeys.forEach(longKey => {
+    if (connect[longKey] === getArgDesc(longKey).details.default) {
+      delete connect[longKey]
+    }
+  })
+  if (Object.keys(connect).length === 0) {
+    delete config.connect
+  }
 
   return config
 }
+
+const getArgDesc = (longKeyId) => ARGUMENT_DESC[longKeyId]
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -113,7 +112,7 @@ module.exports = {
       ...poppy.getAllMotorIds()
     )
   },
-  getArgDesc: (longKeyId) => ARGUMENT_DESC[longKeyId],
+  getArgDesc,
   addOptions,
   addPoppyConfigurationOptions: _ => addOptions(
     'Poppy Setting Options:',
