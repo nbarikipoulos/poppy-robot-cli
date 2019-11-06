@@ -32,8 +32,9 @@ module.exports = _ => yargs.command(
       ['motorConf', 'validate', 'discover', 'saveDescriptor', 'all']
     )
 
-    cliBuilderHelper.addOptions( // add save option
-      'Poppy Setting Options:',
+    // Add save CLI connection settings to the 'Poppy Settings' group
+    cliBuilderHelper.addOptions(
+      'Poppy Connection Settings:',
       ['saveConfig']
     )
 

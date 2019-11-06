@@ -158,7 +158,7 @@ module.exports = {
   getArgDesc,
   addOptions,
   addPoppyConnectionOptions: _ => addOptions(
-    'Poppy Setting Options:',
+    'Poppy Connection Settings:',
     ['ip', 'httpPort', 'snapPort']
   ),
   getPoppyConfiguration
