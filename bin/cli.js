@@ -4,10 +4,8 @@
 
 'use strict'
 
-const Poppy = require('poppy-robot-core').Poppy
-
 const cliBuilderHelper = require('../cli/cli-helper')
-const yargs = cliBuilderHelper.yargs
+const yargs = require('yargs')
 
 const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT license.\n' +
   'More details on http://github.com/nbarikipoulos/poppy-robot-cli'
@@ -19,20 +17,8 @@ const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT 
 // ////////////////////////////////
 // ////////////////////////////////
 
-let poppy
-
-try {
-  const config = cliBuilderHelper.getPoppyConfiguration()
-  poppy = new Poppy(config)
-} catch (error) {
-  console.log('Unable to create Poppy object:')
-  console.log(error.message)
-  process.exit(-1) // without any poppy instance, nothing is possible
-}
-
-// And then, instantiate helper for CLI use which need a Poppy instance
-// to dynamically fill the motor options with motor ids.
-cliBuilderHelper.init(poppy)
+// Initialize dynamical options (motor list)
+cliBuilderHelper.initOptionDescriptors()
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -52,7 +38,7 @@ yargs
   .showHelpOnFail(true)
 
 // Add common cli options for poppy settings
-cliBuilderHelper.addPoppyConfigurationOptions()
+cliBuilderHelper.addPoppyConnectionOptions()
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -60,7 +46,7 @@ cliBuilderHelper.addPoppyConfigurationOptions()
 // ////////////////////////////////
 // ////////////////////////////////
 
-require('../cli/commands/exec-commands')(poppy)
+require('../cli/commands/exec-commands')()
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -68,7 +54,7 @@ require('../cli/commands/exec-commands')(poppy)
 // ////////////////////////////////
 // ////////////////////////////////
 
-require('../cli/commands/query-commands')(poppy)
+require('../cli/commands/query-commands')()
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -76,7 +62,7 @@ require('../cli/commands/query-commands')(poppy)
 // ////////////////////////////////
 // ////////////////////////////////
 
-require('../cli/commands/config-command')(poppy)
+require('../cli/commands/config-command')()
 
 // ////////////////////////////////
 // ////////////////////////////////

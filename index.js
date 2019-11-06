@@ -14,7 +14,7 @@
  * -p/--http-port | Set the http server port on Poppy | integer | 8080
  * -P/--snap-port | Set the snap server port on Poppy | integer | 6969
  *
- * Note it re-exports all the exported features of the poppy-robot-core module.
+ * Note it re-exports all the exported features of interest of the poppy-robot-core module.
  *
  * @module poppy-robot-cli
  * @typicalname P
@@ -24,15 +24,17 @@
 
 'use strict'
 
-const cliBuilderHelper = require('./cli/cli-helper')
-const yargs = cliBuilderHelper.yargs
+const yargs = require('yargs')
 
+const createPoppy = require('./lib/ext-poppy-factory')
 const core = require('poppy-robot-core')
 const Script = core.Script
 const Poppy = core.Poppy
 const ExtMotorRequest = core.ExtMotorRequest
 const RawMotorRequest = core.ExtMotorRequest
 const PoppyRequestHandler = core.PoppyRequestHandler
+
+const cliBuilderHelper = require('./cli/cli-helper')
 
 // ////////////////////////////////
 // Automatically add CLI options for
@@ -45,25 +47,11 @@ yargs
   .help('h')
 
 // Add common cli options for poppy settings
-cliBuilderHelper.addPoppyConfigurationOptions()
+cliBuilderHelper.addPoppyConnectionOptions()
 
 yargs
   .wrap(yargs.terminalWidth())
   .parse()
-
-// ////////////////////////////////
-// Main object factories
-// ////////////////////////////////
-
-const createPoppy = (options) => {
-  // First let's obtain the configuration
-  const config = Object.assign({},
-    cliBuilderHelper.getPoppyConfiguration(), // read from .poppyrc and CLI
-    options // from arguments
-  )
-
-  return core.createPoppy(config)
-}
 
 // ////////////////////////////////
 // ////////////////////////////////

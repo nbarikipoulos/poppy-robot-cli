@@ -2,10 +2,12 @@
 
 'use strict'
 
-const cliBuilderHelper = require('../cli-helper')
-const yargs = cliBuilderHelper.yargs
+const yargs = require('yargs')
 
 const Script = require('poppy-robot-core').Script
+
+const cliBuilderHelper = require('../cli-helper')
+const createPoppyInstance = require('../../lib/ext-poppy-factory')
 
 const EXEC_CMD_GROUP_LABEL = 'Command Options:'
 
@@ -15,7 +17,7 @@ const EXEC_CMD_GROUP_LABEL = 'Command Options:'
 // ////////////////////////////////
 // ////////////////////////////////
 
-module.exports = (poppy) => yargs.command(
+module.exports = _ => yargs.command(
   'exec',
   'Execute command on Poppy. Type $0 exec <command> -h for help on each command.',
   (yargs) => {
@@ -24,13 +26,13 @@ module.exports = (poppy) => yargs.command(
         command.name,
         command.desc,
         command.builder,
-        (argv) => command.handler(argv, poppy)
+        command.handler
       )
     }
 
-    // Once again, in order to group these options
+    // Once again... Done in order to group these options
     // in a nice way for each exec command.
-    cliBuilderHelper.addPoppyConfigurationOptions()
+    cliBuilderHelper.addPoppyConnectionOptions()
 
     yargs.demandCommand(1, 'Use at least one command')
   }
@@ -48,7 +50,7 @@ module.exports = (poppy) => yargs.command(
 // Execute simple command
 // ////////////////////////////////
 
-async function exec (poppy, type, motors, options) {
+async function exec (type, motors, options) {
   // FIXME ugly hack for compliant state argument
   const values = Object.values(options).map(val => {
     if (type === 'compliant') { // arf...
@@ -57,6 +59,9 @@ async function exec (poppy, type, motors, options) {
     }
     return val
   })
+
+  // Instantiate a Poppy object
+  const poppy = createPoppyInstance()
 
   //
   // create a poppy script...
@@ -101,7 +106,7 @@ const COMMANDS = [{
         'Switch all motors compliant state to \'true\' i.e. motors are not addressable.'
       )
   },
-  handler: (argv, poppy) => exec(poppy, 'compliant', argv.motor, { compliant: argv.value })
+  handler: (argv) => exec('compliant', argv.motor, { compliant: argv.value })
 }, {
   name: 'speed',
   desc: 'Set the rotation speed of the selected motor(s).\n' +
@@ -123,7 +128,7 @@ const COMMANDS = [{
         'Set the rotation speed of the motors m1 and m2 to 500 (quicker).'
       )
   },
-  handler: (argv, poppy) => exec(poppy, 'speed', argv.motor, { speed: argv.value })
+  handler: (argv) => exec('speed', argv.motor, { speed: argv.value })
 }, {
   name: 'rotate',
   desc: 'Rotate the target motor(s) by x degrees',
@@ -140,7 +145,7 @@ const COMMANDS = [{
         'Rotate the motors m1 and m2 by -30 degrees and wait until each motors will reach its new position.'
       )
   },
-  handler: (argv, poppy) => exec(poppy, 'rotate', argv.motor, { angle: argv.value, wait: argv.wait })
+  handler: (argv) => exec('rotate', argv.motor, { angle: argv.value, wait: argv.wait })
 }, {
   name: 'position',
   desc: 'Set the target position of the selected motor(s)',
@@ -157,7 +162,7 @@ const COMMANDS = [{
         'Move the motors m1 and m2 to the 0 degree position and wait until each motors will reach its new position.'
       )
   },
-  handler: (argv, poppy) => exec(poppy, 'position', argv.motor, { position: argv.value, wait: argv.wait })
+  handler: (argv) => exec('position', argv.motor, { position: argv.value, wait: argv.wait })
 }, {
   name: 'led',
   desc: 'Set the led of the selected motor(s)',
@@ -177,5 +182,5 @@ const COMMANDS = [{
         'Set the led color of motor \'m3\' to \'green\'.'
       )
   },
-  handler: (argv, poppy) => exec(poppy, 'led', argv.motor, { led: argv.value })
+  handler: (argv) => exec('led', argv.motor, { led: argv.value })
 }]

@@ -2,10 +2,12 @@
 
 'use strict'
 
-const cliBuilderHelper = require('../cli-helper')
-const yargs = cliBuilderHelper.yargs
+const yargs = require('yargs')
 
 const Table = require('cli-table')
+
+const cliBuilderHelper = require('../cli-helper')
+const createPoppyInstance = require('../../lib/ext-poppy-factory')
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -13,7 +15,7 @@ const Table = require('cli-table')
 // ////////////////////////////////
 // ////////////////////////////////
 
-module.exports = (poppy) => yargs.command(
+module.exports = _ => yargs.command(
   'query',
   'Query the state of Poppy motors.',
   (yargs) => {
@@ -32,7 +34,7 @@ module.exports = (poppy) => yargs.command(
         'Get the `present_position` and `upper_limit` register values of motors m1 and m6'
       )
   },
-  (argv) => query(argv, poppy) // Main job
+  (argv) => query(argv) // Main job
 )
 
 // ////////////////////////////////
@@ -45,7 +47,10 @@ module.exports = (poppy) => yargs.command(
 // The query command itself
 // ////////////////////////////////
 
-const query = async (argv, poppy) => {
+const query = async (argv) => {
+  // Poppy instance
+  const poppy = createPoppyInstance()
+
   const motorIds = argv.motor.includes('all')
     ? poppy.getAllMotorIds()
     : argv.motor

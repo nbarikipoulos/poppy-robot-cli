@@ -5,15 +5,16 @@
 const fs = require('fs')
 const path = require('path')
 
-const cliBuilderHelper = require('../cli-helper')
-const yargs = cliBuilderHelper.yargs
+const yargs = require('yargs')
 
 const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
+
+const cliBuilderHelper = require('../cli-helper')
+const createPoppyInstance = require('../../lib/ext-poppy-factory')
 
 const Status = require('../../tools/status')
 const createStatus = Status.createStatus
 const StatusEnum = Status.StatusEnum
-
 const toTree = require('../../tools/tree').toTree
 
 // ////////////////////////////////
@@ -22,7 +23,7 @@ const toTree = require('../../tools/tree').toTree
 // ////////////////////////////////
 // ////////////////////////////////
 
-module.exports = (poppy) => yargs.command(
+module.exports = _ => yargs.command(
   'config',
   'Display/Check/Discover the Poppy motor configuration.',
   (yargs) => {
@@ -63,7 +64,7 @@ module.exports = (poppy) => yargs.command(
         'Discover the Poppy motor configuration, save it to a descriptor file and set the .poppyrc file'
       )
   },
-  (argv) => main(argv, poppy) // Main job
+  handler
 )
 
 // ////////////////////////////////
@@ -76,7 +77,10 @@ module.exports = (poppy) => yargs.command(
 // The command itself
 // ////////////////////////////////
 
-const main = async (argv, poppy) => {
+const handler = async (argv) => {
+  // Instantiate a Poppy object
+  const poppy = createPoppyInstance()
+
   // Poppy object handles the configuration settings provided by users.
   const configObject = poppy.getConfig()
 
