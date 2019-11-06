@@ -196,7 +196,7 @@ module.exports = {
   saveDescriptor: {
     key: 'S',
     details: {
-      alias: 'Save',
+      alias: 'save-desc',
       type: 'string',
       nargs: 1,
       describe: 'Save discovered configuration to a descriptor file.'
