@@ -4,8 +4,9 @@
 
 'use strict'
 
-const cliBuilderHelper = require('../cli/cli-helper')
 const yargs = require('yargs')
+
+const cliBuilderHelper = require('../cli/cli-helper')
 
 const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT license.\n' +
   'More details on http://github.com/nbarikipoulos/poppy-robot-cli'

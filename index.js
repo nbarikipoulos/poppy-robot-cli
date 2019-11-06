@@ -26,7 +26,6 @@
 
 const yargs = require('yargs')
 
-const createPoppy = require('./lib/ext-poppy-factory')
 const core = require('poppy-robot-core')
 const Script = core.Script
 const Poppy = core.Poppy
@@ -35,6 +34,7 @@ const RawMotorRequest = core.ExtMotorRequest
 const PoppyRequestHandler = core.PoppyRequestHandler
 
 const cliBuilderHelper = require('./cli/cli-helper')
+const createPoppy = require('./lib/ext-poppy-factory')
 
 // ////////////////////////////////
 // Automatically add CLI options for
