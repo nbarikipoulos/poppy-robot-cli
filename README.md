@@ -1,6 +1,9 @@
 # Poppy Robot CLI
 
 [![NPM version][npm-image]][npm-url]
+[![JavaScript Style Guide][standard-image]][standard-url]
+![David](https://img.shields.io/david/nbarikipoulos/poppy-robot-cli)
+![David](https://img.shields.io/david/dev/nbarikipoulos/poppy-robot-cli)
 
 This module add CLI features to the [poppy-robot-core][core-link] one and then, it allows to simply drive and querying state of any robot of the [Poppy project](https://www.poppy-project.org/en/) family.
 
@@ -479,3 +482,5 @@ The poppy-robot-cli is MIT licensed. See [LICENSE](./LICENSE.md).
 
 [npm-url]: https://www.npmjs.com/package/poppy-robot-cli
 [npm-image]: https://img.shields.io/npm/v/poppy-robot-cli.svg
+[standard-url]: https://standardjs.com
+[standard-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
