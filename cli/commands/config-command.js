@@ -28,7 +28,7 @@ module.exports = _ => yargs.command(
   (yargs) => {
     cliBuilderHelper.addOptions(
       'Query Options:',
-      ['motorConf', 'saveDescriptor', 'all']
+      ['robot_structure', 'saveDescriptor']
     )
 
     // Add save CLI connection settings to the 'Poppy Settings' group
@@ -41,11 +41,7 @@ module.exports = _ => yargs.command(
       .strict()
       .example(
         '$0 config',
-        'Check connection settings.'
-      )
-      .example(
-        '$0 config -M',
-        'Check connection settings and display the robot descriptor (i.e. the motor configuration).'
+        'Check global connection settings (hostname and ports).'
       )
       .example(
         '$0 config -S myPoppy.json',
@@ -123,10 +119,9 @@ const handler = async (argv) => {
 
     const descriptor = poppy.getDescriptor()
 
-      // Should the descriptor be validated?
-      mStatusObject = {}
+    // Should the descriptor be validated?
+    mStatusObject = {}
     // }
-
 
     if (argv.S) {
       fs.writeFileSync(

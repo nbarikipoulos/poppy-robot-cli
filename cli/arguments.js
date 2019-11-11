@@ -154,25 +154,16 @@ module.exports = {
       alias: 'save',
       type: 'boolean',
       default: false,
-      describe: 'Save settings to a local .poppyrc file'
+      describe: 'Save connection settings to a local .poppyrc file'
     }
   },
-  motorConf: {
+  robot_structure: {
     key: 'M',
     details: {
-      alias: 'motor-configuration',
+      alias: 'robot-structure',
       type: 'boolean',
       default: false,
-      describe: 'Display motor configuration.'
-    }
-  },
-  all: {
-    key: 'a',
-    details: {
-      alias: 'all',
-      type: 'boolean',
-      default: false,
-      describe: 'Include details about motors (angle limits)'
+      describe: 'Display the robot structure (aliases and motors) and check connection to each motors.'
     }
   },
   saveDescriptor: {
