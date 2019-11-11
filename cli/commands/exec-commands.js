@@ -7,7 +7,6 @@ const yargs = require('yargs')
 const Script = require('poppy-robot-core').Script
 
 const cliBuilderHelper = require('../cli-helper')
-const createPoppyInstance = require('../../lib/ext-poppy-factory')
 
 const EXEC_CMD_GROUP_LABEL = 'Command Options:'
 
@@ -60,9 +59,8 @@ async function exec (type, motors, options) {
     return val
   })
 
-  // Instantiate a Poppy object
-  const poppy = createPoppyInstance()
-
+  // Get already instantiaed poppy object a Poppy object
+  const poppy = cliBuilderHelper.getPoppyInstance()
   //
   // create a poppy script...
   //
