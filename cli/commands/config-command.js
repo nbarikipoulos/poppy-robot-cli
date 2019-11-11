@@ -10,7 +10,6 @@ const yargs = require('yargs')
 const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
 
 const cliBuilderHelper = require('../cli-helper')
-const createPoppyInstance = require('../../lib/ext-poppy-factory')
 
 const Status = require('../../tools/status')
 const createStatus = Status.createStatus
@@ -79,11 +78,10 @@ module.exports = _ => yargs.command(
 // ////////////////////////////////
 
 const handler = async (argv) => {
-  // Instantiate a Poppy object
-  const poppy = createPoppyInstance()
+  // Get the already instantiated poppy
+  const poppy = cliBuilderHelper.getPoppyInstance()
 
-  // Poppy object handles the configuration settings provided by users.
-  const configObject = poppy.getConfig()
+  const configObject = cliBuilderHelper.getUserConfiguration()
 
   // Let's instantiate a new request handler object
   // with user's connexion settings.
