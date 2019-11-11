@@ -14,28 +14,13 @@ const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT 
 
 // ////////////////////////////////
 // ////////////////////////////////
-// Main help
-// ////////////////////////////////
-// ////////////////////////////////
-
-yargs
-  .usage('Usage: $0 <command> --help for detailed help')
-  .demandCommand(1, 'Use at least one command')
-  .epilogue(epilogue)
-  .locale('en')
-  .version()
-  .alias('h', 'help')
-  .help('h')
-  .showHelpOnFail(true)
-
-// ////////////////////////////////
-// ////////////////////////////////
 // "Main" job :)
 // ////////////////////////////////
 // ////////////////////////////////
 
 init().then(_ => {
   buildCLI()
+  help()
   parse()
 })
 
@@ -44,6 +29,16 @@ init().then(_ => {
 // private
 // ////////////////////////////////
 // ////////////////////////////////
+
+const help = _ => yargs
+  .usage('Usage: $0 <command> --help for detailed help')
+  .demandCommand(1, 'Use at least one command')
+  .epilogue(epilogue)
+  .locale('en')
+  .version()
+  .alias('h', 'help')
+  .help('h')
+  .showHelpOnFail(true)
 
 const buildCLI = _ => {
   // Add common cli options for poppy settings
