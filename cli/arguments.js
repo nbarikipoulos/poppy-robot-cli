@@ -175,15 +175,6 @@ module.exports = {
       describe: 'Include details about motors (angle limits)'
     }
   },
-  validate: {
-    key: 'v',
-    details: {
-      alias: 'validate',
-      type: 'boolean',
-      default: false,
-      describe: 'Check if the current used robot descriptor matches with the target Poppy.'
-    }
-  },
   saveDescriptor: {
     key: 'S',
     details: {

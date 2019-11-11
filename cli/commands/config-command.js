@@ -28,7 +28,7 @@ module.exports = _ => yargs.command(
   (yargs) => {
     cliBuilderHelper.addOptions(
       'Query Options:',
-      ['motorConf', 'validate', 'saveDescriptor', 'all']
+      ['motorConf', 'saveDescriptor', 'all']
     )
 
     // Add save CLI connection settings to the 'Poppy Settings' group
@@ -46,10 +46,6 @@ module.exports = _ => yargs.command(
       .example(
         '$0 config -M',
         'Check connection settings and display the robot descriptor (i.e. the motor configuration).'
-      )
-      .example(
-        '$0 config -v',
-        'Check if the descriptor file matches with the target robot'
       )
       .example(
         '$0 config -S myPoppy.json',
@@ -95,15 +91,13 @@ const handler = async (argv) => {
   // On a second hand, let's discover/display/validate configuration, if asked
   //
 
-  const discover = argv.D
   const validate = argv.v
   const displayMotor = argv.M
 
-  const displayMotorConfiguration = discover || validate || displayMotor
+  const displayMotorConfiguration = validate || displayMotor
 
   if (displayMotorConfiguration) {
     if ( // Early exit
-      discover &&
       !cnxStatus.http.isOk()
     ) {
       console.log(
@@ -113,35 +107,33 @@ const handler = async (argv) => {
       process.exit()
     }
 
-    let descriptor
     let source
     let mStatusObject = {}
 
-    if (discover) {
-      source = 'live discovering'
-      descriptor = await _discoverDescriptor(requestHandler)
-      // We just connect to all available motors then all is ok
-      descriptor.motors.forEach(
-        motor => { mStatusObject[motor.name] = createStatus(StatusEnum.ok) }
-      )
+    // if (0) {
+    //   source = 'live discovering'
+    //   descriptor = await _discoverDescriptor(requestHandler)
+    //   // We just connect to all available motors then all is ok
+    //   descriptor.motors.forEach(
+    //     motor => { mStatusObject[motor.name] = createStatus(StatusEnum.ok) }
+    //   )
+    // } else { // Get info from the descriptor file
+    //   source = configObject.descriptor ||
+    //     'default configuration'
 
-      if (argv.S) {
-        fs.writeFileSync(
-          path.resolve(process.cwd(), argv.S),
-          JSON.stringify(descriptor)
-        )
-        configObject.descriptor = `file://${argv.S}`
-      }
-    } else { // Get info from the descriptor file
-      source = configObject.descriptor ||
-        'default configuration'
-
-      descriptor = poppy.getDescriptor()
+    const descriptor = poppy.getDescriptor()
 
       // Should the descriptor be validated?
-      mStatusObject = validate
-        ? await validateDescriptor(requestHandler, descriptor, cnxStatus.http.isOk())
-        : {}
+      mStatusObject = {}
+    // }
+
+
+    if (argv.S) {
+      fs.writeFileSync(
+        path.resolve(process.cwd(), argv.S),
+        JSON.stringify(descriptor)
+      )
+      configObject.descriptor = `file://${argv.S}`
     }
 
     console.log(`>> Poppy motors: from ${source}`)
@@ -246,106 +238,6 @@ const _ledSnapRequest = async (requestHandler, motorId) => {
   } catch (e) { status = createStatus(StatusEnum.error, 'Unable to connect') }
 
   return status
-}
-
-// ////////////////////////////////
-// Discover robot configuration.
-// ////////////////////////////////
-
-const _discoverDescriptor = async (requestHandler) => {
-  // Aliases
-  const aliases = await _discoverAliases(requestHandler)
-
-  // Motors
-  const motors = []
-  for (const alias of aliases) {
-    motors.push(...await Promise.all(
-      alias.motors.map(async motorId => _getMotorDetails(requestHandler, motorId))
-    ))
-  }
-
-  return Object.assign({}, { aliases, motors })
-}
-
-const _discoverAliases = async (requestHandler) => {
-  const result = []
-
-  // Aliases
-  const aliases = (await requestHandler.getAliases()).alias
-
-  for (const alias of aliases) {
-    // await Promise.all( aliases.map( async alias => {
-    const motors = (await requestHandler.getAliasMotors(alias)).alias
-
-    result.push({
-      name: alias,
-      motors: motors
-    })
-  } // ))
-
-  return result
-}
-
-const _getMotorDetails = async (requestHandler, motorId) => {
-  const registers = ['lower_limit', 'upper_limit']
-  const values = (await Promise.all(
-    registers.map(async register =>
-      (await requestHandler.getMotorRegister(motorId, register))[register]
-    )))
-    .map(value => Math.round(value))
-
-  return registers.reduce(
-    (acc, register, i) => {
-      acc[register] = values[i]
-      return acc
-    },
-    { name: motorId }
-  )
-}
-
-// ////////////////////////////////
-// Validate descriptor
-// ////////////////////////////////
-
-const validateDescriptor = async (requestHandler, descriptor, isConnected) => {
-  const result = Object.create(null)
-
-  if (isConnected) {
-    for (const motor of descriptor.motors) {
-      try {
-        const m = await _getMotorDetails(requestHandler, motor.name)
-        // add a default status object.
-        result[motor.name] = createStatus(StatusEnum.ok)
-        // and check angle limit
-        const angleRangeRegisters = ['lower_limit', 'upper_limit']
-        angleRangeRegisters.forEach(register => {
-          if (m[register] !== motor[register]) {
-            const status = createStatus(
-              StatusEnum.error,
-              `'${register}' value does not match (${motor[register]}/${m[register]})`
-            )
-
-            Object.assign(status, { id: register })
-            result[motor.name].addChild(status)
-          }
-        })
-      } catch (e) {
-        result[motor.name] = createStatus(
-          StatusEnum.error,
-          `Unable to connect to motor ${motor.name}`
-        )
-      }
-    }
-  } else {
-    descriptor.motors.forEach(motor => {
-      result[motor.name] = createStatus(
-        StatusEnum.error,
-        `Unable to connect to motor ${motor.name}`
-      )
-    })
-  }
-
-  return result
 }
 
 // ////////////////////////////////
