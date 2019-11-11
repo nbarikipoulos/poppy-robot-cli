@@ -12,16 +12,65 @@ const core = require('poppy-robot-core')
 // Arguments descriptors
 const ARGUMENT_DESC = require('./arguments')
 
+/** Poppy instance.
+ * Initialized once by init() call, and as it must be called first
+ * */
+let POPPY_INSTANCE
+
+/** Accessor on Poppy Instance */
+const getPoppyInstance = _ => {
+  return POPPY_INSTANCE
+}
+
 // ////////////////////////////////
-// Utility functions (Poppy configuration)
+// Utility functions
 // ////////////////////////////////
+
+// init CLI args, initialize the POPPY_INSTANCE (need only one for standalone cli tool)
+const init = async _ => {
+  const config = getUserConfiguration()
+
+  POPPY_INSTANCE = await core.createPoppy(config)
+
+  ARGUMENT_DESC.motor.details.choices = ['all'].concat(
+    POPPY_INSTANCE.getAllMotorIds()
+  )
+}
+
+const addOptions = (
+  groupName,
+  optionKeys,
+  ...mandatoryOptionKeys
+) => {
+  const keys = []
+
+  for (const longKey of optionKeys) {
+    const desc = getArgDesc(longKey)
+    const key = desc.key
+
+    keys.push(key)
+    yargs.options(key, desc.details)
+
+    if (
+      mandatoryOptionKeys.includes(longKey) // ...
+    ) {
+      yargs.demand(key, 'This option is mandatory.')
+    }
+  }
+
+  // Group all these options in one group.
+  if (groupName) {
+    yargs.group(keys, groupName)
+  }
+}
+
+const getArgDesc = (longKeyId) => ARGUMENT_DESC[longKeyId]
 
 // Get configuration from .poppyrc file, if any and cli arguments
 // get: 'connect' - connection settings object
 //      'robot-desc' - robot descriptor locator
 //      'all' -  get both settings as config object
-// FIXME call and performed many times => Modify to singleton
-const getPoppyConfiguration = (get = 'all') => {
+const getUserConfiguration = (get = 'all') => {
   //
   // config object:{
   //    descriptor: descriptor locator value,
@@ -99,67 +148,19 @@ const getPoppyConfiguration = (get = 'all') => {
 }
 
 // ////////////////////////////////
-// Utility functions (cli options)
-// ////////////////////////////////
-
-// Init "dynamical" descriptors
-const initOptionDescriptors = _ => {
-  // Motors lists are provided:
-  // Using the default value 'desc:://poppy-ergo-jr
-  // Or, if any, through the descriptor properties of .poppyrc file
-  const descriptor = getPoppyConfiguration('robot-desc')
-
-  // Then, instantiate a dummy poppy object using this descriptor:
-  const poppy = core.createPoppy({ descriptor })
-
-  // At last, update the descriptor for motor option
-  ARGUMENT_DESC.motor.details.choices = ['all'].concat(
-    poppy.getAllMotorIds()
-  )
-}
-
-const addOptions = (
-  groupName,
-  optionKeys,
-  ...mandatoryOptionKeys
-) => {
-  const keys = []
-
-  for (const longKey of optionKeys) {
-    const desc = getArgDesc(longKey)
-    const key = desc.key
-
-    keys.push(key)
-    yargs.options(key, desc.details)
-
-    if (
-      mandatoryOptionKeys.includes(longKey) // ...
-    ) {
-      yargs.demand(key, 'This option is mandatory.')
-    }
-  }
-
-  // Group all these options in one group.
-  if (groupName) {
-    yargs.group(keys, groupName)
-  }
-}
-
-const getArgDesc = (longKeyId) => ARGUMENT_DESC[longKeyId]
-
-// ////////////////////////////////
 // ////////////////////////////////
 // Public API
 // ////////////////////////////////
 // ////////////////////////////////
 
 module.exports = {
-  initOptionDescriptors,
+  getPoppyInstance,
   getArgDesc,
   addOptions,
   addPoppyConnectionOptions: _ => addOptions(
     'Poppy Connection Settings:',
     ['ip', 'httpPort', 'snapPort']
   ),
-  getPoppyConfiguration
+  getUserConfiguration: getUserConfiguration,
+  init
 }
