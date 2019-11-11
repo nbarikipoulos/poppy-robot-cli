@@ -7,7 +7,6 @@ const yargs = require('yargs')
 const Table = require('cli-table')
 
 const cliBuilderHelper = require('../cli-helper')
-const createPoppyInstance = require('../../lib/ext-poppy-factory')
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -48,8 +47,9 @@ module.exports = _ => yargs.command(
 // ////////////////////////////////
 
 const query = async (argv) => {
+
   // Poppy instance
-  const poppy = createPoppyInstance()
+  const poppy = cliBuilderHelper.getPoppyInstance()
 
   const motorIds = argv.motor.includes('all')
     ? poppy.getAllMotorIds()
@@ -69,7 +69,7 @@ const query = async (argv) => {
     })
 
   //
-  // ...And display them, if any
+  // ...and display them, if any
   //
 
   if (result) {
