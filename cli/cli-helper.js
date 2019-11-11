@@ -26,15 +26,25 @@ const getPoppyInstance = _ => {
 // Utility functions
 // ////////////////////////////////
 
-// init CLI args, initialize the POPPY_INSTANCE (need only one for standalone cli tool)
+// init CLI args,
+// initialize the POPPY_INSTANCE that will be used for any command and then
+// avoid to instantiate it twice.
+// In the case of the config command, this function does nothing.
+// Indeed, it is dedicated to check connection settings and then, in the case
+// of live discovering, intantiating a poppy does the job but returns an error.
+// as the aim of this command is to display a friendly report about
+// connection settings, skip it.
 const init = async _ => {
-  const config = getUserConfiguration()
+  if (
+    !yargs.argv._.includes('config')
+  ) {
+    const config = getUserConfiguration()
+    POPPY_INSTANCE = await core.createPoppy(config)
 
-  POPPY_INSTANCE = await core.createPoppy(config)
-
-  ARGUMENT_DESC.motor.details.choices = ['all'].concat(
-    POPPY_INSTANCE.getAllMotorIds()
-  )
+    ARGUMENT_DESC.motor.details.choices = ['all'].concat(
+      POPPY_INSTANCE.getAllMotorIds()
+    )
+  }
 }
 
 const addOptions = (
