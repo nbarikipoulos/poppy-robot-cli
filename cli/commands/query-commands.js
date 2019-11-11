@@ -47,7 +47,6 @@ module.exports = _ => yargs.command(
 // ////////////////////////////////
 
 const query = async (argv) => {
-
   // Poppy instance
   const poppy = cliBuilderHelper.getPoppyInstance()
 

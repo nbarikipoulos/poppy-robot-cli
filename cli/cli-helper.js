@@ -171,6 +171,6 @@ module.exports = {
     'Poppy Connection Settings:',
     ['ip', 'httpPort', 'snapPort']
   ),
-  getUserConfiguration: getUserConfiguration,
+  getUserConfiguration,
   init
 }
