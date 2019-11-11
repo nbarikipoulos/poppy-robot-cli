@@ -24,11 +24,11 @@ const toTree = require('../../tools/tree').toTree
 
 module.exports = _ => yargs.command(
   'config',
-  'Display/Check/Discover the Poppy motor configuration.',
+  'Display the Poppy motor configuration.',
   (yargs) => {
     cliBuilderHelper.addOptions(
       'Query Options:',
-      ['motorConf', 'validate', 'discover', 'saveDescriptor', 'all']
+      ['motorConf', 'validate', 'saveDescriptor', 'all']
     )
 
     // Add save CLI connection settings to the 'Poppy Settings' group
@@ -39,10 +39,6 @@ module.exports = _ => yargs.command(
 
     yargs
       .strict()
-      .implies(
-        cliBuilderHelper.getArgDesc('saveDescriptor').key,
-        cliBuilderHelper.getArgDesc('discover').key
-      )
       .example(
         '$0 config',
         'Check connection settings.'
@@ -56,12 +52,8 @@ module.exports = _ => yargs.command(
         'Check if the descriptor file matches with the target robot'
       )
       .example(
-        '$0 config -D -S myPoppy.json',
-        'Discover the Poppy motor configuration and save it to a descriptor file'
-      )
-      .example(
-        '$0 config -D -S myPoppy.json -s',
-        'Discover the Poppy motor configuration, save it to a descriptor file and set the .poppyrc file'
+        '$0 config -S myPoppy.json',
+        'Save the descriptor of target robot in local json file'
       )
   },
   handler

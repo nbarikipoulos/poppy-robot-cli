@@ -166,15 +166,6 @@ module.exports = {
       describe: 'Display motor configuration.'
     }
   },
-  discover: {
-    key: 'D',
-    details: {
-      alias: 'discover',
-      type: 'boolean',
-      default: false,
-      describe: 'Discover the poppy robot motors.'
-    }
-  },
   all: {
     key: 'a',
     details: {
