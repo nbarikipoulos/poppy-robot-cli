@@ -7,19 +7,10 @@
 const yargs = require('yargs')
 
 const cliBuilderHelper = require('../cli/cli-helper')
+const init = cliBuilderHelper.init
 
 const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT license.\n' +
   'More details on http://github.com/nbarikipoulos/poppy-robot-cli'
-
-// ////////////////////////////////
-// ////////////////////////////////
-// Instantiate a Poppy object to
-// get its configuration.
-// ////////////////////////////////
-// ////////////////////////////////
-
-// Initialize dynamical options (motor list)
-cliBuilderHelper.initOptionDescriptors()
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -30,7 +21,6 @@ cliBuilderHelper.initOptionDescriptors()
 yargs
   .usage('Usage: $0 <command> --help for detailed help')
   .demandCommand(1, 'Use at least one command')
-  .strict()
   .epilogue(epilogue)
   .locale('en')
   .version()
@@ -38,39 +28,44 @@ yargs
   .help('h')
   .showHelpOnFail(true)
 
-// Add common cli options for poppy settings
-cliBuilderHelper.addPoppyConnectionOptions()
-
-// ////////////////////////////////
-// ////////////////////////////////
-// Add executing command
-// ////////////////////////////////
-// ////////////////////////////////
-
-require('../cli/commands/exec-commands')()
-
-// ////////////////////////////////
-// ////////////////////////////////
-// Add querying robot commands
-// ////////////////////////////////
-// ////////////////////////////////
-
-require('../cli/commands/query-commands')()
-
-// ////////////////////////////////
-// ////////////////////////////////
-// Add Configuration/Discovering robot commands
-// ////////////////////////////////
-// ////////////////////////////////
-
-require('../cli/commands/config-command')()
-
 // ////////////////////////////////
 // ////////////////////////////////
 // "Main" job :)
 // ////////////////////////////////
 // ////////////////////////////////
 
-yargs
-  .wrap(yargs.terminalWidth())
-  .parse()
+init().then(_ => {
+  buildCLI()
+  parse()
+})
+
+// ////////////////////////////////
+// ////////////////////////////////
+// private
+// ////////////////////////////////
+// ////////////////////////////////
+
+const buildCLI = _ => {
+  // Add common cli options for poppy settings
+  cliBuilderHelper.addPoppyConnectionOptions()
+
+  // Add executing command
+  require('../cli/commands/exec-commands')()
+
+  // Add querying robot commands
+  require('../cli/commands/query-commands')()
+
+  // Add Configuration/Discovering robot commands
+  require('../cli/commands/config-command')()
+}
+
+// ////////////////////////////////
+// Parse cli
+// ////////////////////////////////
+
+const parse = _ => {
+  yargs
+    .wrap(yargs.terminalWidth())
+    .strict()
+    .parse()
+}
