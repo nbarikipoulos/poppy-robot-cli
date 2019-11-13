@@ -9,7 +9,8 @@ const yargs = require('yargs')
 
 const core = require('poppy-robot-core')
 
-// Arguments descriptors
+const prettify = require('../lib/utils').prettifyError
+
 const ARGUMENT_DESC = require('./arguments')
 
 /** Poppy instance.
@@ -19,6 +20,23 @@ let POPPY_INSTANCE
 
 /** Accessor on Poppy Instance */
 const getPoppyInstance = _ => {
+  if (!POPPY_INSTANCE) {
+    const connect = Object.assign({ // arf...
+      ip: 'poppy.local',
+      httpPort: 8080,
+      snapPort: 6969
+    }, getUserConfiguration('connect'))
+
+    const msg = prettify(
+      'error',
+      'Unable to connect to Poppy: use the config command to check connection to Poppy',
+      `hostname/ip: ${connect.ip}`,
+      `http port: ${connect.httpPort}`,
+      `snap port: ${connect.snapPort}`
+    )
+    throw new Error(msg)
+  }
+
   return POPPY_INSTANCE
 }
 
@@ -38,12 +56,22 @@ const init = async _ => {
   if (
     !yargs.argv._.includes('config')
   ) {
-    const config = getUserConfiguration()
-    POPPY_INSTANCE = await core.createPoppy(config)
+    try {
+      const config = getUserConfiguration()
+      POPPY_INSTANCE = await core.createPoppy(config)
 
-    ARGUMENT_DESC.motor.details.choices = ['all'].concat(
-      POPPY_INSTANCE.getAllMotorIds()
-    )
+      ARGUMENT_DESC.motor.details.choices = ['all'].concat(
+        POPPY_INSTANCE.getAllMotorIds()
+      )
+    } catch (error) {
+      delete ARGUMENT_DESC.motor.details.choices
+      const msg = prettify(
+        'warning',
+        'Unable to get data about the Poppy structure: use the config command to check connection to Poppy'
+      )
+
+      return Promise.reject(msg)
+    }
   }
 }
 

@@ -8,21 +8,24 @@ const yargs = require('yargs')
 
 const cliBuilderHelper = require('../cli/cli-helper')
 const init = cliBuilderHelper.init
+const prettify = require('../lib/utils').prettifyError
 
 const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT license.\n' +
   'More details on http://github.com/nbarikipoulos/poppy-robot-cli'
 
 // ////////////////////////////////
 // ////////////////////////////////
-// "Main" job :)
+// Main job
 // ////////////////////////////////
 // ////////////////////////////////
 
-init().then(_ => {
-  buildCLI()
-  help()
-  parse()
-})
+init()
+  .catch(console.log)
+  .then(_ => {
+    buildCLI()
+    help()
+    parse()
+  })
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -38,7 +41,16 @@ const help = _ => yargs
   .version()
   .alias('h', 'help')
   .help('h')
-  .showHelpOnFail(true)
+  .fail((message, error, yargs) => {
+    if (error) { // Something is rotten in my poppy...
+      console.log(error.message)
+    }
+    if (message) { // ... or in cli parsing
+      console.log(yargs.help())
+      console.log(prettify('error', message))
+    }
+    process.exit(1)
+  })
 
 const buildCLI = _ => {
   // Add common cli options for poppy settings

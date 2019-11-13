@@ -7,6 +7,7 @@ const yargs = require('yargs')
 const Table = require('cli-table')
 
 const cliBuilderHelper = require('../cli-helper')
+const prettify = require('../../lib/utils').prettifyError
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -61,10 +62,12 @@ const query = async (argv) => {
   //
 
   const result = await poppy.query(motorIds, registers)
-    .catch(err => {
-      console.log('Err: Unable to perform querying. Check connection settings:')
-      console.log(`   Request URL: ${err.config.url}`)
-      return undefined
+    .catch(error => {
+      throw new Error(prettify(
+        'error',
+        'Unable to perform querying. Check connection settings',
+        `Request URL: ${error.config.url}`
+      ))
     })
 
   //
