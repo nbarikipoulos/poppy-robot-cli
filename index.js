@@ -62,6 +62,7 @@ yargs
 module.exports = {
   createPoppy,
   createScript: core.createScript,
+  createDescriptor: core.createDescriptor,
   Script,
   Poppy,
   ExtMotorRequest,
