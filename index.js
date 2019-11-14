@@ -27,11 +27,6 @@
 const yargs = require('yargs')
 
 const core = require('poppy-robot-core')
-const Script = core.Script
-const Poppy = core.Poppy
-const ExtMotorRequest = core.ExtMotorRequest
-const RawMotorRequest = core.ExtMotorRequest
-const PoppyRequestHandler = core.PoppyRequestHandler
 
 const cliBuilderHelper = require('./cli/cli-helper')
 const createPoppy = require('./lib/ext-poppy-factory')
@@ -60,12 +55,12 @@ yargs
 // ////////////////////////////////
 
 module.exports = {
-  createPoppy,
+  createPoppy, // overriden by this module
   createScript: core.createScript,
   createDescriptor: core.createDescriptor,
-  Script,
-  Poppy,
-  ExtMotorRequest,
-  RawMotorRequest,
-  PoppyRequestHandler
+  Script: core.Script,
+  Poppy: core.Poppy,
+  ExtMotorRequest: core.ExtMotorRequest,
+  RawMotorRequest: core.RawMotorRequest,
+  PoppyRequestHandler: core.PoppyRequestHandler
 }
