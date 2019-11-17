@@ -111,7 +111,7 @@ const getArgDesc = (longKeyId) => ARGUMENT_DESC[longKeyId]
 const getUserConfiguration = (get = 'all') => {
   //
   // config object:{
-  //    descriptor: descriptor locator value,
+  //    locator: descriptor locator value,
   //    connect: {
   //      ip: hostname/ip value,
   //      httpPort: pypot http server port,
@@ -174,7 +174,7 @@ const getUserConfiguration = (get = 'all') => {
       result = config.connect || {}
       break
     case 'descriptor':
-      result = config.descriptor
+      result = config.locator
       break
     case 'all':
     case 'default':
