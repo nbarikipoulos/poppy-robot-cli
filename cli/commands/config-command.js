@@ -6,15 +6,15 @@ const fs = require('fs')
 const path = require('path')
 
 const yargs = require('yargs')
+const colors = require('colors')
 
 const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
+const createDescriptor = require('poppy-robot-core').createDescriptor
+const promiseAll = require('poppy-robot-core/util/misc').promiseAll // arf...
 
 const cliBuilderHelper = require('../cli-helper')
 
-const Status = require('../../tools/status')
-const createStatus = Status.createStatus
-const StatusEnum = Status.StatusEnum
-const toTree = require('../../tools/tree').toTree
+const treeify = require('treeify')
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -39,9 +39,14 @@ module.exports = _ => yargs.command(
 
     yargs
       .strict()
+      .implies('S', 'M')
       .example(
         '$0 config',
         'Check global connection settings (hostname and ports).'
+      )
+      .example(
+        '$0 config --ip poppy1.local -s',
+        'Check connection settings using user\'s ones and save it to local .poppyrc file'
       )
       .example(
         '$0 config -S myPoppy.json',
@@ -62,221 +67,108 @@ module.exports = _ => yargs.command(
 // ////////////////////////////////
 
 const handler = async (argv) => {
-  // Get the already instantiated poppy
-  const poppy = cliBuilderHelper.getPoppyInstance()
-
-  const configObject = cliBuilderHelper.getUserConfiguration()
-
-  // Let's instantiate a new request handler object
-  // with user's connexion settings.
-  const requestHandler = new PoppyRequestHandler(configObject.connect)
-  const cnxSettings = requestHandler.getSettings() // full cnx settings
-
   //
-  // First of all, let check connexion settings
+  // Check connection (http and snap server)
   //
 
-  console.log(`>> Connection to Poppy (hostname/ip: ${cnxSettings.ip})`)
+  const config = cliBuilderHelper.getUserConfiguration()
 
-  const cnxStatus = await _basicConnectionTest(requestHandler)
+  const connect = config.connect || {}
 
-  console.log(`  Http server (port ${cnxSettings.httpPort}):\t ${cnxStatus.http.display()}`)
-  console.log(`  Snap server (port ${cnxSettings.snapPort}):\t ${cnxStatus.snap.display()}`)
+  // Use a "low enough" value for these tests
+  // It seems poppy.local request could be (too) long.
+  // So long that common use of this module could lacks or not.
+  // Check about bonjour/zeroconf that seems to be responsible about it...
+  connect.timeout = 100
+
+  const req = new PoppyRequestHandler(connect)
+
+  const fulfilled = (p) => p.then(_ => true, _ => false) // arf...
+
+  const [http, snap] = (await Promise.all([
+    fulfilled(req.client().get('/motor/alias/list.json')),
+    fulfilled(req.client('snap').get('/motors/alias'))
+  ]))
+
+  console.log(`>> Connection to Poppy (hostname/ip: ${req.getSettings().ip})`)
+  console.log(`  Http server (port ${req.getSettings().httpPort}):\t ${_display(http)}`)
+  console.log(`  Snap server (port ${req.getSettings().snapPort}):\t ${_display(snap)}`)
 
   //
-  // On a second hand, let's discover/display/validate configuration, if asked
+  // display robot structure
   //
 
-  const validate = argv.v
-  const displayMotor = argv.M
+  if (argv.M) {
+    const isLive = !config.locator || config.locator === 'desc://live-discovering'
+    // Discover the robot descriptor
+    delete connect.timeout // arf...
+    const descriptor = await createDescriptor(config.locator, connect)
 
-  const displayMotorConfiguration = validate || displayMotor
+    const motorIds = descriptor.motors.map(m => m.name)
 
-  if (displayMotorConfiguration) {
-    if ( // Early exit
-      !cnxStatus.http.isOk()
-    ) {
-      console.log(
-        '>> Unable to discover the motor configuration of the Robot.' +
-        '  Please check connection settings.'
-      )
-      process.exit()
+    let res // array with result of connection to motors
+    // Test connection to each motor, if needed (i.e. no live discovering performed)
+    if (!isLive) {
+      res = await promiseAll(motorIds, async (name) => {
+        const res = await fulfilled(
+          req.client().get(`/motor/${name}/register/list.json`)
+        )
+        return _display(res)
+      })
+    } else {
+      res = Array(motorIds.length).fill(_display(true))
     }
 
-    let source
-    let mStatusObject = {}
+    // Then let's gather connection results with the poppy structure
 
-    // if (0) {
-    //   source = 'live discovering'
-    //   descriptor = await _discoverDescriptor(requestHandler)
-    //   // We just connect to all available motors then all is ok
-    //   descriptor.motors.forEach(
-    //     motor => { mStatusObject[motor.name] = createStatus(StatusEnum.ok) }
-    //   )
-    // } else { // Get info from the descriptor file
-    //   source = configObject.descriptor ||
-    //     'default configuration'
+    const structure = {}
 
-    const descriptor = poppy.getDescriptor()
+    descriptor.aliases.forEach(alias => {
+      structure[alias.name] = alias.motors.reduce(
+        (acc, elt, i) => { acc[elt] = res[i]; return acc },
+        {}
+      )
+    })
 
-    // Should the descriptor be validated?
-    mStatusObject = {}
-    // }
+    // At last, let display it
 
-    if (argv.S) {
+    let tree = ' Poppy\n'
+    treeify.asLines(structure, true, (line) => { tree += `   ${line}\n` })
+
+    const header = '>> Structure: from ' +
+     (isLive ? 'live discovering' : config.locator)
+
+    console.log(header, '\n', tree)
+
+    if ( // argv.S implies M one
+      argv.S &&
+      isLive // only for live discovering, otherwise, what's the point...
+    ) {
       fs.writeFileSync(
         path.resolve(process.cwd(), argv.S),
         JSON.stringify(descriptor)
       )
-      configObject.descriptor = `file://${argv.S}`
+      config.locator = `file://${argv.S}`
     }
-
-    console.log(`>> Poppy motors: from ${source}`)
-
-    const poppyStatus = validate
-      ? `${cnxStatus.http.display()}`
-      : ''
-
-    console.log(`Poppy ${poppyStatus}`)
-    console.log(
-      treeify(descriptor, mStatusObject, argv.a)
-    )
   }
-
   //
-  // At last, the save setting options
+  // At last, the save setting option
   //
 
   if (argv.s) {
     console.log('>> Save settings in local .poppyrc file')
-
-    const desc = configObject.descriptor
-      ? configObject.descriptor
-      : 'default descriptor'
-
-    console.log(`  descriptor: ${desc}`)
-
-    const cnx = configObject.connect
-    if (cnx && Object.keys(cnx).length !== 0) {
-      console.log('  connection settings:')
-      for (const p in cnx) {
-        console.log(`    ${p}= ${cnx[p]}`)
-      }
-    } else {
-      console.log('  connection settings: default')
-    }
+    console.log('  descriptor:', config.descriptor || 'default (live discovering)')
+    console.log('  connection settings: ', connect || 'default')
 
     fs.writeFileSync(
       path.resolve(process.cwd(), '.poppyrc'),
-      JSON.stringify(configObject)
+      JSON.stringify(config)
     )
   }
-
-  // It seems to be an axios issue: when a request raises a connection error,
-  // a Promise still exists somewhere and we await until the timeout will be reached.
-  process.exit()
 }
 
 // ////////////////////////////////
-// Check connection settings.
+// Misc.
 // ////////////////////////////////
 
-const _basicConnectionTest = async (requestHandler) => {
-  const result = Object.create(null)
-
-  // Next to switch on, the first request always failed.
-  // Then, Let perform a dummy one at every call of this command...
-  await _dummyHttpRequest(requestHandler)
-
-  //
-  // Test the http server
-  //
-  result.http = await _dummyHttpRequest(requestHandler)
-
-  //
-  // Test snap settings, if http test succeeds
-  //
-  if (result.http.isOk()) {
-    // Let's get a motor Id to test the snap connexion settings
-    const alias = (await requestHandler.getAliases()).alias
-      .shift() // Let get first alias
-
-    const motorId = (await requestHandler.getAliasMotors(alias)).alias
-      .shift() // ... and is first motor
-
-    result.snap = await _ledSnapRequest(requestHandler, motorId)
-  } else {
-    result.snap = createStatus(StatusEnum.error, 'Unable to connect')
-  }
-
-  return result
-}
-
-const _dummyHttpRequest = async (requestHandler) => {
-  let status
-
-  try {
-    await requestHandler.getAliases()
-    status = createStatus(StatusEnum.ok)
-  } catch (e) { status = createStatus(StatusEnum.error, 'Unable to connect') }
-
-  return status
-}
-
-const _ledSnapRequest = async (requestHandler, motorId) => {
-  let status
-
-  // We need a motor to test it
-  try {
-    await requestHandler.led(motorId, 'off')
-    status = createStatus(StatusEnum.ok)
-  } catch (e) { status = createStatus(StatusEnum.error, 'Unable to connect') }
-
-  return status
-}
-
-// ////////////////////////////////
-// Display misc.
-// ////////////////////////////////
-
-const treeify = (descriptor, mStatusObject, showDetails) => toTree(
-  tr(descriptor),
-  (property, parent) => {
-    let status
-    try {
-      if (
-        ['lower_limit', 'upper_limit'].includes(property)
-      ) {
-        status = mStatusObject[parent.name]
-          .getChildren() // Get the sub-statuses for this property
-          .find(status => property === status.id)
-      } else {
-        status = mStatusObject[property] // for motor
-      }
-    } catch (e) { /* Do nothing */ }
-
-    return status ? status.display(true) : ''
-  },
-  {
-    onlyObject: !showDetails,
-    filter: (property) => property !== 'name'
-  }
-)
-
-const tr = (descriptor) => {
-  const result = {}
-
-  descriptor.aliases.forEach(alias => {
-    const aliasObject = {}
-
-    alias.motors.forEach(motor => {
-      aliasObject[motor] = Object.assign(
-        {},
-        descriptor.motors.find(elt => motor === elt.name)
-      )
-    })
-    result[alias.name] = aliasObject
-  })
-
-  return result
-}
+const _display = (b) => b ? colors.green.inverse('OK') : colors.red.inverse('KO')
