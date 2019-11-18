@@ -81,7 +81,7 @@ const handler = async (argv) => {
   // Check about bonjour/zeroconf that seems to be responsible about it...
   connect.timeout = 100
 
-  const req = new PoppyRequestHandler(connect)
+  let req = new PoppyRequestHandler(connect)
 
   const fulfilled = (p) => p.then(_ => true, _ => false) // arf...
 
@@ -100,15 +100,18 @@ const handler = async (argv) => {
 
   if (argv.M) {
     const isLive = !config.locator || config.locator === 'desc://live-discovering'
-    // Discover the robot descriptor
-    delete connect.timeout // arf...
-    const descriptor = await createDescriptor(config.locator, connect)
 
+    delete connect.timeout // arf...
+
+    const descriptor = await createDescriptor(config.locator, connect)
     const motorIds = descriptor.motors.map(m => m.name)
 
     let res // array with result of connection to motors
     // Test connection to each motor, if needed (i.e. no live discovering performed)
     if (!isLive) {
+      // Discover the robot descriptor
+      req = new PoppyRequestHandler(connect)
+
       res = await promiseAll(motorIds, async (name) => {
         const res = await fulfilled(
           req.client().get(`/motor/${name}/register/list.json`)
