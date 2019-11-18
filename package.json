@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "gendoc": "$(npm bin)/markdown-toc -i README.md; echo",
+    "gendoc.win32": ".\\node_modules\\.bin\\markdown-toc -i README.md",
     "test": "standard"
   },
   "dependencies": {
