@@ -46,9 +46,6 @@ It provides:
 
 - Next to these common flags, a poppy rc file feature that allows persisting of these connection parameters into a dedicated file.
 
-- Al last, it allows through a [discovering command](#discovering-robot-configuration) to set-up the target robot configuration (default settings are done for a Poppy Ergo Jr) which allows **using this project with any set of motors driven through the pypot library** _i.e._
-to extend it use to any robot of the [Poppy project](https://www.poppy-project.org/en/) family.
-
 Enjoy, ;)
 
 ## Table of Contents
@@ -71,9 +68,11 @@ Enjoy, ;)
   * [Configuring Poppy](#configuring-poppy)
     + [Connection Settings](#connection-settings)
   * [Poppy "Run Commands" File](#poppy-run-commands-file)
-- [Discovering Robot Configuration](#discovering-robot-configuration)
+- [Check and Display Configuration](#check-and-display-configuration)
+  * [Advanced use](#advanced-use)
 - [Common CLI Flags](#common-cli-flags)
 - [API](#api)
+- [Known Limitations/Issues](#known-limitationsissues)
 - [Credits](#credits)
 - [License](#license)
 
@@ -124,9 +123,9 @@ To verify that it has been successfully installed, type:
 
 ```shell
 npm list -g -depth=0
-├── npm@6.9.0
-├── poppy-robot-cli@3.1.2
-└── poppy-robot-core@3.0.0
+├── npm@6.12.0
+├── poppy-robot-cli@4.0.0
+└── poppy-robot-core@4.0.0
 ```
 
 Then, simply type:
@@ -394,35 +393,31 @@ Note the poppy-robot-cli will:
 - At last, it will override these settings with values passed through the
 command line.
 
-## Discovering Robot Configuration
+## Check and Display Configuration
 
-Advanced users can modify the robot configuration in order to fit with others than the default one (aka Poppy Ergo Jr).
-
-Such task could be performed using the config command of the CLI.
-
-it allows:
-
-- Discovering the motor configuration of a target robot,
-- Saving it in a descriptor file,
-- At last, saving it to the poppyrc file.
+Additional tasks named allows:
+- Checking the connection settings,
+- Displaying the robot structure (_i.e._ aliases and motors) and then perform a connection test to all motors,
 
 Typing
 
 ```shell
-poppy config -D
+poppy config -M
 ```
 
 will discover the robot here located with the default values for hostname and http port _i.e._ poppy.local and 8080 and display an aliases/motors tree as shown on the screenshot below:
 
 ![Discovering robot](./doc/discovering.png "Discovering robot")
 
+### Advanced use
+
 Adding -S flag will save this configuration to a descriptor file:
 
 ```shell
-poppy config -D -S myPoppy.json
+poppy config -MS myPoppy.json
 ```
 
-which could be use:
+which could be use instead of live discovering:
 
 - Via the poppyrc file:
 
@@ -437,12 +432,10 @@ which could be use:
   - Or adding the -s flag over the discovering step to automatically add this line to the .poppyrc file
 
       ```shell
-      poppy config -D -S myPoppy.json -s
+      poppy config -MS myPoppy.json -s
       ```
 
 - Programmatically through the Poppy object factory (see [API](#API)).
-
-Furthermore, the __config__ command allows validating of the current descriptor in use (users\' one or default one) with the targeted robot using the -v flag.
 
 ## Common CLI Flags
 
@@ -467,6 +460,14 @@ node myScript.js --ip 'poppy1.local' -p 8081
 ## API
 
 This module simply re-exports the [poppy-robot-core][core-link] module elements. See the dedicated section available [here][core-link-api] for more details.
+
+## Known Limitations/Issues
+
+Nodejs could not use the zeroconf service natively _i.e_ is unable to bind to the robot using 'poppy.local' as hostname.
+
+Then, users must:
+- Get the robot ip or configure a hostname in the dns server of their router/box,
+- Use it with the -i/--ip flag or to persist it in a poppyrc file as explained [here](#configuring-poppy).
 
 ## Credits
 
