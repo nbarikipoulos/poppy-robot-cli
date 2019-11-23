@@ -73,7 +73,7 @@ const handler = async (argv) => {
 
   const config = cliBuilderHelper.getUserConfiguration()
 
-  const connect = config.connect || {}
+  let connect = Object.assign({}, config.connect)
 
   // Use a "low enough" value for these tests
   // It seems poppy.local request could be (too) long.
@@ -103,10 +103,11 @@ const handler = async (argv) => {
   // display robot structure
   //
 
+  // Back to common/user connection settings
+  connect = config.connect
+
   if (argv.M) {
     const isLive = !config.locator || config.locator === 'desc://live-discovering'
-
-    delete connect.timeout // arf...
 
     const descriptor = await createDescriptor(config.locator, connect)
     const motorIds = descriptor.motors.map(m => m.name)
