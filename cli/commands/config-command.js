@@ -165,14 +165,24 @@ const handler = async (argv) => {
   //
 
   if (argv.s) {
-    console.log('>> Save settings in local .poppyrc file')
-    console.log('  descriptor:', config.descriptor || 'default (live discovering)')
-    console.log('  connection settings: ', connect || 'default')
+    // Do not serialize empty data...
+    if (!config.connect || Object.keys(config.connect).length === 0) {
+      delete config.connect
+    }
 
-    fs.writeFileSync(
-      path.resolve(process.cwd(), '.poppyrc'),
-      JSON.stringify(config)
-    )
+    console.log('>> Save settings in local .poppyrc file')
+    console.log('  descriptor:', config.locator || 'default (live discovering)')
+    console.log('  connection settings: ', config.connect || 'default')
+    if (Object.keys(config).length !== 0) { // Do not serialize default data
+      fs.writeFileSync(
+        path.resolve(process.cwd(), '.poppyrc'),
+        JSON.stringify(config)
+      )
+    } else {
+      const msg = '  ' + colors.yellow.inverse('WARNING') +
+        ' poppyrc file not created (only default settings.)'
+      console.log(msg)
+    }
   }
 }
 
