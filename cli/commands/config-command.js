@@ -85,6 +85,11 @@ const handler = async (argv) => {
 
   const fulfilled = (p) => p.then(_ => true, _ => false) // arf...
 
+  // A first dummy request is mandatory
+  // The first request once the robot is turned on always terminates in timeout
+  // see https://forum.poppy-project.org/t/api-rest-poppy-ergo-jr/3516/16
+  await req.client().get('/motor/alias/list.json').catch(e => { /* Do nothing */ })
+
   const [http, snap] = (await Promise.all([
     fulfilled(req.client().get('/motor/alias/list.json')),
     fulfilled(req.client('snap').get('/motors/alias'))
