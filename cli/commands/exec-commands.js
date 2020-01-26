@@ -22,7 +22,7 @@ module.exports = _ => yargs.command(
   (yargs) => {
     for (const command of COMMANDS) {
       yargs.command(
-        command.name,
+        command.cmd,
         command.desc,
         command.builder,
         command.handler
@@ -81,7 +81,7 @@ async function exec (type, motors, options) {
 // ////////////////////////////////
 
 const COMMANDS = [{
-  name: 'compliant [value]',
+  cmd: 'compliant [value]',
   desc: 'Set the compliant state of the selected motor(s)',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
@@ -110,7 +110,7 @@ const COMMANDS = [{
   },
   handler: (argv) => exec('compliant', argv.motor, { compliant: argv.value })
 }, {
-  name: 'speed <value>',
+  cmd: 'speed <value>',
   desc: 'Set the rotation speed of the selected motor(s).\n' +
     'Value must be in the [0, 1023] range',
   builder: (yargs) => {
@@ -135,7 +135,7 @@ const COMMANDS = [{
   },
   handler: (argv) => exec('speed', argv.motor, { speed: argv.value })
 }, {
-  name: 'rotate <value>',
+  cmd: 'rotate <value>',
   desc: 'Rotate the target motor(s) by x degrees',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
@@ -155,7 +155,7 @@ const COMMANDS = [{
   },
   handler: (argv) => exec('rotate', argv.motor, { angle: argv.value, wait: argv.wait })
 }, {
-  name: 'position <value>',
+  cmd: 'position <value>',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
@@ -175,7 +175,7 @@ const COMMANDS = [{
   },
   handler: (argv) => exec('position', argv.motor, { position: argv.value, wait: argv.wait })
 }, {
-  name: 'led [value]',
+  cmd: 'led [value]',
   desc: 'Set the led color of the selected motor(s)',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
