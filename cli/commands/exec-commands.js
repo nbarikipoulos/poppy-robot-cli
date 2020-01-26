@@ -146,6 +146,7 @@ const COMMANDS = [{
     // Add the positional argument of this command
     const desc = cliBuilderHelper.getArgDesc('rotate')
     yargs.positional('value', desc)
+
     yargs
       .example(
         '$0 exec rotate -30 -m m1 m2 -w',
@@ -154,14 +155,17 @@ const COMMANDS = [{
   },
   handler: (argv) => exec('rotate', argv.motor, { angle: argv.value, wait: argv.wait })
 }, {
-  name: 'position',
+  name: 'position <value>',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
       EXEC_CMD_GROUP_LABEL,
-      ['motor', 'position', 'wait'],
-      'position'
+      ['motor', 'wait']
     )
+
+    // Add the positional argument of this command
+    const desc = cliBuilderHelper.getArgDesc('position')
+    yargs.positional('value', desc)
 
     yargs
       .example(

@@ -67,14 +67,9 @@ module.exports = {
     type: 'number',
     describe: 'Rotate the selected motor(s) by x degrees.'
   },
-  position: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      nargs: 1,
-      type: 'number',
-      describe: 'Move the selected motor(s) to a given position.'
-    }
+  position: { // positional
+    type: 'number',
+    describe: 'Move the selected motor(s) to a given position.'
   },
   wait: {
     key: 'w',
