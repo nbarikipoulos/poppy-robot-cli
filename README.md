@@ -14,7 +14,7 @@ It provides:
     As example:
 
     ```shell
-    poppy exec rotate -m m1 m2 -v 30
+    poppy exec rotate 30 -m m1 m2
     ```
 
     will rotate by 30 degrees the motors m1 and m2.
@@ -34,7 +34,7 @@ It provides:
     As example:
 
     ```shell
-    poppy exec rotate -m m1 m2 -v 30 --ip 'poppy1.local' -p 8081
+    poppy exec rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
     ```
 
     will address this rotate command to a Poppy with ip/hostname and port of its REST api set to respectively
@@ -206,18 +206,19 @@ name | description
 [position](#position) | move the selected motor(s) to a given position.
 [led](#led) | set the led color of selected motor(s)
 
-All these commands have a common flag '-m'. If not set, a command will be applied to all motors ('m1' to 'm6 for the Poppy Ergo Jr.) excepted if this flag is set on the CLI. In this case, it allows to select the targeted motors on which will apply the command.
+Note **all these commands have a common optional flag '-m' in order to select the target motors**.
+**If not set, a command will be applied to all motors** ('m1' to 'm6 for the Poppy Ergo Jr.)
 
 As examples:
 
 ```shell
-poppy exec led -v green
+poppy exec led green
 ```
 
 will set the led color to green of all motors.
 
 ```shell
-poppy exec -m m1 m2 -v blue
+poppy exec led blue -m m1 m2
 ````
 
 will set the led color of motor m1 and m2 to blue.
@@ -226,15 +227,19 @@ Next paragraphs will detail all the available execution commands and their speci
 
 #### compliant
 
+```shell
+poppy exec compliant [value]
+```
+
 This command sets the compliant state of the selected motor(s).
 
-option | desc | value | default | mandatory
+&nbsp; | desc | value | default | mandatory
 --- | --- | --- | --- | ---
--v | set the value of the 'compliant' register | [on, off] | off | no
+value| set the 'compliant' register | on \| off | off | no
 
 Examples:
 
-- Switch all motors compliant state to 'false' _i.e._ motors are programmatically addressable:
+- Set all motors compliant state to 'false' _i.e._ motors are programmatically drivable:
 
     ```shell
     poppy exec compliant
@@ -243,44 +248,55 @@ Examples:
 - Same as previous example, but longer...:
 
     ```shell
-    poppy exec compliant -v off
+    poppy exec compliant off
     ```
 
-- Switch all motors to the 'rest' state _i.e._ motors are movable by hand but not programmatically adressable:
+- Switch all motors to the 'rest' state _i.e._ motors are handly drivable by hand:
 
     ```shell
-    poppy exec compliant -v on
+    poppy exec compliant on
     ```
 
 #### speed
 
+```shell
+poppy exec speed <value>
+```
+
 This command sets the the rotation speed of the selected motor(s).
 
-option | desc | value | default | mandatory
+&nbsp; | desc | value | default | mandatory
 --- | --- | --- | --- | ---
--v | set 'goal_speed' register | an integer in the [0, 1023] range | n.a. | yes
+value | set the 'goal_speed' register | an integer in the [0, 1023] range | n.a. | yes
 
 Examples:
 
 - Set the rotation speed of all motors to 100 (slower):
 
     ```shell
-    poppy exec speed -v 100
+    poppy exec speed 100
     ```
 
 - Set the rotation speed of the motors m1 and m2 to 500 (quicker):
 
     ```shell
-    poppy exec speed -m m1 m2 -v 500
+    poppy exec speed 500 -m m1 m2
     ```
 
 #### rotate
 
+```shell
+poppy exec rotate <value> [-w]
+```
+
 This command rotates the target motor(s) by x degrees from the current position.
+
+&nbsp; | desc | value | default | mandatory
+--- | --- | --- | --- | ---
+value | the rotation value (in degree) | integer | n.a. | yes
 
 option | desc | value | default | mandatory
 --- | --- | --- | --- | ---
--v | the rotation by value | integer | n.a. | yes
 -w | wait until the rotation will finish | boolean | false | no
 
 Examples:
@@ -288,45 +304,56 @@ Examples:
 - Rotate the motors m1 and m2 by -30 degrees and wait until each motors will reach its new position:
 
     ```shell
-    cli exec rotate -m m1 m2 -v -30 -w
+    cli exec rotate -30 -m m1 m2 -w
     ```
 
 #### position
 
-This command sets the target position of the selected motor(s) _i.e._ it will move these motors to a given positions.
+```shell
+cli exec positon <value> [-w]
+```
+
+This command sets the target position of the selected motor(s) _i.e._ it will move motor(s) to a given position.
+
+&nbsp; | desc | value | default | mandatory
+--- | --- | --- | --- | ---
+value | the target position to reach (in degree)| integer | n.a. | yes
 
 option | desc | value | default | mandatory
 --- | --- | --- | --- | ---
--v | set the 'target_position' register| integer | n.a. | yes
 -w | wait until the motor(s) will reach this new positions  | boolean | false | no
 
 Examples:
 
-- Move all motors to the 0 degree position asynchrously _i.e._ all motors will reach this position independently:
+- Simultaneously move all motors to the position 0 degree:
 
     ```shell
-    poppy exec position -v 0
+    poppy exec position 0
     ```
 
-- Move all motors to the 0 degree position sequentially _i.e._ for each motor, a request to send this position will be send, and it will await before the end of this action before proceding it to the next motor.:
+- Sequentially move all motors to the position 0 degree:
 
     ```shell
-    poppy exec position -v 0 -w
+    poppy exec position 0 -w
     ```
 
-- Move the motors m1 and m2 to the 0 degree position and wait until each motors will reach its new position:
+- Sequentially move the motors m1 and m2 to the 0 degree position:
 
     ```shell
-    poppy exec position -m m1 m2 -v 90 -w
+    poppy exec position 90 -m m1 m2 -w
     ```
 
 #### led
 
+```shell
+poppy exec led [value]
+```
+
 This command sets the led color of the selected motor(s).
 
-option | desc | value | default | mandatory
+&nbsp; | desc | value | default | mandatory
 --- | --- | --- | --- | ---
--v | set the 'led' register| [off, red, green, blue, yellow, cyan, pink, white] | off | no
+value | set the 'led' register| off \| red \| green \| blue \| yellow \| cyan \| pink \| white | off | no
 
 Examples:
 
@@ -339,7 +366,7 @@ Examples:
 - Set the led color of motor 'm3' to 'green':
 
     ```shell
-    poppy exec led -m m3 -v green
+    poppy exec led green -m m3
     ```
 
 ### Configuring Poppy
@@ -360,7 +387,7 @@ For the CLI mode, such options are available as other ones and typing -h will di
 As example,
 
 ```shell
-cli exec rotate -m m1 m2 -v 30 --ip 'poppy1.local' -p 8081
+cli exec rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
 ```
 
 will send this rotate by 30 degrees order to a Poppy with an ip/hostname and rest api port respectively set to 'poppy1.local' and 8081.
