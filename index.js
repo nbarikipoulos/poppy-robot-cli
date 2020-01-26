@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018-2019 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 /**
  * This module is a simple wrapper of the poppy-robot-core module in order to:
@@ -18,7 +18,7 @@
  *
  * @module poppy-robot-cli
  * @typicalname P
- * @version 4.0.1
+ * @version 5.0.0
  * @see {@link https://github.com/nbarikipoulos/poppy-robot-core.git}
  */
 
