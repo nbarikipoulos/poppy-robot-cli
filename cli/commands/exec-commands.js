@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018-2019 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -96,11 +96,11 @@ const COMMANDS = [{
         'Switch all motors compliant state to \'false\' i.e. motors are addressable.'
       )
       .example(
-        '$0 exec compliant -v off',
+        '$0 exec compliant off',
         'Switch all motors compliant state to \'false\' i.e. motors are addressable.'
       )
       .example(
-        '$0 exec compliant -v on',
+        '$0 exec compliant on',
         'Switch all motors compliant state to \'true\' i.e. motors are not addressable.'
       )
   },
@@ -118,11 +118,11 @@ const COMMANDS = [{
 
     yargs
       .example(
-        '$0 exec speed -v 100',
+        '$0 exec speed 100',
         'Set the rotation speed of all motors to 100 (slower).'
       )
       .example(
-        '$0 exec speed -m m1 m2 -v 500 (quicker)',
+        '$0 exec speed 500 -m m1 m2 (quicker)',
         'Set the rotation speed of the motors m1 and m2 to 500 (quicker).'
       )
   },
@@ -139,7 +139,7 @@ const COMMANDS = [{
 
     yargs
       .example(
-        '$0 exec rotate -m m1 m2 -v -30 -w',
+        '$0 exec rotate -30 -m m1 m2 -w',
         'Rotate the motors m1 and m2 by -30 degrees and wait until each motors will reach its new position.'
       )
   },
@@ -156,19 +156,23 @@ const COMMANDS = [{
 
     yargs
       .example(
-        '$0 exec position -m m1 m2 -v 0 -w',
+        '$0 exec position 0 -m m1 m2 -w',
         'Move the motors m1 and m2 to the 0 degree position and wait until each motors will reach its new position.'
       )
   },
   handler: (argv) => exec('position', argv.motor, { position: argv.value, wait: argv.wait })
 }, {
-  name: 'led',
-  desc: 'Set the led of the selected motor(s)',
+  name: 'led [value]',
+  desc: 'Set the led color of the selected motor(s)',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
       EXEC_CMD_GROUP_LABEL,
-      ['motor', 'led']
+      ['motor']
     )
+
+    // Add the positional arg of this command
+    const desc = cliBuilderHelper.getArgDesc('led')
+    yargs.positional('value', desc)
 
     yargs
       .example(
@@ -176,7 +180,7 @@ const COMMANDS = [{
         'Turn off the led of all motors.'
       )
       .example(
-        '$0 exec -m m3 led -v green',
+        '$0 exec led green -m m3',
         'Set the led color of motor \'m3\' to \'green\'.'
       )
   },

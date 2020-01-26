@@ -99,24 +99,20 @@ module.exports = {
       describe: 'Wait until this command is finished.'
     }
   },
-  led: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      type: 'string',
-      default: 'off',
-      choices: [
-        'off',
-        'red',
-        'green',
-        'blue',
-        'yellow',
-        'cyan',
-        'pink',
-        'white'
-      ],
-      describe: 'The led color (or turn-off) value.'
-    }
+  led: { // positional
+    type: 'string',
+    default: 'off',
+    choices: [
+      'off',
+      'red',
+      'green',
+      'blue',
+      'yellow',
+      'cyan',
+      'pink',
+      'white'
+    ],
+    describe: 'The led color (or turn-off) value.'
   },
   ip: {
     key: 'i',
