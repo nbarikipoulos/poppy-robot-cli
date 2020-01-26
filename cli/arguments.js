@@ -63,14 +63,9 @@ module.exports = {
     describe: 'Set the rotation speed of the selected motor(s).' +
       ' Value must be in the [0,1023] range.'
   },
-  rotate: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      nargs: 1,
-      type: 'number',
-      describe: 'Rotate the selected motor(s) by x degrees.'
-    }
+  rotate: { // positional
+    type: 'number',
+    describe: 'Rotate the selected motor(s) by x degrees.'
   },
   position: {
     key: 'v',
