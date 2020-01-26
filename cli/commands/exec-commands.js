@@ -97,15 +97,15 @@ const COMMANDS = [{
       .strict()
       .example(
         '$0 exec compliant',
-        'Switch all motors compliant state to \'false\' i.e. motors are programmatically drivable.'
-      )
-      .example(
-        '$0 exec compliant off',
-        'Switch all motors compliant state to \'false\' i.e. motors are programmatically drivable.'
+        'Set all motors compliant state to \'true\' i.e. motors are handly drivable.'
       )
       .example(
         '$0 exec compliant on',
-        'Switch all motors compliant state to \'true\' i.e. motors are handly drivable.'
+        'Set all motors compliant state to \'true\' i.e. motors are handly drivable.'
+      )
+      .example(
+        '$0 exec compliant off',
+        'Set all motors compliant state to \'false\' i.e. motors are programmatically drivable.'
       )
   },
   handler: (argv) => exec('compliant', argv.motor, { compliant: argv.value })

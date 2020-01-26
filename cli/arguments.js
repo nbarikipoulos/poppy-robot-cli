@@ -52,7 +52,7 @@ module.exports = {
   },
   compliant: { // positional
     type: 'string',
-    default: 'off',
+    default: 'on',
     choices: [
       'on', // 'true' => handly drivable
       'off' // 'false' => programmatically drivable

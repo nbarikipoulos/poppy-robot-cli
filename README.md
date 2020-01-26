@@ -235,11 +235,11 @@ This command sets the compliant state of the selected motor(s).
 
 &nbsp; | desc | value | default | mandatory
 --- | --- | --- | --- | ---
-value| set the 'compliant' register | on \| off | off | no
+value| set the 'compliant' register | on \| off | on | no
 
 Examples:
 
-- Set all motors compliant state to 'false' _i.e._ motors are programmatically drivable:
+- Set all motors compliant state to 'true' _i.e._ motors are handly drivable:
 
     ```shell
     poppy exec compliant
@@ -248,13 +248,13 @@ Examples:
 - Same as previous example, but longer...:
 
     ```shell
-    poppy exec compliant off
+    poppy exec compliant on
     ```
 
-- Switch all motors to the 'rest' state _i.e._ motors are handly drivable by hand:
+- Set all motors compliant state to 'false' _i.e._ motors are programmatically drivable:
 
     ```shell
-    poppy exec compliant on
+    poppy exec compliant off
     ```
 
 #### speed
