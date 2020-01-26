@@ -110,15 +110,18 @@ const COMMANDS = [{
   },
   handler: (argv) => exec('compliant', argv.motor, { compliant: argv.value })
 }, {
-  name: 'speed',
+  name: 'speed <value>',
   desc: 'Set the rotation speed of the selected motor(s).\n' +
     'Value must be in the [0, 1023] range',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
       EXEC_CMD_GROUP_LABEL,
-      ['motor', 'speed'],
-      'speed'
+      ['motor']
     )
+
+    // Add the positional argument of this command
+    const desc = cliBuilderHelper.getArgDesc('speed')
+    yargs.positional('value', desc)
 
     yargs
       .example(
@@ -126,7 +129,7 @@ const COMMANDS = [{
         'Set the rotation speed of all motors to 100 (slower).'
       )
       .example(
-        '$0 exec speed 500 -m m1 m2 (quicker)',
+        '$0 exec speed 500 -m m1 m2',
         'Set the rotation speed of the motors m1 and m2 to 500 (quicker).'
       )
   },

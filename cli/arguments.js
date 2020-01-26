@@ -58,15 +58,10 @@ module.exports = {
       'off' // 'false' => programmatically drivable
     ]
   },
-  speed: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      nargs: 1,
-      type: 'number',
-      describe: 'Set the rotation speed of the selected motor(s).' +
-        ' Value must be in the [0,1023] range.'
-    }
+  speed: { // positional
+    type: 'number',
+    describe: 'Set the rotation speed of the selected motor(s).' +
+      ' Value must be in the [0,1023] range.'
   },
   rotate: {
     key: 'v',
