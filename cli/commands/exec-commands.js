@@ -81,27 +81,31 @@ async function exec (type, motors, options) {
 // ////////////////////////////////
 
 const COMMANDS = [{
-  name: 'compliant',
+  name: 'compliant [value]',
   desc: 'Set the compliant state of the selected motor(s)',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
       EXEC_CMD_GROUP_LABEL,
-      ['motor', 'compliant']
+      ['motor']
     )
+
+    // Add the positional argument of this command
+    const desc = cliBuilderHelper.getArgDesc('compliant')
+    yargs.positional('value', desc)
 
     yargs
       .strict()
       .example(
         '$0 exec compliant',
-        'Switch all motors compliant state to \'false\' i.e. motors are addressable.'
+        'Switch all motors compliant state to \'false\' i.e. motors are programmatically drivable.'
       )
       .example(
         '$0 exec compliant off',
-        'Switch all motors compliant state to \'false\' i.e. motors are addressable.'
+        'Switch all motors compliant state to \'false\' i.e. motors are programmatically drivable.'
       )
       .example(
         '$0 exec compliant on',
-        'Switch all motors compliant state to \'true\' i.e. motors are not addressable.'
+        'Switch all motors compliant state to \'true\' i.e. motors are handly drivable.'
       )
   },
   handler: (argv) => exec('compliant', argv.motor, { compliant: argv.value })
@@ -170,7 +174,7 @@ const COMMANDS = [{
       ['motor']
     )
 
-    // Add the positional arg of this command
+    // Add the positional argument of this command
     const desc = cliBuilderHelper.getArgDesc('led')
     yargs.positional('value', desc)
 

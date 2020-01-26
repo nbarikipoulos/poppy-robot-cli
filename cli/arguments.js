@@ -50,17 +50,13 @@ module.exports = {
       describe: 'Invert table presentation i.e. motors are displayed as row.'
     }
   },
-  compliant: {
-    key: 'v',
-    details: {
-      alias: 'value',
-      type: 'string',
-      default: 'off',
-      choices: [
-        'on', // 'true'
-        'off' // 'false' => motor is "addressable"
-      ]
-    }
+  compliant: { // positional
+    type: 'string',
+    default: 'off',
+    choices: [
+      'on', // 'true' => handly drivable
+      'off' // 'false' => programmatically drivable
+    ]
   },
   speed: {
     key: 'v',
