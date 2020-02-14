@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018-2019 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -47,11 +47,7 @@ const getPoppyInstance = _ => {
 // init CLI args,
 // initialize the POPPY_INSTANCE that will be used for any command and then
 // avoid to instantiate it twice.
-// In the case of the config command, this function does nothing.
-// Indeed, it is dedicated to check connection settings and then, in the case
-// of live discovering, intantiating a poppy does the job but returns an error.
-// as the aim of this command is to display a friendly report about
-// connection settings, skip it.
+// Note in the case of the config command, this function does nothing.
 const init = async _ => {
   if (
     !yargs.argv._.includes('config')
@@ -145,17 +141,21 @@ const getUserConfiguration = (get = 'all') => {
     for (const longKey of longKeys) {
       const desc = getArgDesc(longKey)
       const key = desc.key
-      // Ensure that values have been filled in cli
-      // yargs.argv properties are set to default values if not provided
-      if (
-        process.argv.includes(`-${key}`, 2) ||
-        process.argv.includes(`--${desc.details.alias}`, 2)
-      ) {
-        const value = yargs.argv[key]
+      
+      // Ensure that values have been passed by the cli
+      // (yargs.argv properties will be set to default values if not provided).
+      // Note yargs options has not been initialized yet.
+      const hasKey = process.argv.includes(`-${key}`, 2)
+      const hasAlias = process.argv.includes(`--${desc.details.alias}`, 2)
+
+      if (hasKey || hasAlias) {
+        const value = yargs.argv[ // 'raw cli'
+          hasKey ? key : desc.details.alias
+        ]
         if (value === getArgDesc(longKey).details.default) {
           delete connect[longKey]
         } else {
-          connect[longKey] = yargs.argv[key]
+          connect[longKey] = value
         }
       }
     }
