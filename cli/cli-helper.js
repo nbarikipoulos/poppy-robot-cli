@@ -141,7 +141,7 @@ const getUserConfiguration = (get = 'all') => {
     for (const longKey of longKeys) {
       const desc = getArgDesc(longKey)
       const key = desc.key
-      
+
       // Ensure that values have been passed by the cli
       // (yargs.argv properties will be set to default values if not provided).
       // Note yargs options has not been initialized yet.
