@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/*! Copyright (c) 2018-2019 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -10,7 +10,7 @@ const cliBuilderHelper = require('../cli/cli-helper')
 const init = cliBuilderHelper.init
 const prettify = require('../lib/utils').prettifyError
 
-const epilogue = 'Poppy CLI. (c)2018-2019 N. Barriquand. Released under the MIT license.\n' +
+const epilogue = 'Poppy CLI. (c)2018-2020 N. Barriquand. Released under the MIT license.\n' +
   'More details on http://github.com/nbarikipoulos/poppy-robot-cli'
 
 // ////////////////////////////////
