@@ -104,7 +104,7 @@ const handler = async (argv) => {
   //
 
   // Back to common/user connection settings
-  connect = config.connect
+  connect = config.connect || {}
 
   if (argv.M) {
     const isLive = !config.locator || config.locator === 'desc://live-discovering'
