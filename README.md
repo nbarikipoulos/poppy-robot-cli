@@ -46,8 +46,6 @@ It provides:
 
 - Next to these common flags, a poppy rc file feature that allows persisting of these connection parameters into a dedicated file.
 
-- At last, have a look at the ['known limitations/issues'](#known-limitationsissues) paragraph about zeroconf and use of 'poppy.local' as hostname.
-
 Enjoy, ;)
 
 ## Table of Contents
@@ -74,7 +72,6 @@ Enjoy, ;)
   * [Advanced use](#advanced-use)
 - [Common CLI Flags](#common-cli-flags)
 - [API](#api)
-- [Known Limitations/Issues](#known-limitationsissues)
 - [Credits](#credits)
 - [License](#license)
 
@@ -126,8 +123,8 @@ To verify that it has been successfully installed, type:
 ```shell
 npm list -g -depth=0
 ├── npm@6.13.4
-├── poppy-robot-cli@5.0.0
-└── poppy-robot-core@4.0.0
+├── poppy-robot-cli@5.0.2
+└── poppy-robot-core@4.1.0
 ```
 
 Then, simply type:
@@ -488,20 +485,7 @@ node myScript.js --ip 'poppy1.local' -p 8081
 
 ## API
 
-This module simply re-exports the [poppy-robot-core][core-link] module elements. See the dedicated section available [here][core-link-api] for more details.
-
-## Known Limitations/Issues
-
-Connection to the robot using 'poppy.local' as hostname _i.e._ using zeroconf service could implies huge lags and timeout.
-
-It acts as a 'hit-or-miss' behavior depending of your network configuration, computer OS, etc...
-
-
-A simple workaround is to use the ip of the robot or a hostname configured via a dns server.
-
-Then, in such case, users should:
-- Get the ip of the robot or configure a hostname in the dns server of their router/box,
-- Use it with the -i/--ip flag or persist it in a poppyrc file as explained [here](#configuring-poppy).
+This module re-exports the [poppy-robot-core][core-link] module elements. See this module [api][core-link-api] for further details.
 
 ## Credits
 
