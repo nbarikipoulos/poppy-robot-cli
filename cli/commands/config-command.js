@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018-2019 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -10,7 +10,9 @@ const colors = require('colors')
 
 const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
 const createDescriptor = require('poppy-robot-core').createDescriptor
-const promiseAll = require('poppy-robot-core/util/misc').promiseAll // arf...
+const promiseAll = require('poppy-robot-core/util/misc').promiseAll
+const lookUp = require('poppy-robot-core/util/misc').lookUp
+const DEFAULT_CONNECTION_SETTINGS = require('poppy-robot-core').DEFAULT_CONNECTION_SETTINGS
 
 const cliBuilderHelper = require('../cli-helper')
 
@@ -73,13 +75,13 @@ const handler = async (argv) => {
 
   const config = cliBuilderHelper.getUserConfiguration()
 
-  let connect = Object.assign({}, config.connect)
+  const connect = Object.assign({}, config.connect)
 
-  // Use a "low enough" value for these tests
-  // It seems poppy.local request could be (too) long.
-  // So long that common use of this module could lacks or not.
-  // Check about bonjour/zeroconf that seems to be responsible about it...
-  connect.timeout = 100
+  const inputIp = connect.ip ? connect.ip : DEFAULT_CONNECTION_SETTINGS.ip
+
+  // lookup hostname, if needed
+  const ip = await lookUp(connect.ip)
+  connect.ip = ip
 
   let req = new PoppyRequestHandler(connect)
 
@@ -95,16 +97,13 @@ const handler = async (argv) => {
     fulfilled(req.client('snap').get('/motors/alias'))
   ]))
 
-  console.log(`>> Connection to Poppy (hostname/ip: ${req.getSettings().ip})`)
+  console.log(`>> Connection to Poppy (hostname/ip: ${inputIp})`)
   console.log(`  Http server (port ${req.getSettings().httpPort}):\t ${_display(http)}`)
   console.log(`  Snap server (port ${req.getSettings().snapPort}):\t ${_display(snap)}`)
 
   //
   // display robot structure
   //
-
-  // Back to common/user connection settings
-  connect = config.connect || {}
 
   if (argv.M) {
     const isLive = !config.locator || config.locator === 'desc://live-discovering'
