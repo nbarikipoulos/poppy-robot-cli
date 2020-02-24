@@ -46,6 +46,8 @@ It provides:
 
 - Next to these common flags, a poppy rc file feature that allows persisting of these connection parameters into a dedicated file.
 
+- At last, have a look at the ['known limitations/issues'](#known-limitationsissues) paragraph about zeroconf and use of 'poppy.local' as hostname.
+
 Enjoy, ;)
 
 ## Table of Contents
@@ -490,11 +492,16 @@ This module simply re-exports the [poppy-robot-core][core-link] module elements.
 
 ## Known Limitations/Issues
 
-Nodejs could not use the zeroconf service natively _i.e_ is unable to bind to the robot using 'poppy.local' as hostname.
+Connection to the robot using 'poppy.local' as hostname _i.e._ using zeroconf service could implies huge lags and timeout.
 
-Then, users must:
-- Get the robot ip or configure a hostname in the dns server of their router/box,
-- Use it with the -i/--ip flag or to persist it in a poppyrc file as explained [here](#configuring-poppy).
+It acts as a 'hit-or-miss' behavior depending of your network configuration, computer OS, etc...
+
+
+A simple workaround is to use the ip of the robot or a hostname configured via a dns server.
+
+Then, in such case, users should:
+- Get the ip of the robot or configure a hostname in the dns server of their router/box,
+- Use it with the -i/--ip flag or persist it in a poppyrc file as explained [here](#configuring-poppy).
 
 ## Credits
 
