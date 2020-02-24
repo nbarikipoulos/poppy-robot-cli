@@ -2,7 +2,8 @@
 
 'use strict'
 
-// FIXME change to json?
+const DEFAULT_CONNECTION_SETTINGS = require('poppy-robot-core').DEFAULT_CONNECTION_SETTINGS
+
 module.exports = {
   motor: {
     key: 'm',
@@ -101,7 +102,7 @@ module.exports = {
       alias: 'ip',
       nargs: 1,
       type: 'string',
-      default: 'poppy.local',
+      default: DEFAULT_CONNECTION_SETTINGS.ip,
       describe: 'Set the Poppy IP/hostname.'
     }
   },
@@ -111,7 +112,7 @@ module.exports = {
       alias: 'http-port',
       type: 'number',
       nargs: 1,
-      default: 8080,
+      default: DEFAULT_CONNECTION_SETTINGS.httpPort,
       describe: 'Set the Poppy http server port.'
     }
   },
@@ -121,7 +122,7 @@ module.exports = {
       alias: 'snap-port',
       type: 'number',
       nargs: 1,
-      default: 6969,
+      default: DEFAULT_CONNECTION_SETTINGS.snapPort,
       describe: 'Set the Poppy snap server port.'
     }
   },

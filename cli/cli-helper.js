@@ -13,6 +13,8 @@ const prettify = require('../lib/utils').prettifyError
 
 const ARGUMENT_DESC = require('./arguments')
 
+const DEFAULT_CONNECTION_SETTINGS = require('poppy-robot-core').DEFAULT_CONNECTION_SETTINGS
+
 /** Poppy instance.
  * Initialized once by init() call, and as it must be called first
  * */
@@ -21,11 +23,10 @@ let POPPY_INSTANCE
 /** Accessor on Poppy Instance */
 const getPoppyInstance = _ => {
   if (!POPPY_INSTANCE) {
-    const connect = Object.assign({ // arf...
-      ip: 'poppy.local',
-      httpPort: 8080,
-      snapPort: 6969
-    }, getUserConfiguration('connect'))
+    const connect = Object.assign({},
+      DEFAULT_CONNECTION_SETTINGS,
+      getUserConfiguration('connect')
+    )
 
     const msg = prettify(
       'error',
