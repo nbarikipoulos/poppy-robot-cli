@@ -90,11 +90,11 @@ const handler = async (argv) => {
   // A first dummy request is mandatory
   // The first request once the robot is turned on always terminates in timeout
   // see https://forum.poppy-project.org/t/api-rest-poppy-ergo-jr/3516/16
-  await req.client().get('/motor/alias/list.json').catch(e => { /* Do nothing */ })
+  await req.perform('/motor/alias/list.json').catch(e => { /* Do nothing */ })
 
   const [http, snap] = (await Promise.all([
-    fulfilled(req.client().get('/motor/alias/list.json')),
-    fulfilled(req.client('snap').get('/motors/alias'))
+    fulfilled(req.perform('/motor/alias/list.json')),
+    fulfilled(req.perform('/motors/alias', { client: 'snap' }))
   ]))
 
   console.log(`>> Connection to Poppy (hostname/ip: ${inputIp})`)
@@ -119,7 +119,7 @@ const handler = async (argv) => {
 
       res = await promiseAll(motorIds, async (name) => {
         const res = await fulfilled(
-          req.client().get(`/motor/${name}/register/list.json`)
+          req.perform(`/motor/${name}/register/list.json`)
         )
         return _display(res)
       })
