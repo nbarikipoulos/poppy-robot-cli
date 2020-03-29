@@ -69,7 +69,7 @@ async function exec (type, motors, options) {
   //
   // ... and execute it
   //
-  poppy.exec(script)
+  await poppy.exec(script)
 }
 
 // ////////////////////////////////
