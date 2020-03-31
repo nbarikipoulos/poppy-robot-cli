@@ -34,6 +34,7 @@ init()
 // ////////////////////////////////
 
 const help = _ => yargs
+  .scriptName('poppy')
   .usage('Usage: $0 <command> --help for detailed help')
   .demandCommand(1, 'Use at least one command')
   .epilogue(epilogue)
