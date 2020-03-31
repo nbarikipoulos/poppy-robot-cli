@@ -124,8 +124,8 @@ To verify that it has been successfully installed, type:
 ```shell
 npm list -g -depth=0
 ├── npm@6.13.4
-├── poppy-robot-cli@5.0.3
-└── poppy-robot-core@5.0.0
+├── poppy-robot-cli@5.1.0
+└── poppy-robot-core@6.0.0
 ```
 
 Then, simply type:
