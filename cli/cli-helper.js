@@ -150,7 +150,7 @@ const getUserConfiguration = (get = 'all') => {
       const hasAlias = process.argv.includes(`--${desc.details.alias}`, 2)
 
       if (hasKey || hasAlias) {
-        const value = yargs.argv[ // 'raw cli'
+        const value = yargs.argv[// 'raw cli'
           hasKey ? key : desc.details.alias
         ]
         if (value === getArgDesc(longKey).details.default) {
