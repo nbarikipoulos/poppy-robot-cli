@@ -1,6 +1,6 @@
 {
   "name": "poppy-robot-cli",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "description": "Append CLI features and tooling to poppy-robot-core module.",
   "bin": {
     "poppy": "./bin/cli.js"
