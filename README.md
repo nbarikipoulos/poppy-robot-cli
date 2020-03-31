@@ -153,11 +153,12 @@ Furthermore, Note for particular/advanced cases, users can configure some Poppy 
 
 ## CLI Mode
 
-The cli commands are divided into 3 parts:
+The cli commands are divided into 4 parts:
 
 - A querying module to get information about the motors,
 - A command module which allows sending simple commands to the motors,
-- At last, a robot configuration module.
+- A poppy rebooting command,
+- At last, a module dedicated to manage poppy configuration.
 
 ### Querying
 
@@ -367,6 +368,14 @@ Examples:
     ```shell
     poppy exec led green -m m3
     ```
+
+### Rebooting Poppy
+
+A command is available in order to reboot the robot.
+
+ ```shell
+    poppy reboot
+```
 
 ### Configuring Poppy
 

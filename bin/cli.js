@@ -64,6 +64,9 @@ const buildCLI = _ => {
 
   // Add Configuration/Discovering robot commands
   require('../cli/commands/config-command')()
+
+  // Add Reset robot command
+  require('../cli/commands/reboot-command')()
 }
 
 // ////////////////////////////////
