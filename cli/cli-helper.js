@@ -51,7 +51,8 @@ const getPoppyInstance = _ => {
 // Note in the case of the config command, this function does nothing.
 const init = async _ => {
   if (
-    !yargs.argv._.includes('config')
+    !yargs.argv._.includes('config') &&
+    !yargs.argv._.includes('reboot')
   ) {
     try {
       const config = getUserConfiguration()

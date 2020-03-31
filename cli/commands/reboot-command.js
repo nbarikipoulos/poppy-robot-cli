@@ -40,9 +40,9 @@ const handler = async (argv) => {
   // First, get hostname/ip of the robot
   //
 
-  const config = cliBuilderHelper.getUserConfiguration()
-  const connect = Object.assign({}, config.connect)
+  const connect = cliBuilderHelper.getUserConfiguration('connect')
   const inputIp = connect.ip ? connect.ip : DEFAULT_CONNECTION_SETTINGS.ip
+
   // lookup hostname, if needed
   const ip = await lookUp(connect.ip)
   connect.ip = ip
