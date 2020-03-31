@@ -65,6 +65,7 @@ Enjoy, ;)
     + [rotate](#rotate)
     + [position](#position)
     + [led](#led)
+  * [Rebooting Poppy](#rebooting-poppy)
   * [Configuring Poppy](#configuring-poppy)
     + [Connection Settings](#connection-settings)
   * [Poppy "Run Commands" File](#poppy-run-commands-file)
@@ -371,7 +372,7 @@ Examples:
 
 ### Rebooting Poppy
 
-A command is available in order to reboot the robot.
+The next command perform a rebooting the robot.
 
  ```shell
     poppy reboot
