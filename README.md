@@ -107,7 +107,7 @@ the poppy-robot-cli is intented to be used under a node.js 'environment' on your
 - Downloading it from its [official site](https://nodejs.org/en/download/),
 - Or using a node version manager such as nvm (macos/linux version or Windows one are respectively available [here](https://github.com/creationix/nvm) and [there](https://github.com/coreybutler/nvm-windows)).
 
-Note a node.js release equal or higher to 8.0.0 is required.
+Note a node.js release equal or higher to v12.0.0 is required.
 
 ### Installing the poppy-robot-cli module
 
