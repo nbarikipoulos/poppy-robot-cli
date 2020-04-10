@@ -1,6 +1,6 @@
 {
   "name": "poppy-robot-cli",
-  "version": "6.0.0-beta.0",
+  "version": "6.0.0-beta.1",
   "description": "Append CLI features and tooling to poppy-robot-core module.",
   "bin": {
     "poppy": "./bin/cli.js"
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "cli-table": "^0.3.1",
-    "poppy-robot-core": "^7.0.0-beta.2",
+    "poppy-robot-core": "^7.0.0-beta.3",
     "treeify": "^1.1.0",
     "yargs": "^15.1.0"
   },
