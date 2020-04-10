@@ -11,8 +11,7 @@
  * option | desc | value | default
  * --- | --- | --- | ---
  * -i/--ip | Set the Poppy IP/hostname | string | poppy.local
- * -p/--http-port | Set the http server port on Poppy | integer | 8080
- * -P/--snap-port | Set the snap server port on Poppy | integer | 6969
+ * -p/--port | Set the port to the REST API served by the http server on Poppy | integer | 8080
  *
  * Note it re-exports all the exported features of interest of the poppy-robot-core module.
  *

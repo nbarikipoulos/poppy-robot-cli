@@ -106,14 +106,14 @@ module.exports = {
       describe: 'Set the Poppy IP/hostname.'
     }
   },
-  httpPort: {
+  port: {
     key: 'p',
     details: {
-      alias: 'http-port',
+      alias: 'port',
       type: 'number',
       nargs: 1,
-      default: DEFAULT_CONNECTION_SETTINGS.httpPort,
-      describe: 'Set the Poppy http server port.'
+      default: DEFAULT_CONNECTION_SETTINGS.port,
+      describe: 'Set the port to the REST API served by the http server.'
     }
   },
   snapPort: {

@@ -32,8 +32,7 @@ const getPoppyInstance = _ => {
       'error',
       'Unable to connect to Poppy: use the config command to check connection to Poppy',
       `hostname/ip: ${connect.ip}`,
-      `http port: ${connect.httpPort}`,
-      `snap port: ${connect.snapPort}`
+      `port: ${connect.port}`
     )
     throw new Error(msg)
   }
@@ -112,7 +111,7 @@ const getUserConfiguration = (get = 'all') => {
   //    locator: descriptor locator value,
   //    connect: {
   //      ip: hostname/ip value,
-  //      httpPort: pypot http server port,
+  //      port: port for the REST API served by the pypot http server,
   //      snapPort: snap server port
   //    }
   // }
@@ -137,7 +136,7 @@ const getUserConfiguration = (get = 'all') => {
   // from the cli (connection settings only), if needed.
   //
   if (get === 'all' || get === 'connect') {
-    const longKeys = ['ip', 'httpPort', 'snapPort'] // Same as connect object properties
+    const longKeys = ['ip', 'port', 'snapPort'] // Same as connect object properties
     const connect = config.connect
 
     for (const longKey of longKeys) {
@@ -199,7 +198,7 @@ module.exports = {
   addOptions,
   addPoppyConnectionOptions: _ => addOptions(
     'Poppy Connection Settings:',
-    ['ip', 'httpPort', 'snapPort']
+    ['ip', 'port']
   ),
   getUserConfiguration,
   init

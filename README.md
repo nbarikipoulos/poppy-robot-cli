@@ -388,8 +388,7 @@ In order to configure the connection to the Poppy robot, the poppy-robot-cli aut
 option | desc | value | default
 --- | --- | --- | --- |
 -i/--ip | Set the Poppy IP/hostname | string | poppy.local
--p/--http-port | Set the http server port on Poppy | integer | 8080
--P/--snap-port | Set the snap server port on Poppy | integer | 6969
+-p/--port | Set the http server port on Poppy | integer | 8080
 
 For the CLI mode, such options are available as other ones and typing -h will display them in help.
 
@@ -480,8 +479,7 @@ The poppy-robot-cli module appends a set of common flags to both CLI mode or scr
 option | desc | value | default
 --- | --- | --- | --- |
 -i/--ip | Set the Poppy IP/hostname | string | poppy.local
--p/--http-port | Set the http server port on Poppy | integer | 8080
--P/--snap-port | Set the snap server port on Poppy | integer | 6969
+-p/--port | Set the http server port on Poppy | integer | 8080
 -h/--help| Display help | n.a. | n.a.
 
 _n.b._: The snap port is only used to set the led color on dynamixel xl-320 due to an

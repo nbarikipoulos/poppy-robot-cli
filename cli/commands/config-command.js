@@ -92,13 +92,13 @@ const handler = async (argv) => {
   // see https://forum.poppy-project.org/t/api-rest-poppy-ergo-jr/3516/16
   await req.perform('/motor/alias/list.json').catch(e => { /* Do nothing */ })
 
-  const [http, snap] = (await Promise.all([
+  const [port, snap] = (await Promise.all([
     fulfilled(req.perform('/motor/alias/list.json')),
     fulfilled(req.perform('/motors/alias', { client: 'snap' }))
   ]))
 
   console.log(`>> Connection to Poppy (hostname/ip: ${inputIp})`)
-  console.log(`  Http server (port ${req.getSettings().httpPort}):\t ${_display(http)}`)
+  console.log(`  REST API: (port ${req.getSettings().port}):\t ${_display(port)}`)
   console.log(`  Snap server (port ${req.getSettings().snapPort}):\t ${_display(snap)}`)
 
   //
