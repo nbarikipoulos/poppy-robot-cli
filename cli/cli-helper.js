@@ -112,7 +112,6 @@ const getUserConfiguration = (get = 'all') => {
   //    connect: {
   //      ip: hostname/ip value,
   //      port: port for the REST API served by the pypot http server,
-  //      snapPort: snap server port
   //    }
   // }
   //
@@ -136,7 +135,7 @@ const getUserConfiguration = (get = 'all') => {
   // from the cli (connection settings only), if needed.
   //
   if (get === 'all' || get === 'connect') {
-    const longKeys = ['ip', 'port', 'snapPort'] // Same as connect object properties
+    const longKeys = ['ip', 'port'] // Same as connect object properties
     const connect = config.connect
 
     for (const longKey of longKeys) {

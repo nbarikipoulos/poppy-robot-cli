@@ -116,16 +116,6 @@ module.exports = {
       describe: 'Set the port to the REST API served by the http server.'
     }
   },
-  snapPort: {
-    key: 'P',
-    details: {
-      alias: 'snap-port',
-      type: 'number',
-      nargs: 1,
-      default: DEFAULT_CONNECTION_SETTINGS.snapPort,
-      describe: 'Set the Poppy snap server port.'
-    }
-  },
   saveConfig: {
     key: 's',
     details: {

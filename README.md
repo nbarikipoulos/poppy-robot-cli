@@ -482,9 +482,6 @@ option | desc | value | default
 -p/--port | Set the http server port on Poppy | integer | 8080
 -h/--help| Display help | n.a. | n.a.
 
-_n.b._: The snap port is only used to set the led color on dynamixel xl-320 due to an
-issue in the pypot library.
-
 Then using this module instead of the poppy-robot-core one, users can type:
 
 ```shell

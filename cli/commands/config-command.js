@@ -70,7 +70,7 @@ module.exports = _ => yargs.command(
 
 const handler = async (argv) => {
   //
-  // Check connection (http and snap server)
+  // Check connection
   //
 
   const config = cliBuilderHelper.getUserConfiguration()
@@ -92,14 +92,10 @@ const handler = async (argv) => {
   // see https://forum.poppy-project.org/t/api-rest-poppy-ergo-jr/3516/16
   await req.perform('/motor/alias/list.json').catch(e => { /* Do nothing */ })
 
-  const [port, snap] = (await Promise.all([
-    fulfilled(req.perform('/motor/alias/list.json')),
-    fulfilled(req.perform('/motors/alias', { client: 'snap' }))
-  ]))
+  const port = await fulfilled(req.perform('/motor/alias/list.json'))
 
   console.log(`>> Connection to Poppy (hostname/ip: ${inputIp})`)
   console.log(`  REST API: (port ${req.getSettings().port}):\t ${_display(port)}`)
-  console.log(`  Snap server (port ${req.getSettings().snapPort}):\t ${_display(snap)}`)
 
   //
   // display robot structure
