@@ -95,7 +95,7 @@ const handler = async (argv) => {
   const port = await fulfilled(req.perform('/motor/alias/list.json'))
 
   console.log(`>> Connection to Poppy (hostname/ip: ${inputIp})`)
-  console.log(`  REST API: (port ${req.getSettings().port}):\t ${_display(port)}`)
+  console.log(`  REST API (port ${req.getSettings().port}):\t ${_display(port)}`)
 
   //
   // display robot structure
