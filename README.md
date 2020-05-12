@@ -14,7 +14,7 @@ It provides:
     As example:
 
     ```shell
-    poppy exec rotate 30 -m m1 m2
+    poppy rotate 30 -m m1 m2
     ```
 
     will rotate by 30 degrees the motors m1 and m2.
@@ -34,7 +34,7 @@ It provides:
     As example:
 
     ```shell
-    poppy exec rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
+    poppy rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
     ```
 
     will address this rotate command to a Poppy with ip/hostname and port of its REST api set to respectively
@@ -61,6 +61,7 @@ Enjoy, ;)
   * [Querying](#querying)
   * [Executing Single Command](#executing-single-command)
     + [compliant](#compliant)
+    + [stiff](#stiff)
     + [speed](#speed)
     + [rotate](#rotate)
     + [position](#position)
@@ -194,18 +195,19 @@ poppy query -m m2 m3 m4 m5 -r present_position goal_position -I
 Next group of cli commands allows executing a single command to targeted motors. It groups a bunch of commands whose helps are accessible through this command:
 
 ```shell
-poppy exec <command> -h
+poppy <command> -h
 ```
 
 where the &lt;command&gt; are listed in the table below:
 
 name | description
 --- | ---
-[compliant](#compliant) | modify the 'compliant' state of motor(s)
-[speed](#speed) | set the speed of target motor(s)
-[rotate](#rotate) | rotate the selected motor(s) by x degrees
-[position](#position) | move the selected motor(s) to a given position.
-[led](#led) | set the led color of selected motor(s)
+[compliant](#compliant) | Set the state of motor(s) to 'compliant' _i.e._ make them handly drivable
+[stiff](#compliant) | Set the state of motor(s) to 'stiff' _i.e._ make them programmatically drivable
+[speed](#speed) | Set the speed of target motor(s)
+[rotate](#rotate) | Rotate the selected motor(s) by x degrees
+[position](#position) | Move the selected motor(s) to a given position.
+[led](#led) | Set the led color of selected motor(s)
 
 Note **all these commands have a common optional flag '-m' in order to select the target motors**.
 **If not set, a command will be applied to all motors** ('m1' to 'm6 for the Poppy Ergo Jr.)
@@ -213,13 +215,13 @@ Note **all these commands have a common optional flag '-m' in order to select th
 As examples:
 
 ```shell
-poppy exec led green
+poppy led green
 ```
 
 will set the led color to green of all motors.
 
 ```shell
-poppy exec led blue -m m1 m2
+poppy led blue -m m1 m2
 ````
 
 will set the led color of motor m1 and m2 to blue.
@@ -229,39 +231,49 @@ Next paragraphs will detail all the available execution commands and their speci
 #### compliant
 
 ```shell
-poppy exec compliant [value]
+poppy compliant
 ```
 
-This command sets the compliant state of the selected motor(s).
-
-&nbsp; | desc | value | default | mandatory
---- | --- | --- | --- | ---
-value| set the 'compliant' register | on \| off | on | no
+This command sets the state of the selected motor(s) to 'compliant' _i.e._ make them handly drivable.
 
 Examples:
 
-- Set all motors compliant state to 'true' _i.e._ motors are handly drivable:
+- Set state of all motors to 'compliant':
 
     ```shell
-    poppy exec compliant
+    poppy compliant
+    ```
+- Set state of motors m1 and m2 to 'compliant':
+
+    ```shell
+    poppy compliant -m m1 m2
     ```
 
-- Same as previous example, but longer...:
+#### stiff
+
+```shell
+poppy stiff
+```
+
+This command sets the state of the selected motor(s) to 'stiff' _i.e._ make them programmatically drivable.
+
+Examples:
+
+- Set state of all motors to 'stiff':
 
     ```shell
-    poppy exec compliant on
+    poppy stiff
     ```
-
-- Set all motors compliant state to 'false' _i.e._ motors are programmatically drivable:
+- Set state of motors m1 and m2 to 'stiff':
 
     ```shell
-    poppy exec compliant off
+    poppy stiff -m m1 m2
     ```
 
 #### speed
 
 ```shell
-poppy exec speed <value>
+poppy speed <value>
 ```
 
 This command sets the the rotation speed of the selected motor(s).
@@ -275,19 +287,19 @@ Examples:
 - Set the rotation speed of all motors to 100 (slower):
 
     ```shell
-    poppy exec speed 100
+    poppy speed 100
     ```
 
 - Set the rotation speed of the motors m1 and m2 to 500 (quicker):
 
     ```shell
-    poppy exec speed 500 -m m1 m2
+    poppy speed 500 -m m1 m2
     ```
 
 #### rotate
 
 ```shell
-poppy exec rotate <value> [-w]
+poppy rotate <value> [-w]
 ```
 
 This command rotates the target motor(s) by x degrees from the current position.
@@ -305,13 +317,13 @@ Examples:
 - Rotate the motors m1 and m2 by -30 degrees and wait until each motors will reach its new position:
 
     ```shell
-    cli exec rotate -30 -m m1 m2 -w
+    cli rotate -30 -m m1 m2 -w
     ```
 
 #### position
 
 ```shell
-cli exec positon <value> [-w]
+cli positon <value> [-w]
 ```
 
 This command sets the target position of the selected motor(s) _i.e._ it will move motor(s) to a given position.
@@ -329,25 +341,25 @@ Examples:
 - Simultaneously move all motors to the position 0 degree:
 
     ```shell
-    poppy exec position 0
+    poppy position 0
     ```
 
 - Sequentially move all motors to the position 0 degree:
 
     ```shell
-    poppy exec position 0 -w
+    poppy position 0 -w
     ```
 
 - Sequentially move the motors m1 and m2 to the 0 degree position:
 
     ```shell
-    poppy exec position 90 -m m1 m2 -w
+    poppy position 90 -m m1 m2 -w
     ```
 
 #### led
 
 ```shell
-poppy exec led [value]
+poppy led [value]
 ```
 
 This command sets the led color of the selected motor(s).
@@ -361,13 +373,13 @@ Examples:
 - Turn off the led of all motors:
 
     ```shell
-    poppy exec led
+    poppy led
     ```
 
 - Set the led color of motor 'm3' to 'green':
 
     ```shell
-    poppy exec led green -m m3
+    poppy led green -m m3
     ```
 
 ### Rebooting Poppy
@@ -395,7 +407,7 @@ For the CLI mode, such options are available as other ones and typing -h will di
 As example,
 
 ```shell
-cli exec rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
+cli rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
 ```
 
 will send this rotate by 30 degrees order to a Poppy with an ip/hostname and rest api port respectively set to 'poppy1.local' and 8081.
