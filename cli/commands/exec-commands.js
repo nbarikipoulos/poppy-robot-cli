@@ -16,22 +16,16 @@ const EXEC_CMD_GROUP_LABEL = 'Command Options:'
 // ////////////////////////////////
 // ////////////////////////////////
 
-module.exports = _ => yargs.command(
-  'exec',
-  'Execute command on Poppy. Type $0 exec <command> -h for help on each command.',
-  (yargs) => {
-    for (const command of COMMANDS) {
-      yargs.command(
-        command.cmd,
-        command.desc,
-        command.builder,
-        command.handler
-      )
-    }
-
-    yargs.demandCommand(1, 'Use at least one command')
+module.exports = _ => {
+  for (const command of COMMANDS) {
+    yargs.command(
+      command.cmd,
+      command.desc,
+      command.builder,
+      command.handler
+    )
   }
-)
+}
 
 // ////////////////////////////////
 // ////////////////////////////////
