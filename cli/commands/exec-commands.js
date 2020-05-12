@@ -77,34 +77,47 @@ async function exec (type, motors, options) {
 // ////////////////////////////////
 
 const COMMANDS = [{
-  cmd: 'compliant [value]',
-  desc: 'Set the compliant state of the selected motor(s)',
+  cmd: 'compliant',
+  desc: 'Set state of selected motor(s) to compliant (i.e. handly drivable).',
   builder: (yargs) => {
     cliBuilderHelper.addOptions(
       EXEC_CMD_GROUP_LABEL,
       ['motor']
     )
 
-    // Add the positional argument of this command
-    const desc = cliBuilderHelper.getArgDesc('compliant')
-    yargs.positional('value', desc)
-
     yargs
       .strict()
       .example(
         '$0 exec compliant',
-        'Set all motors compliant state to \'true\' i.e. motors are handly drivable.'
+        'Set state of all motors to compliant.'
       )
       .example(
-        '$0 exec compliant on',
-        'Set all motors compliant state to \'true\' i.e. motors are handly drivable.'
-      )
-      .example(
-        '$0 exec compliant off',
-        'Set all motors compliant state to \'false\' i.e. motors are programmatically drivable.'
+        '$0 exec compliant -m m4 m6',
+        'Only set state of motors m4 and m6 to compliant.'
       )
   },
-  handler: (argv) => exec('compliant', argv.motor, { compliant: argv.value })
+  handler: (argv) => exec('compliant', argv.motor, { compliant: true })
+}, {
+  cmd: 'stiff',
+  desc: 'Set state of selected motor(s) to stiff (i.e. programmatically drivable).',
+  builder: (yargs) => {
+    cliBuilderHelper.addOptions(
+      EXEC_CMD_GROUP_LABEL,
+      ['motor']
+    )
+
+    yargs
+      .strict()
+      .example(
+        '$0 exec stiff',
+        'Set state of all motors to stiff.'
+      )
+      .example(
+        '$0 exec compliant -m m4 m6',
+        'Only set state of motors m4 and m6 to stiff.'
+      )
+  },
+  handler: (argv) => exec('compliant', argv.motor, { compliant: false })
 }, {
   cmd: 'speed <value>',
   desc: 'Set the rotation speed of the selected motor(s).\n' +
