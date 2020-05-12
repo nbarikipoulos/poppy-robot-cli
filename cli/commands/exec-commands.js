@@ -82,11 +82,11 @@ const COMMANDS = [{
     yargs
       .strict()
       .example(
-        '$0 exec compliant',
+        '$0 compliant',
         'Set state of all motors to compliant.'
       )
       .example(
-        '$0 exec compliant -m m4 m6',
+        '$0 compliant -m m4 m6',
         'Only set state of motors m4 and m6 to compliant.'
       )
   },
@@ -103,11 +103,11 @@ const COMMANDS = [{
     yargs
       .strict()
       .example(
-        '$0 exec stiff',
+        '$0 stiff',
         'Set state of all motors to stiff.'
       )
       .example(
-        '$0 exec compliant -m m4 m6',
+        '$0 compliant -m m4 m6',
         'Only set state of motors m4 and m6 to stiff.'
       )
   },
@@ -128,11 +128,11 @@ const COMMANDS = [{
 
     yargs
       .example(
-        '$0 exec speed 100',
+        '$0 speed 100',
         'Set the rotation speed of all motors to 100 (slower).'
       )
       .example(
-        '$0 exec speed 500 -m m1 m2',
+        '$0 speed 500 -m m1 m2',
         'Set the rotation speed of the motors m1 and m2 to 500 (quicker).'
       )
   },
@@ -152,7 +152,7 @@ const COMMANDS = [{
 
     yargs
       .example(
-        '$0 exec rotate -30 -m m1 m2 -w',
+        '$0 rotate -30 -m m1 m2 -w',
         'Rotate the motors m1 and m2 by -30 degrees and wait until each motors will reach its new position.'
       )
   },
@@ -172,7 +172,7 @@ const COMMANDS = [{
 
     yargs
       .example(
-        '$0 exec position 0 -m m1 m2 -w',
+        '$0 position 0 -m m1 m2 -w',
         'Move the motors m1 and m2 to the 0 degree position and wait until each motors will reach its new position.'
       )
   },
@@ -192,11 +192,11 @@ const COMMANDS = [{
 
     yargs
       .example(
-        '$0 exec led',
+        '$0 led',
         'Turn off the led of all motors.'
       )
       .example(
-        '$0 exec led green -m m3',
+        '$0 led green -m m3',
         'Set the led color of motor \'m3\' to \'green\'.'
       )
   },
