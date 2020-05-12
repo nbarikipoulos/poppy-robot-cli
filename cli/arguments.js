@@ -51,14 +51,6 @@ module.exports = {
       describe: 'Invert table presentation i.e. motors are displayed as row.'
     }
   },
-  compliant: { // positional
-    type: 'string',
-    default: 'on',
-    choices: [
-      'on', // 'true' => handly drivable
-      'off' // 'false' => programmatically drivable
-    ]
-  },
   speed: { // positional
     type: 'number',
     describe: 'Set the rotation speed of the selected motor(s).' +
