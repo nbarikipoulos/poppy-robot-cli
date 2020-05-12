@@ -39,16 +39,7 @@ module.exports = _ => {
 // Execute simple command
 // ////////////////////////////////
 
-async function exec (type, motors, options) {
-  // FIXME ugly hack for compliant state argument
-  const values = Object.values(options).map(val => {
-    if (type === 'compliant') { // arf...
-      if (val === 'on') return true
-      if (val === 'off') return false
-    }
-    return val
-  })
-
+async function exec (type, motors, options = {}) {
   // Get already instantiaed poppy object a Poppy object
   const poppy = cliBuilderHelper.getPoppyInstance()
   //
@@ -58,7 +49,7 @@ async function exec (type, motors, options) {
   const script = new Script()
     .select(...motors)
 
-  script[type](...values)
+  script[type](...Object.values(options))
 
   //
   // ... and execute it
@@ -90,7 +81,7 @@ const COMMANDS = [{
         'Only set state of motors m4 and m6 to compliant.'
       )
   },
-  handler: (argv) => exec('compliant', argv.motor, { compliant: true })
+  handler: (argv) => exec('compliant', argv.motor)
 }, {
   cmd: 'stiff',
   desc: 'Set state of selected motor(s) to stiff (i.e. programmatically drivable).',
@@ -111,7 +102,7 @@ const COMMANDS = [{
         'Only set state of motors m4 and m6 to stiff.'
       )
   },
-  handler: (argv) => exec('compliant', argv.motor, { compliant: false })
+  handler: (argv) => exec('stiff', argv.motor)
 }, {
   cmd: 'speed <value>',
   desc: 'Set the rotation speed of the selected motor(s).\n' +
