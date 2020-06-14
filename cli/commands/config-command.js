@@ -129,7 +129,10 @@ const handler = async (argv) => {
 
     descriptor.aliases.forEach(alias => {
       structure[alias.name] = alias.motors.reduce(
-        (acc, elt, i) => { acc[elt] = res[i]; return acc },
+        (acc, elt, i) => {
+          acc[elt] = `[${descriptor.motors[i].model}] ${res[i]}`
+          return acc
+        },
         {}
       )
     })
