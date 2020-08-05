@@ -32,6 +32,7 @@
     "markdown-toc": "^1.2.0",
     "standard": "*"
   },
+  "files": ["/lib", "/cli"],
   "repository": {
     "type": "git",
     "url": "https://github.com/nbarikipoulos/poppy-robot-cli.git"
