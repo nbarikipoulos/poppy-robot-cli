@@ -125,5 +125,14 @@ module.exports = {
       default: false,
       describe: 'Display the robot structure (aliases and motors) and check connection to each motors.'
     }
+  },
+  motor_details: {
+    key: 'd',
+    details: {
+      alias: 'details',
+      type: 'boolean',
+      default: false,
+      describe: 'Display details about motor'
+    }
   }
 }

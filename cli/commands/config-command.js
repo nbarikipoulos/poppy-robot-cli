@@ -28,8 +28,8 @@ module.exports = _ => yargs.command(
   'Display the Poppy motor configuration.',
   (yargs) => {
     cliBuilderHelper.addOptions(
-      'Query Options:',
-      ['robot_structure']
+      'Config Options:',
+      ['robot_structure', 'motor_details']
     )
 
     // Add save CLI connection settings to the 'Poppy Settings' group
@@ -40,6 +40,7 @@ module.exports = _ => yargs.command(
 
     yargs
       .strict()
+      .implies('d', 'M')
       .example(
         '$0 config',
         'Check connection to target robot using default settings' +
@@ -107,8 +108,20 @@ const handler = async (argv) => {
     descriptor.aliases.forEach(alias => {
       structure[alias.name] = alias.motors.reduce(
         (acc, motorName) => {
-          const desc = descriptor.motors.find(m => m.name === motorName)
-          acc[motorName] = `[type: ${desc.model}]`
+          let details = null
+          if (argv.d) {
+            const mDescriptor = descriptor.motors.find(m => m.name === motorName)
+            const range = [
+              mDescriptor.lower_limit,
+              mDescriptor.upper_limit
+            ].map(Math.round)
+            details = {
+              id: mDescriptor.id,
+              type: mDescriptor.model,
+              angle: `[${range}]`
+            }
+          }
+          acc[motorName] = details
           return acc
         },
         {}
@@ -120,7 +133,7 @@ const handler = async (argv) => {
     let tree = ' Poppy\n'
     treeify.asLines(structure, true, (line) => { tree += `   ${line}\n` })
 
-    console.log('Structure:', '\n', tree)
+    console.log('>> Structure:', '\n', tree)
   }
 
   //

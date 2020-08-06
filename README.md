@@ -58,6 +58,7 @@ Enjoy, ;)
   * [Installing the poppy-robot-cli module](#installing-the-poppy-robot-cli-module)
 - [Usage](#usage)
 - [CLI Mode](#cli-mode)
+  * [Checking and Displaying Robot Configuration](#checking-and-displaying-robot-configuration)
   * [Querying](#querying)
   * [Executing Single Command](#executing-single-command)
     + [compliant](#compliant)
@@ -67,12 +68,9 @@ Enjoy, ;)
     + [position](#position)
     + [led](#led)
   * [Rebooting Poppy](#rebooting-poppy)
-  * [Configuring Poppy](#configuring-poppy)
-    + [Connection Settings](#connection-settings)
-  * [Poppy "Run Commands" File](#poppy-run-commands-file)
-- [Check and Display Configuration](#check-and-display-configuration)
-  * [Advanced use](#advanced-use)
-- [Common CLI Flags](#common-cli-flags)
+- [Settings](#settings)
+  * [Common CLI Flags](#common-cli-flags)
+  * [Poppy "Runtime Configuration" File](#poppy-runtime-configuration-file)
 - [API](#api)
 - [Credits](#credits)
 - [License](#license)
@@ -156,14 +154,78 @@ Furthermore, Note for particular/advanced cases, users can configure some Poppy 
 
 The cli commands are divided into 4 parts:
 
+- A config module to check and display robot configuration,
 - A querying module to get information about the motors,
 - A command module which allows sending simple commands to the motors,
-- A poppy rebooting command,
-- At last, a module dedicated to manage poppy configuration.
+- At last, a poppy rebooting command.
+
+### Checking and Displaying Robot Configuration
+
+First group of cli commands named 'config' allows:
+- Checking the connection settings,
+- Displaying the robot structure (_i.e._ aliases and motors) and then perform a connection test to all motors,
+
+Typing
+
+```shell
+poppy config -M
+```
+
+will discover the robot here located with the default values for hostname and http port _i.e._ poppy.local and 8080 and display an aliases/motors tree as shown on the screenshot below:
+
+```
+$poppy config -M
+>> Connection to Poppy (hostname/ip: poppy.local)
+  REST API (port 8080):  OK
+>> Structure:
+  Poppy
+   ├─ base
+   │  ├─ m1
+   │  ├─ m2
+   │  └─ m3
+   └─ tip
+      ├─ m4
+      ├─ m5
+      └─ m6
+```
+Adding -d flag will display details about motors:
+```
+$poppy config -Md
+>> Connection to Poppy (hostname/ip: poppy.local)
+  REST API (port 8080):  OK
+>> Structure: 
+  Poppy
+   ├─ base
+   │  ├─ m1
+   │  │  ├─ id: 1
+   │  │  ├─ type: XL-320
+   │  │  └─ angle: [-90,90]
+   │  ├─ m2
+   │  │  ├─ id: 2
+   │  │  ├─ type: XL-320
+   │  │  └─ angle: [90,-125]
+   │  └─ m3
+   │     ├─ id: 3
+   │     ├─ type: XL-320
+   │     └─ angle: [90,-90]
+   └─ tip
+      ├─ m4
+      │  ├─ id: 4
+      │  ├─ type: XL-320
+      │  └─ angle: [-90,90]
+      ├─ m5
+      │  ├─ id: 5
+      │  ├─ type: XL-320
+      │  └─ angle: [90,-90]
+      └─ m6
+         ├─ id: 6
+         ├─ type: XL-320
+         └─ angle: [90,-90]
+```
 
 ### Querying
 
-First group of cli commands allows querying the register of the motors of the robot.
+This group of cli commands allows querying the registers of the motors of the robot.
 
 Typing:
 
@@ -389,9 +451,9 @@ The next command perform a rebooting the robot.
     poppy reboot
 ```
 
-### Configuring Poppy
+## Connection Settings
 
-#### Connection Settings
+### Common CLI Flags
 
 In order to configure the connection to the Poppy robot, the poppy-robot-cli automatically appends a bunch of optional flags which are available for both CLI mode or script execution
 (_cf._ [Scripting poppy][core-link-script] in [poppy-robot-core][core-link] module):
@@ -421,7 +483,7 @@ node myScript.js --ip poppy1.local -p 8081
 
 will execute myScript looking for a Poppy with 'poppy1.local' as hostname and with an http server configured on port 8081.
 
-### Poppy "Run Commands" File
+### Poppy "Runtime Configuration" File
 
 To avoid typing the connection settings values every time, users can persist them in a rc like file through the 'config' command of the CLI.
 Typing:
@@ -438,38 +500,6 @@ Note the poppy-robot-cli will:
 - On a second hand, use the CLI settings, if any, and then it will override the corresponding values,
 - At last, it will override these settings with values passed through the
 command line.
-
-## Check and Display Configuration
-
-Additional tasks named allows:
-- Checking the connection settings,
-- Displaying the robot structure (_i.e._ aliases and motors) and then perform a connection test to all motors,
-
-Typing
-
-```shell
-poppy config -M
-```
-
-will discover the robot here located with the default values for hostname and http port _i.e._ poppy.local and 8080 and display an aliases/motors tree as shown on the screenshot below:
-
-![Discovering robot](./doc/discovering.png "Discovering robot")
-
-## Common CLI Flags
-
-The poppy-robot-cli module appends a set of common flags to both CLI mode or script execution in order to setup the connection to poppy:
-
-option | desc | value | default
---- | --- | --- | --- |
--i/--ip | Set the Poppy IP/hostname | string | poppy.local
--p/--port | Set the http server port on Poppy | integer | 8080
--h/--help| Display help | n.a. | n.a.
-
-Then using this module instead of the poppy-robot-core one, users can type:
-
-```shell
-node myScript.js --ip 'poppy1.local' -p 8081
-```
 
 ## API
 
