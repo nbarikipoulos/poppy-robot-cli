@@ -455,34 +455,6 @@ will discover the robot here located with the default values for hostname and ht
 
 ![Discovering robot](./doc/discovering.png "Discovering robot")
 
-### Advanced use
-
-Adding -S flag will save this configuration to a descriptor file:
-
-```shell
-poppy config -MS myPoppy.json
-```
-
-which could be use instead of live discovering:
-
-- Via the poppyrc file:
-
-  - Modifying/creating a .poppyrc file:
-
-      ```js
-      {
-          "descriptor": "file://myPoppy.json"
-      }
-      ```
-
-  - Or adding the -s flag over the discovering step to automatically add this line to the .poppyrc file
-
-      ```shell
-      poppy config -MS myPoppy.json -s
-      ```
-
-- Programmatically through the Poppy object factory (see [API](#API)).
-
 ## Common CLI Flags
 
 The poppy-robot-cli module appends a set of common flags to both CLI mode or script execution in order to setup the connection to poppy:
