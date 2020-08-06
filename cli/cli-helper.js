@@ -103,12 +103,10 @@ const getArgDesc = (longKeyId) => ARGUMENT_DESC[longKeyId]
 
 // Get configuration from .poppyrc file, if any and cli arguments
 // get: 'connect' - connection settings object
-//      'robot-desc' - robot descriptor locator
-//      'all' -  get both settings as config object
+//      'all' -  unused
 const getUserConfiguration = (get = 'all') => {
   //
   // config object:{
-  //    locator: descriptor locator value,
   //    connect: {
   //      ip: hostname/ip value,
   //      port: port for the REST API served by the pypot http server,
@@ -172,9 +170,6 @@ const getUserConfiguration = (get = 'all') => {
   switch (get) {
     case 'connect':
       result = config.connect || {}
-      break
-    case 'descriptor':
-      result = config.locator
       break
     case 'all':
     case 'default':

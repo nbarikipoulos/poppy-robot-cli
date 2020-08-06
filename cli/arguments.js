@@ -125,14 +125,5 @@ module.exports = {
       default: false,
       describe: 'Display the robot structure (aliases and motors) and check connection to each motors.'
     }
-  },
-  saveDescriptor: {
-    key: 'S',
-    details: {
-      alias: 'save-desc',
-      type: 'string',
-      nargs: 1,
-      describe: 'Save discovered configuration to a descriptor file.'
-    }
   }
 }
