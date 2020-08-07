@@ -5,11 +5,11 @@
 [![Dependency Status][david-image]][david-url]
 [![devDependency Status][david-dev-image]][david-dev-url]
 
-This module add CLI features to the [poppy-robot-core][core-link] one and then, it allows to simply drive and querying state of any robot of the [Poppy project](https://www.poppy-project.org/en/) family.
+This module allows to simply interact with robots of the [Poppy project](https://www.poppy-project.org/en/) family in command line.
 
 It provides:
 
-- A standalone [CLI mode](#cli-mode) to query and send basic set of instructions to the motor registries and then, to allow performing unary 'action' on motors such as move, speed settings, simply typing in a command line terminal.
+- A standalone [CLI mode](#cli-mode) to query and send basic set of instructions to the registers of mortors and then, to allow performing unary 'action' on motors such as move, speed settings, and so on... simply typing in a command line terminal.
 
     As example:
 
@@ -27,7 +27,26 @@ It provides:
 
     will return data about all registers 'of interest' for all motors.
 
-    ![Querying command](./doc/query.png "Querying command")
+    ```shell
+    $poppy query
+    ┌─────────────────────┬───────┬────────┬───────┬───────┬───────┬───────┐
+    │                     │ m1    │ m2     │ m3    │ m4    │ m5    │ m6    │
+    ├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+    │ compliant           │ true  │ true   │ true  │ true  │ true  │ true  │
+    ├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+    │ lower_limit         │ -89.9 │ 89.9   │ 89.9  │ -89.9 │ 89.9  │ 89.9  │
+    ├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+    │ present_position    │ -0.1  │ -89    │ 86.4  │ -1.3  │ -94.3 │ 1.0   │
+    ├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+    │ goal_position       │ 0     │ -90    │ 90    │ 0     │ -90   │ 0     │
+    ├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+    │ upper_limit         │ 89.9  │ -125.1 │ -89.9 │ 89.9  │ -89.9 │ -89.9 │
+    ├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+    │ moving_speed        │ 100   │ 100    │ 100   │ 100   │ 100   │ 100   │
+    ├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+    │ present_temperature │ 35    │ 35     │ 35    │ 34    │ 33    │ 34    │
+    └─────────────────────┴───────┴────────┴───────┴───────┴───────┴───────┘
+    ```
 
 - A "wrapper" of the exposed [poppy-robot-core](https://github.com/nbarikipoulos/poppy-robot-core) factories in order to both manage a set of common flags dedicated to the connections with Poppy.
 
@@ -235,21 +254,48 @@ poppy query
 
 will return data about all registers 'of interest' for all motors.
 
-![Querying command](./doc/query.png "Querying command")
-
+```shell
+$poppy query
+┌─────────────────────┬───────┬────────┬───────┬───────┬───────┬───────┐
+│                     │ m1    │ m2     │ m3    │ m4    │ m5    │ m6    │
+├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+│ compliant           │ true  │ true   │ true  │ true  │ true  │ true  │
+├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+│ lower_limit         │ -89.9 │ 89.9   │ 89.9  │ -89.9 │ 89.9  │ 89.9  │
+├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+│ present_position    │ -0.1  │ -89    │ 86.4  │ -1.3  │ -94.3 │ 1.0   │
+├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+│ goal_position       │ 0     │ -90    │ 90    │ 0     │ -90   │ 0     │
+├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+│ upper_limit         │ 89.9  │ -125.1 │ -89.9 │ 89.9  │ -89.9 │ -89.9 │
+├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+│ moving_speed        │ 100   │ 100    │ 100   │ 100   │ 100   │ 100   │
+├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
+│ present_temperature │ 35    │ 35     │ 35    │ 34    │ 33    │ 34    │
+└─────────────────────┴───────┴────────┴───────┴───────┴───────┴───────┘
+```
 Adding the flag -h will display help for optional options:
 
 - -m to select the motor(s) to query,
 - -r to select the register(s) to query,
 - -I to invert the output table form register/motor to motor/register.
 
-As example the following line will only display the registry values for 'present_position' and 'goal_position' of the motors m2 to m5:
+As example the following line will only display the register values for 'present_position' and 'goal_position' of the motors m2 to m5:
 
 ```shell
-poppy query -m m2 m3 m4 m5 -r present_position goal_position -I
+$poppy query -m m2 m3 m4 m5 -r present_position goal_position -I
+┌────┬──────────────────┬───────────────┐
+│    │ present_position │ goal_position │
+├────┼──────────────────┼───────────────┤
+│ m2 │ -89              │ -90           │
+├────┼──────────────────┼───────────────┤
+│ m3 │ 86.4             │ 90            │
+├────┼──────────────────┼───────────────┤
+│ m4 │ -1.3             │ 0             │
+├────┼──────────────────┼───────────────┤
+│ m5 │ -94.9            │ -90           │
+└────┴──────────────────┴───────────────┘
 ```
-
-![Querying command 2](./doc/query_1.png "Querying command 2")
 
 ### Executing Single Command
 
