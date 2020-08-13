@@ -278,9 +278,10 @@ Adding the flag -h will display help for optional options:
 
 - -m to select the motor(s) to query,
 - -r to select the register(s) to query,
-- -I to invert the output table form register/motor to motor/register.
+- -I to invert the output table form register/motor to motor/register,
+- -t to display results as a tree _i.e._ to group them per alias/motor.
 
-As example the following line will only display the register values for 'present_position' and 'goal_position' of the motors m2 to m5:
+As example the command below will only display the register values for 'present_position' and 'goal_position' of the motors m2 to m5:
 
 ```shell
 $poppy query -m m2 m3 m4 m5 -r present_position goal_position -I
@@ -296,6 +297,23 @@ $poppy query -m m2 m3 m4 m5 -r present_position goal_position -I
 │ m5 │ -94.9            │ -90           │
 └────┴──────────────────┴───────────────┘
 ```
+
+Another example displaying results in accordance with the 'structure' of the robot:
+
+```shell
+$poppy query -r compliant -t
+Poppy
+ ├─ base
+ │  ├─ m1: true
+ │  ├─ m2: true
+ │  └─ m3: true
+ └─ tip
+    ├─ m4: false
+    ├─ m5: false
+    └─ m6: false
+```
+
+
 
 ### Executing Single Command
 

@@ -48,7 +48,16 @@ module.exports = {
       alias: 'invert',
       type: 'boolean',
       default: false,
-      describe: 'Invert table presentation i.e. motors are displayed as row.'
+      describe: 'Invert table presentation.'
+    }
+  },
+  tree: {
+    key: 't',
+    details: {
+      alias: 'tree',
+      type: 'boolean',
+      default: false,
+      describe: 'Display result as tree.'
     }
   },
   speed: { // positional
