@@ -49,10 +49,11 @@ const getPoppyInstance = _ => {
 // avoid to instantiate it twice.
 // Note in the case of the config command, this function does nothing.
 const init = async _ => {
-  if (
-    !yargs.argv._.includes('config') &&
-    !yargs.argv._.includes('reboot')
-  ) {
+  const skipGetPoppyStructure = yargs.argv._.includes('config') ||
+    yargs.argv._.includes('reboot') ||
+    !yargs.argv._.length
+
+  if (!skipGetPoppyStructure) {
     try {
       const config = getUserConfiguration()
       POPPY_INSTANCE = await core.createPoppy(config)
