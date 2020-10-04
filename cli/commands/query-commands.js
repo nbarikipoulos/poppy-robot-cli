@@ -7,8 +7,8 @@ const yargs = require('yargs')
 const Table = require('cli-table')
 const treeify = require('treeify')
 
-const cliBuilderHelper = require('../cli-helper')
-const prettify = require('../../lib/utils').prettifyError
+const { addOptions, getPoppyInstance } = require('../cli-helper')
+const { prettifyError: prettify } = require('../../lib/utils')
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -20,7 +20,7 @@ module.exports = _ => yargs.command(
   'query',
   'Query the state of Poppy motors.',
   (yargs) => {
-    cliBuilderHelper.addOptions(
+    addOptions(
       'Query Options:',
       ['motor', 'register', 'invert', 'tree']
     )
@@ -54,7 +54,7 @@ module.exports = _ => yargs.command(
 
 const query = async (argv) => {
   // Poppy instance
-  const poppy = cliBuilderHelper.getPoppyInstance()
+  const poppy = getPoppyInstance()
 
   const motorIds = argv.motor.includes('all')
     ? poppy.getAllMotorIds()

@@ -6,9 +6,8 @@
 
 const yargs = require('yargs')
 
-const cliBuilderHelper = require('../cli/cli-helper')
-const init = cliBuilderHelper.init
-const prettify = require('../lib/utils').prettifyError
+const { init, addPoppyConnectionOptions } = require('../cli/cli-helper')
+const { prettifyError: prettify } = require('../lib/utils')
 
 const epilogue = 'Poppy CLI. (c)2018-2020 N. Barriquand. Released under the MIT license.\n' +
   'More details on http://github.com/nbarikipoulos/poppy-robot-cli'
@@ -55,7 +54,7 @@ const help = _ => yargs
 
 const buildCLI = _ => {
   // Add common cli options for poppy settings
-  cliBuilderHelper.addPoppyConnectionOptions()
+  addPoppyConnectionOptions()
 
   // Add executing command
   require('../cli/commands/exec-commands')()

@@ -8,12 +8,11 @@ const path = require('path')
 const yargs = require('yargs')
 const colors = require('colors')
 
-const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
-const createDescriptor = require('poppy-robot-core').createDescriptor
-const lookUp = require('poppy-robot-core/util/misc').lookUp
-const DEFAULT_CONNECTION_SETTINGS = require('poppy-robot-core').DEFAULT_CONNECTION_SETTINGS
+const { PoppyRequestHandler, DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
+const { createDescriptor } = require('poppy-robot-core')
+const { lookUp } = require('poppy-robot-core/util/misc')
 
-const cliBuilderHelper = require('../cli-helper')
+const { addOptions, getUserConfiguration } = require('../cli-helper')
 
 const treeify = require('treeify')
 
@@ -27,13 +26,13 @@ module.exports = _ => yargs.command(
   'config',
   'Display the Poppy motor configuration.',
   (yargs) => {
-    cliBuilderHelper.addOptions(
+    addOptions(
       'Config Options:',
       ['robot_structure', 'motor_details']
     )
 
     // Add save CLI connection settings to the 'Poppy Settings' group
-    cliBuilderHelper.addOptions(
+    addOptions(
       'Poppy Connection Settings:',
       ['saveConfig']
     )
@@ -73,7 +72,7 @@ const handler = async (argv) => {
   // Check connection
   //
 
-  const config = cliBuilderHelper.getUserConfiguration()
+  const config = getUserConfiguration()
 
   const connect = Object.assign({}, config.connect)
 

@@ -7,13 +7,13 @@ const path = require('path')
 
 const yargs = require('yargs')
 
-const core = require('poppy-robot-core')
+const { createPoppy } = require('poppy-robot-core')
 
-const prettify = require('../lib/utils').prettifyError
+const { prettifyError: prettify } = require('../lib/utils')
 
 const ARGUMENT_DESC = require('./arguments')
 
-const DEFAULT_CONNECTION_SETTINGS = require('poppy-robot-core').DEFAULT_CONNECTION_SETTINGS
+const { DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
 
 /** Poppy instance.
  * Initialized once by init() call, and as it must be called first
@@ -56,7 +56,7 @@ const init = async _ => {
   if (!skipGetPoppyStructure) {
     try {
       const config = getUserConfiguration()
-      POPPY_INSTANCE = await core.createPoppy(config)
+      POPPY_INSTANCE = await createPoppy(config)
 
       ARGUMENT_DESC.motor.details.choices = ['all'].concat(
         POPPY_INSTANCE.getAllMotorIds()

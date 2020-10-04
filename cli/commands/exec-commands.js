@@ -4,9 +4,9 @@
 
 const yargs = require('yargs')
 
-const Script = require('poppy-robot-core').Script
+const { Script } = require('poppy-robot-core')
 
-const cliBuilderHelper = require('../cli-helper')
+const { addOptions, getPoppyInstance, getArgDesc } = require('../cli-helper')
 
 const EXEC_CMD_GROUP_LABEL = 'Command Options:'
 
@@ -41,7 +41,7 @@ module.exports = _ => {
 
 async function exec (type, motors, options = {}) {
   // Get already instantiaed poppy object a Poppy object
-  const poppy = cliBuilderHelper.getPoppyInstance()
+  const poppy = getPoppyInstance()
   //
   // create a poppy script...
   //
@@ -65,7 +65,7 @@ const COMMANDS = [{
   cmd: 'compliant',
   desc: 'Set state of selected motor(s) to compliant (i.e. handly drivable).',
   builder: (yargs) => {
-    cliBuilderHelper.addOptions(
+    addOptions(
       EXEC_CMD_GROUP_LABEL,
       ['motor']
     )
@@ -86,7 +86,7 @@ const COMMANDS = [{
   cmd: 'stiff',
   desc: 'Set state of selected motor(s) to stiff (i.e. programmatically drivable).',
   builder: (yargs) => {
-    cliBuilderHelper.addOptions(
+    addOptions(
       EXEC_CMD_GROUP_LABEL,
       ['motor']
     )
@@ -108,13 +108,13 @@ const COMMANDS = [{
   desc: 'Set the rotation speed of the selected motor(s).\n' +
     'Value must be in the [0, 1023] range',
   builder: (yargs) => {
-    cliBuilderHelper.addOptions(
+    addOptions(
       EXEC_CMD_GROUP_LABEL,
       ['motor']
     )
 
     // Add the positional argument of this command
-    const desc = cliBuilderHelper.getArgDesc('speed')
+    const desc = getArgDesc('speed')
     yargs.positional('value', desc)
 
     yargs
@@ -132,13 +132,13 @@ const COMMANDS = [{
   cmd: 'rotate <value>',
   desc: 'Rotate the target motor(s) by x degrees',
   builder: (yargs) => {
-    cliBuilderHelper.addOptions(
+    addOptions(
       EXEC_CMD_GROUP_LABEL,
       ['motor', 'wait']
     )
 
     // Add the positional argument of this command
-    const desc = cliBuilderHelper.getArgDesc('rotate')
+    const desc = getArgDesc('rotate')
     yargs.positional('value', desc)
 
     yargs
@@ -152,13 +152,13 @@ const COMMANDS = [{
   cmd: 'position <value>',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
-    cliBuilderHelper.addOptions(
+    addOptions(
       EXEC_CMD_GROUP_LABEL,
       ['motor', 'wait']
     )
 
     // Add the positional argument of this command
-    const desc = cliBuilderHelper.getArgDesc('position')
+    const desc = getArgDesc('position')
     yargs.positional('value', desc)
 
     yargs
@@ -172,13 +172,13 @@ const COMMANDS = [{
   cmd: 'led [value]',
   desc: 'Set the led color of the selected motor(s)',
   builder: (yargs) => {
-    cliBuilderHelper.addOptions(
+    addOptions(
       EXEC_CMD_GROUP_LABEL,
       ['motor']
     )
 
     // Add the positional argument of this command
-    const desc = cliBuilderHelper.getArgDesc('led')
+    const desc = getArgDesc('led')
     yargs.positional('value', desc)
 
     yargs

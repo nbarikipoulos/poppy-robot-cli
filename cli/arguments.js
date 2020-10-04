@@ -2,7 +2,7 @@
 
 'use strict'
 
-const DEFAULT_CONNECTION_SETTINGS = require('poppy-robot-core').DEFAULT_CONNECTION_SETTINGS
+const { DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
 
 module.exports = {
   motor: {

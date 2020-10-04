@@ -4,11 +4,10 @@
 
 const yargs = require('yargs')
 
-const PoppyRequestHandler = require('poppy-robot-core').PoppyRequestHandler
-const lookUp = require('poppy-robot-core/util/misc').lookUp
-const DEFAULT_CONNECTION_SETTINGS = require('poppy-robot-core').DEFAULT_CONNECTION_SETTINGS
+const { PoppyRequestHandler, DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
+const { lookUp } = require('poppy-robot-core/util/misc')
 
-const cliBuilderHelper = require('../cli-helper')
+const { getUserConfiguration } = require('../cli-helper')
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -40,7 +39,7 @@ const handler = async (argv) => {
   // First, get hostname/ip of the robot
   //
 
-  const connect = cliBuilderHelper.getUserConfiguration('connect')
+  const connect = getUserConfiguration('connect')
   const inputIp = connect.ip ? connect.ip : DEFAULT_CONNECTION_SETTINGS.ip
 
   // lookup hostname, if needed

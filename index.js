@@ -25,9 +25,12 @@
 
 const yargs = require('yargs')
 
-const core = require('poppy-robot-core')
+const {
+  createScript, createDescriptor, Script, Poppy,
+  ExtMotorRequest, RawMotorRequest, PoppyRequestHandler
+} = require('poppy-robot-core')
 
-const cliBuilderHelper = require('./cli/cli-helper')
+const { addPoppyConnectionOptions } = require('./cli/cli-helper')
 const createPoppy = require('./lib/ext-poppy-factory')
 
 // ////////////////////////////////
@@ -41,7 +44,7 @@ yargs
   .help('h')
 
 // Add common cli options for poppy settings
-cliBuilderHelper.addPoppyConnectionOptions()
+addPoppyConnectionOptions()
 
 yargs
   .wrap(yargs.terminalWidth())
@@ -54,12 +57,12 @@ yargs
 // ////////////////////////////////
 
 module.exports = {
-  createPoppy, // overriden by this module
-  createScript: core.createScript,
-  createDescriptor: core.createDescriptor,
-  Script: core.Script,
-  Poppy: core.Poppy,
-  ExtMotorRequest: core.ExtMotorRequest,
-  RawMotorRequest: core.RawMotorRequest,
-  PoppyRequestHandler: core.PoppyRequestHandler
+  createPoppy,
+  createScript,
+  createDescriptor,
+  Script,
+  Poppy,
+  ExtMotorRequest,
+  RawMotorRequest,
+  PoppyRequestHandler
 }
