@@ -73,8 +73,10 @@ Enjoy, ;)
 
 - [TL;DR](#tldr)
 - [Getting Started](#getting-started)
-  * [Installing node.js](#installing-nodejs)
-  * [Installing the poppy-robot-cli module](#installing-the-poppy-robot-cli-module)
+  * [Using node.js/npm](#using-nodejsnpm)
+    + [Installing node.js](#installing-nodejs)
+    + [Installing the poppy-robot-cli module](#installing-the-poppy-robot-cli-module)
+  * [Standalone Executable (Windows OS only)](#standalone-executable-windows-os-only)
 - [Usage](#usage)
 - [CLI Mode](#cli-mode)
   * [Checking and Displaying Robot Configuration](#checking-and-displaying-robot-configuration)
@@ -87,7 +89,7 @@ Enjoy, ;)
     + [position](#position)
     + [led](#led)
   * [Rebooting Poppy](#rebooting-poppy)
-- [Settings](#settings)
+- [Connection Settings](#connection-settings)
   * [Common CLI Flags](#common-cli-flags)
   * [Poppy "Runtime Configuration" File](#poppy-runtime-configuration-file)
 - [API](#api)
@@ -118,7 +120,13 @@ Note, once the Poppy switches on and ready (green light blinking), the __config_
 
 ## Getting Started
 
-### Installing node.js
+This tool is delivered as:
+- A npm module that requires node.js and could be installed whatever the os (macOS, windows or linux-like OS),
+- **For windows users only**, a windows installer that does not require node.js preinstalled.
+
+### Using node.js/npm
+
+#### Installing node.js
 
 the poppy-robot-cli is intented to be used under a node.js 'environment' on your local computer. Thus it should be first installed (sic):
 
@@ -127,7 +135,7 @@ the poppy-robot-cli is intented to be used under a node.js 'environment' on your
 
 Note a node.js release equal or higher to v12.0.0 is required.
 
-### Installing the poppy-robot-cli module
+#### Installing the poppy-robot-cli module
 
 Once [node.js](https://nodejs.org/en/download/) installed, type:
 
@@ -140,7 +148,7 @@ that will globally install the poppy-robot-cli module.
 To verify that it has been successfully installed, type:
 
 ```shell
-npm list -g -depth=0
+npm list -g --depth=0
 ├── npm@6.13.4
 └── poppy-robot-cli@7.0.0
 ```
@@ -152,6 +160,16 @@ poppy -h
 ```
 
 will display the basic help about the poppy-robot-cli.
+
+### Standalone Executable (Windows OS only)
+
+Download and install the latest installer release provided [here](https://github.com/nbarikipoulos/poppy-robot-cli/releases/latest).
+
+As it automatically updates PATH environment variable, once installed, open a new command terminal and then type:
+
+```shell
+poppy -h
+```
 
 ## Usage
 
