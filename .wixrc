@@ -1,0 +1,8 @@
+{
+  "poppy": {
+    "uuid": "55F84AE0-B797-48EC-AC2B-A9EC8243480A",
+    "ico": "./pack/msi/cli.ico",
+    "banner": "./pack/msi/banner.jpg",
+    "background": "./pack/msi/background.jpg"
+  }
+}

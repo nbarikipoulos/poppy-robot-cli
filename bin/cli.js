@@ -6,6 +6,8 @@
 
 const yargs = require('yargs')
 
+const { version } = require('../package.json')
+
 const { init, addPoppyConnectionOptions } = require('../cli/cli-helper')
 const { prettifyError: prettify } = require('../lib/utils')
 
@@ -38,7 +40,7 @@ const help = _ => yargs
   .demandCommand(1, 'Use at least one command')
   .epilogue(epilogue)
   .locale('en')
-  .version()
+  .version(version)
   .alias('h', 'help')
   .help('h')
   .fail((message, error, yargs) => {

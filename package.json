@@ -20,6 +20,7 @@
   ],
   "scripts": {
     "gendoc": "markdown-toc -i README.md",
+    "pack": "wix-msi poppy",
     "test": "standard"
   },
   "dependencies": {
@@ -30,7 +31,8 @@
   },
   "devDependencies": {
     "markdown-toc": "^1.2.0",
-    "standard": "*"
+    "standard": "*",
+    "wix-msi": "^0.1.1"
   },
   "files": [
     "/lib",
