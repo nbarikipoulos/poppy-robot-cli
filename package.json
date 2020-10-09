@@ -31,8 +31,10 @@
   },
   "devDependencies": {
     "markdown-toc": "^1.2.0",
-    "standard": "*",
-    "wix-msi": "^0.1.1"
+    "standard": "*"
+  },
+  "optionalDependencies": {
+    "wix-msi": "^0.1.2"
   },
   "files": [
     "/lib",
