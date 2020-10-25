@@ -160,6 +160,9 @@ const _format = (value) => {
         return object
       }
       break
+    case 'undefined':
+      fn = _ => '---'
+      break
     default:
       fn = (value) => (!isNaN(parseFloat(value)) ^ !Number.isInteger(value))
         ? value // String, Boolean, Integer
