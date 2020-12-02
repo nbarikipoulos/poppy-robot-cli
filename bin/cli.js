@@ -11,9 +11,6 @@ const { version } = require('../package.json')
 const { init, addPoppyConnectionOptions } = require('../cli/cli-helper')
 const { prettifyError: prettify } = require('../lib/utils')
 
-const epilogue = 'Poppy CLI. (c)2018-2020 N. Barriquand. Released under the MIT license.\n' +
-  'More details on http://github.com/nbarikipoulos/poppy-robot-cli'
-
 // ////////////////////////////////
 // ////////////////////////////////
 // Main job
@@ -38,7 +35,6 @@ const help = _ => yargs
   .scriptName('poppy')
   .usage('Usage: $0 <command> --help for detailed help')
   .demandCommand(1, 'Use at least one command')
-  .epilogue(epilogue)
   .locale('en')
   .version(version)
   .alias('h', 'help')
