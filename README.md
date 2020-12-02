@@ -9,7 +9,7 @@ This module allows to simply interact with robots of the [Poppy project](https:/
 
 It provides:
 
-- A standalone [CLI mode](#cli-mode) to query and send basic set of instructions to the registers of mortors and then, to allow performing unary 'action' on motors such as move, speed settings, and so on... simply typing in a command line terminal.
+- A [CLI mode](#cli-mode) to query and send basic set of instructions to the registers of mortors and then, to allow performing unary 'action' on motors such as move, speed settings, and so on... simply typing in a command line terminal.
 
     As example:
 
@@ -76,7 +76,9 @@ Enjoy, ;)
   * [Using node.js/npm](#using-nodejsnpm)
     + [Installing node.js](#installing-nodejs)
     + [Installing the poppy-robot-cli module](#installing-the-poppy-robot-cli-module)
-  * [Standalone Executable (Windows OS only)](#standalone-executable-windows-os-only)
+  * [Standalone Executable](#standalone-executable)
+    + [Windows](#windows)
+    + [Linux/MacOS](#linuxmacos)
 - [Usage](#usage)
 - [CLI Mode](#cli-mode)
   * [Checking and Displaying Robot Configuration](#checking-and-displaying-robot-configuration)
@@ -122,7 +124,9 @@ Note, once the Poppy switches on and ready (green light blinking), the __config_
 
 This tool is delivered as:
 - A npm module that requires node.js and could be installed whatever the os (macOS, windows or linux-like OS),
-- **For windows users only**, a windows installer that does not require node.js preinstalled.
+- A standalone executable that does not require node.js pre-installed:
+  - Delivered as a Windows installer for Windows OS,
+  - To build (using node.js) for macOS and Linux.
 
 ### Using node.js/npm
 
@@ -161,15 +165,30 @@ poppy -h
 
 will display the basic help about the poppy-robot-cli.
 
-### Standalone Executable (Windows OS only)
+### Standalone Executable
 
-Download and install the latest installer release provided [here](https://github.com/nbarikipoulos/poppy-robot-cli/releases/latest).
+#### Windows
+
+A standalone executable which does __not require node.js__ intalled at all, is available as a Windows installer [here](https://github.com/nbarikipoulos/poppy-robot-cli/releases/latest).
 
 As it automatically updates PATH environment variable, once installed, open a new command terminal and then type:
 
 ```shell
 poppy -h
 ```
+
+#### Linux/MacOS
+
+User can produce standalone executables of this module. 
+Note node.js is mandatory to produce these executables but it will not to launch them.
+
+Typing the command below will produce executables named nodeX-linux-x64 and nodeX-macos-x64.
+
+```shell
+npx pkg .
+```
+
+Note it could be performed whatever your OS.
 
 ## Usage
 
