@@ -1,6 +1,6 @@
 {
   "name": "poppy-robot-cli",
-  "version": "7.1.2",
+  "version": "7.1.3",
   "description": "Command line to drive/query poppy robots and improvements for poppy-robot-core module.",
   "bin": {
     "poppy": "./bin/cli.js"
