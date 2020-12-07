@@ -90,7 +90,9 @@ Enjoy, ;)
     + [rotate](#rotate)
     + [position](#position)
     + [led](#led)
-  * [Rebooting Poppy](#rebooting-poppy)
+  * [Admin Commands](#admin-commands)
+    + [Start/Reset/Stop robot API](#startresetstop-robot-api)
+    + [Rebooting the Raspberry](#rebooting-the-raspberry)
 - [Connection Settings](#connection-settings)
   * [Common CLI Flags](#common-cli-flags)
   * [Poppy "Runtime Configuration" File](#poppy-runtime-configuration-file)
@@ -213,7 +215,7 @@ The cli commands are divided into 4 parts:
 - A config module to check and display robot configuration,
 - A querying module to get information about the motors,
 - A command module which allows sending simple commands to the motors,
-- At last, a poppy rebooting command.
+- At last, a set of admin-level commands.
 
 ### Checking and Displaying Robot Configuration
 
@@ -544,13 +546,39 @@ Examples:
     poppy led green -m m3
     ```
 
-### Rebooting Poppy
+### Admin Commands
 
-The next command perform a rebooting the robot.
+The next set of commands allows performing some "admin" level actions
+
+#### Start/Reset/Stop robot API
+
+```shell
+poppy api [action]
+```
+
+This command allows starting/reseting/Stopping the robot API
+
+&nbsp; | desc | value | default | mandatory
+--- | --- | --- | --- | ---
+value | start/reset/stop the robot api| start \| reset \| stop | reset | no
+
+Examples:
+  - Reset the robot api:
+  ```shell
+  poppy api
+  ```
+
+  - Stop the robot api:
+  ```shell
+  poppy api stop
+  ```
+#### Rebooting the Raspberry
 
  ```shell
     poppy reboot
 ```
+
+This command reboots the Raspberry.
 
 ## Connection Settings
 
