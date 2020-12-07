@@ -143,5 +143,15 @@ module.exports = {
       default: false,
       describe: 'Display details about motor'
     }
+  },
+  api: { // positional
+    type: 'string',
+    default: 'reset',
+    choices: [
+      'start',
+      'reset',
+      'stop'
+    ],
+    describe: 'Start/Reset/Stop action to the robot API.'
   }
 }
