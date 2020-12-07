@@ -88,7 +88,7 @@ const COMMANDS = [{
   }
 }, {
   cmd: 'reboot',
-  desc: 'Reboot the robot.',
+  desc: 'Reboot the Rapsberry.',
   builder: (yargs) => {
     yargs
       .strict()
@@ -102,9 +102,9 @@ const COMMANDS = [{
 
     return perform(
       connect,
-      '/reset',
-      `Reboot robot (hostname/ip: ${inputHostname}).`,
-      'Unable to reboot robot'
+      '/reboot',
+      `Reboot the Rapsberry (hostname/ip: ${inputHostname}).`,
+      'Unable to reboot the Rapsberry'
     )
   }
 }]
