@@ -93,6 +93,7 @@ Enjoy, ;)
   * [Admin Commands](#admin-commands)
     + [Start/Reset/Stop robot API](#startresetstop-robot-api)
     + [Rebooting the Raspberry](#rebooting-the-raspberry)
+    + [Shutdown the Raspberry](#shutdown-the-raspberry)
 - [Connection Settings](#connection-settings)
   * [Common CLI Flags](#common-cli-flags)
   * [Poppy "Runtime Configuration" File](#poppy-runtime-configuration-file)
@@ -578,7 +579,16 @@ Examples:
     poppy reboot
 ```
 
-This command reboots the Raspberry.
+This command will reboot the Raspberry.
+
+#### Shutdown the Raspberry
+
+ ```shell
+    poppy shutdown
+```
+
+This command will turn the Raspberry off.
+
 
 ## Connection Settings
 

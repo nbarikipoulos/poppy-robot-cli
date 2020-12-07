@@ -107,4 +107,25 @@ const COMMANDS = [{
       'Unable to reboot the Rapsberry'
     )
   }
+}, {
+  cmd: 'shutdown',
+  desc: 'Shutdown the Rapsberry.',
+  builder: (yargs) => {
+    yargs
+      .strict()
+  },
+  handler: async (argv) => {
+    const connect = getUserConfiguration('connect')
+    const inputHostname = connect.ip || DEFAULT_CONNECTION_SETTINGS.ip
+
+    // lookup hostname, if needed
+    connect.ip = await lookUp(inputHostname)
+
+    return perform(
+      connect,
+      '/shutdown',
+      `Shutdown the Rapsberry (hostname/ip: ${inputHostname}).`,
+      'Unable to shutdown the Rapsberry'
+    )
+  }
 }]
