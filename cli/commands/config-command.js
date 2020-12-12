@@ -76,21 +76,21 @@ const handler = async (argv) => {
 
   const connect = Object.assign({}, config.connect)
 
-  const inputIp = connect.ip ? connect.ip : DEFAULT_CONNECTION_SETTINGS.ip
+  const inputIp = connect.ip || DEFAULT_CONNECTION_SETTINGS.ip
 
   // lookup hostname, if needed
   const ip = await lookUp(connect.ip)
   connect.ip = ip
 
   const req = new PoppyRequestHandler(connect)
-  const fulfilled = (p) => p.then(_ => true, _ => false) // arf...
 
-  // A first dummy request is mandatory
-  // The first request once the robot is turned on always terminates in timeout
-  // see https://forum.poppy-project.org/t/api-rest-poppy-ergo-jr/3516/16
-  await req.perform('/motor/alias/list.json').catch(e => { /* Do nothing */ })
+  let testRestAPI = true
 
-  const testRestAPI = await fulfilled(req.perform('/motor/alias/list.json'))
+  try {
+    await req.perform('/motor/alias/list.json')
+  } catch (err) {
+    testRestAPI = false
+  }
 
   console.log(`>> Connection to Poppy (hostname/ip: ${inputIp})`)
   console.log(`  REST API (port ${req.getSettings().port}):\t ${_display(testRestAPI)}`)
@@ -99,7 +99,7 @@ const handler = async (argv) => {
   // display robot structure
   //
 
-  if (argv.M) {
+  if (argv.M && testRestAPI) {
     const descriptor = await createDescriptor(connect)
 
     const structure = {}

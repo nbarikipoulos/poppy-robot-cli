@@ -198,17 +198,24 @@ Note it could be performed whatever your OS.
 
 Once installed, both CLI mode and scripting mode are addressable without any other settings.
 
-__Note a specific command must be performed at each Poppy switching on in order to properly initialize the embedded http server in Poppy.__
-
-Next the Poppy robot turns on and is ready (green light blinking), the following command should be performed first:
+Next the Poppy robot turns on and is ready (green light blinking), the following command could be performed first in order to ensure the robot is available:
 
 ```shell
-poppy config
+poppy config -M
 ```
 
-If not performed, the first command/request send to the Poppy next to switching it on will systematically failed, next ones will succeed.
+It will simply look up to a robot located at poppy.local and display its structure.
 
-Furthermore, Note for particular/advanced cases, users can configure some Poppy parameters such as connection settings, and so on as explained in a dedicated [section](#configuring-poppy).
+Note connection parameters (hostname/rest api port) could be easily changed (see details [section](#configuring-poppy)).
+
+```shell
+poppy config -M --ip poppy1.local
+```
+Typing:
+```shell
+poppy -h
+```
+will display global help and list available commands.
 
 ## CLI Mode
 
