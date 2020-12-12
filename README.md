@@ -91,7 +91,8 @@ Enjoy, ;)
     + [position](#position)
     + [led](#led)
   * [Admin Commands](#admin-commands)
-    + [Start/Reset/Stop robot API](#startresetstop-robot-api)
+    + [Getting Logs](#getting-logs)
+    + [Start/Reset/Stop Robot API](#startresetstop-robot-api)
     + [Rebooting the Raspberry](#rebooting-the-raspberry)
     + [Shutdown the Raspberry](#shutdown-the-raspberry)
 - [Connection Settings](#connection-settings)
@@ -551,7 +552,15 @@ Examples:
 
 The next set of commands allows performing some "admin" level actions
 
-#### Start/Reset/Stop robot API
+#### Getting Logs
+
+```shell
+poppy logs
+```
+
+This command will display logs of the robots to the console.
+
+#### Start/Reset/Stop Robot API
 
 ```shell
 poppy api [action]
@@ -565,14 +574,14 @@ value | start/reset/stop the robot api| start \| reset \| stop | reset | no
 
 Examples:
   - Reset the robot api:
-  ```shell
-  poppy api
-  ```
+    ```shell
+    poppy api
+    ```
 
   - Stop the robot api:
-  ```shell
-  poppy api stop
-  ```
+    ```shell
+    poppy api stop
+    ```
 #### Rebooting the Raspberry
 
  ```shell

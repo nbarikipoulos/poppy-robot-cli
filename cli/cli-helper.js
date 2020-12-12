@@ -50,7 +50,7 @@ const getPoppyInstance = _ => {
 // Note in the case of the config command, this function does nothing.
 const init = async _ => {
   const skipGetPoppyStructure = !yargs.argv._.length ||
-    ['config', 'reboot', 'api'].find(cmd => yargs.argv._.includes(cmd))
+    ['config', 'reboot', 'shutdown', 'api', 'logs'].find(cmd => yargs.argv._.includes(cmd))
 
   if (!skipGetPoppyStructure) {
     try {

@@ -32,24 +32,28 @@ module.exports = _ => {
 // ////////////////////////////////
 // ////////////////////////////////
 
-// ...
-
 // ////////////////////////////////
-// Execute simple command
+// Perform the request to robot
 // ////////////////////////////////
 
-const perform = async (connect, url, headerMsg, errorMsg) => {
+const perform = (
+  connect,
+  url,
+  headerMsg,
+  errorMsg,
+  { method = 'get', config = {} } = {}
+) => {
   const req = new PoppyRequestHandler(connect)
+
   console.log(`>> ${headerMsg}`)
-  try {
-    await req.perform(url, {
-      config: { // override base url poppy.local:8080 => poppy.local
-        baseURL: `http://${connect.ip}`
-      }
-    })
-  } catch (err) {
-    console.log(`  ${errorMsg}`)
-  }
+
+  return req.perform(url, {
+    method,
+    config: {
+      ...{ baseURL: `http://${connect.ip}` }, // hostname:8080 => hostname
+      ...config
+    }
+  })
 }
 
 // ////////////////////////////////
@@ -57,6 +61,30 @@ const perform = async (connect, url, headerMsg, errorMsg) => {
 // ////////////////////////////////
 
 const COMMANDS = [{
+  cmd: 'logs',
+  desc: 'Get logs of the robot.',
+  builder: (yargs) => {
+    yargs.strict()
+  },
+  handler: async (argv) => {
+    const connect = getUserConfiguration('connect')
+    const inputHostname = connect.ip || DEFAULT_CONNECTION_SETTINGS.ip
+
+    // lookup hostname, if needed
+    connect.ip = await lookUp(inputHostname)
+
+    return perform(
+      connect,
+      '/api/raw_logs',
+      `Get Logs (hostname/ip: ${inputHostname}).`,
+      'Unable to perform action',
+      {
+        method: 'post',
+        config: { headers: {}, data: 'id=0' }
+      }
+    ).then(res => { console.log(res.data) })
+  }
+}, {
   cmd: 'api [action]',
   desc: 'Start/Reset/Stop the robot API.',
   builder: (yargs) => {
@@ -83,15 +111,13 @@ const COMMANDS = [{
       `/api/${action}`,
       `${action} robot API (hostname/ip: ${inputHostname}).`,
       'Unable to perform action'
-
     )
   }
 }, {
   cmd: 'reboot',
   desc: 'Reboot the Rapsberry.',
   builder: (yargs) => {
-    yargs
-      .strict()
+    yargs.strict()
   },
   handler: async (argv) => {
     const connect = getUserConfiguration('connect')
@@ -111,8 +137,7 @@ const COMMANDS = [{
   cmd: 'shutdown',
   desc: 'Shutdown the Rapsberry.',
   builder: (yargs) => {
-    yargs
-      .strict()
+    yargs.strict()
   },
   handler: async (argv) => {
     const connect = getUserConfiguration('connect')
