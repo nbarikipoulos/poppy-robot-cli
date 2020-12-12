@@ -152,6 +152,6 @@ module.exports = {
       'reset',
       'stop'
     ],
-    describe: 'Start/Reset/Stop action to the robot API.'
+    describe: 'Start/Reset/Stop robot API.'
   }
 }
