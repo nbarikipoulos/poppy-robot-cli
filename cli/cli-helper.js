@@ -141,19 +141,17 @@ const getUserConfiguration = (get = 'all') => {
       const key = desc.key
 
       // Ensure that values have been passed by the cli
-      // (yargs.argv properties will be set to default values if not provided).
-      // Note yargs options has not been initialized yet.
-      const hasKey = process.argv.includes(`-${key}`, 2)
-      const hasAlias = process.argv.includes(`--${desc.details.alias}`, 2)
-
-      if (hasKey || hasAlias) {
-        const value = yargs.argv[// 'raw cli'
-          hasKey ? key : desc.details.alias
-        ]
-        if (value === getArgDesc(longKey).details.default) {
-          delete connect[longKey]
-        } else {
-          connect[longKey] = value
+      // (yargs will set option to their default values if not provided).
+      for (const opt in [`-${key}`, `--${desc.details.alias}`]) {
+        const idx = process.argv.indexOf(opt) + 1
+        if (idx > 0) {
+          const value = process.argv[idx]
+          if (value === getArgDesc(longKey).details.default) {
+            delete connect[longKey]
+          } else {
+            connect[longKey] = value
+          }
+          break
         }
       }
     }
