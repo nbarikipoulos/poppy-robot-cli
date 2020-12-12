@@ -106,23 +106,22 @@ Enjoy, ;)
 
 ## TL;DR
 
-You just have to install this node module on your local computer, to turn on your Poppy (Ergo Jr, if not read [this](#discovering-robot-configuration)) and enjoy.
+Intall it:
+  - As a standalone executable:
+    - Available on this [page](https://github.com/nbarikipoulos/poppy-robot-cli/releases/latest) for Windows,
+    - Or, in the end, read [here](#linuxmacos) for MacOS/Linux,
+  - As a npm package:
+    ```shell
+    npm install poppy-robot-cli -g
+    ```
 
-The next line will globally install the module on your computer (more details are available [here](#getting-started)):
-
-```shell
-npm install poppy-robot-cli -g
-```
-
-Then type:
+Once installed, just type:
 
 ```shell
 poppy -h
 ```
 
-To access to the inline help provided with the cli which allows both querying and sending simple command to the motors of the robot.
-
-Note, once the Poppy switches on and ready (green light blinking), the __config__ command must be performed first.
+To access to the help about available commands.
 
 ## Getting Started
 
