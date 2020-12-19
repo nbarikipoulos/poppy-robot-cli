@@ -142,7 +142,7 @@ const getUserConfiguration = (get = 'all') => {
 
       // Ensure that values have been passed by the cli
       // (yargs will set option to their default values if not provided).
-      for (const opt in [`-${key}`, `--${desc.details.alias}`]) {
+      for (const opt of [`-${key}`, `--${desc.details.alias}`]) {
         const idx = process.argv.indexOf(opt) + 1
         if (idx > 0) {
           const value = process.argv[idx]
