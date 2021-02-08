@@ -56,7 +56,7 @@ It provides:
     poppy rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
     ```
 
-    will address this rotate command to a Poppy with ip/hostname and port of its REST api set to respectively
+    will address this rotate command to a Poppy with hostname/ip and port of its REST api set to respectively
     'poppy1.local' and 8081. Note these additionnal flags can be used with poppy script (cf. [script](https://github.com/nbarikipoulos/poppy-robot-core#scripts) in [poppy-robot-core](https://github.com/nbarikipoulos/poppy-robot-core) module):
 
     ```shell
@@ -614,7 +614,7 @@ In order to configure the connection to the Poppy robot, the poppy-robot-cli aut
 
 option | desc | value | default
 --- | --- | --- | --- |
--i/--ip | Set the Poppy IP/hostname | string | poppy.local
+-i/--ip | Set the Poppy hostname/ip | string | poppy.local
 -p/--port | Set the http server port on Poppy | integer | 8080
 
 For the CLI mode, such options are available as other ones and typing -h will display them in help.
@@ -625,7 +625,7 @@ As example,
 cli rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
 ```
 
-will send this rotate by 30 degrees order to a Poppy with an ip/hostname and rest api port respectively set to 'poppy1.local' and 8081.
+will send this rotate by 30 degrees order to a Poppy with an hostname/ip and rest api port respectively set to 'poppy1.local' and 8081.
 
 For script exectution , simply typing -h will display help about these options and simply adding these flags at execution time will configure the Poppy context.
 

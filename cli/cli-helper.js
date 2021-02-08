@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -23,10 +23,10 @@ let POPPY_INSTANCE
 /** Accessor on Poppy Instance */
 const getPoppyInstance = _ => {
   if (!POPPY_INSTANCE) {
-    const connect = Object.assign({},
-      DEFAULT_CONNECTION_SETTINGS,
-      getUserConfiguration('connect')
-    )
+    const connect = {
+      ...DEFAULT_CONNECTION_SETTINGS,
+      ...getUserConfiguration()
+    }
 
     const msg = prettify(
       'error',
@@ -54,11 +54,11 @@ const init = async _ => {
 
   if (!skipGetPoppyStructure) {
     try {
-      const config = getUserConfiguration()
-      POPPY_INSTANCE = await createPoppy(config)
+      const connect = getUserConfiguration()
+      POPPY_INSTANCE = await createPoppy({ connect })
 
       ARGUMENT_DESC.motor.details.choices = ['all'].concat(
-        POPPY_INSTANCE.getAllMotorIds()
+        POPPY_INSTANCE.allMotorIds
       )
     } catch (error) {
       delete ARGUMENT_DESC.motor.details.choices
@@ -101,18 +101,7 @@ const addOptions = (
 
 const getArgDesc = (longKeyId) => ARGUMENT_DESC[longKeyId]
 
-// Get configuration from .poppyrc file, if any and cli arguments
-// get: 'connect' - connection settings object
-//      'all' -  unused
-const getUserConfiguration = (get = 'all') => {
-  //
-  // config object:{
-  //    connect: {
-  //      ip: hostname/ip value,
-  //      port: port for the REST API served by the pypot http server,
-  //    }
-  // }
-  //
+const getUserConfiguration = _ => {
   const config = { connect: {} }
 
   //
@@ -132,50 +121,43 @@ const getUserConfiguration = (get = 'all') => {
   // On a second hand, let's update the config object with settings
   // from the cli (connection settings only), if needed.
   //
-  if (get === 'all' || get === 'connect') {
-    const longKeys = ['ip', 'port'] // Same as connect object properties
-    const connect = config.connect
+  const longKeys = ['ip', 'port'] // Same as connect object properties
+  const connect = config.connect
 
-    for (const longKey of longKeys) {
-      const desc = getArgDesc(longKey)
-      const key = desc.key
+  for (const longKey of longKeys) {
+    const desc = getArgDesc(longKey)
+    const key = desc.key
 
-      // Ensure that values have been passed by the cli
-      // (yargs will set option to their default values if not provided).
-      for (const opt of [`-${key}`, `--${desc.details.alias}`]) {
-        const idx = process.argv.indexOf(opt) + 1
-        if (idx > 0) {
-          const value = process.argv[idx]
-          if (value === getArgDesc(longKey).details.default) {
-            delete connect[longKey]
-          } else {
-            connect[longKey] = value
-          }
-          break
+    // Ensure that values have been passed by the cli
+    // (yargs will set option to their default values if not provided).
+    for (const opt of [`-${key}`, `--${desc.details.alias}`]) {
+      const idx = process.argv.indexOf(opt) + 1
+      if (idx > 0) {
+        const value = process.argv[idx]
+        if (value === getArgDesc(longKey).details.default) {
+          delete connect[longKey]
+        } else {
+          // prop 'ip' renamed to 'hostname' (core v10)
+          connect[longKey === 'ip' ? 'hostname' : longKey] = value
         }
+        break
       }
     }
-    // At last, clean-up the config object
-    // if no connection properties have been set
-    if (Object.keys(connect).length === 0) {
-      delete config.connect
-    }
   }
 
-  // Let's extract result object
-  let result
-
-  switch (get) {
-    case 'connect':
-      result = config.connect || {}
-      break
-    case 'all':
-    case 'default':
-      result = config
-      break
+  // prop 'ip' renamed to 'hostname' (core v10)
+  if (connect.ip) {
+    connect.hostname = connect.hostname || connect.ip
+    delete connect.ip
   }
 
-  return result
+  // At last, clean-up the config object
+  // if no connection properties have been set
+  if (Object.keys(connect).length === 0) {
+    delete config.connect
+  }
+
+  return config.connect || {}
 }
 
 // ////////////////////////////////

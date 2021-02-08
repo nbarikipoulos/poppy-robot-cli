@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -57,7 +57,7 @@ const query = async (argv) => {
   const poppy = getPoppyInstance()
 
   const motorIds = argv.motor.includes('all')
-    ? poppy.getAllMotorIds()
+    ? poppy.allMotorIds
     : argv.motor
 
   const registers = argv.register
@@ -82,7 +82,7 @@ const query = async (argv) => {
   if (data) {
     const d = _format(data)
     const result = argv.t
-      ? _tree(d, poppy.getDescriptor())
+      ? _tree(d, poppy.descriptor)
       : _table(d, argv.I)
 
     console.log(result)

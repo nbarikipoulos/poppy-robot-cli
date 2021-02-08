@@ -1,11 +1,10 @@
-/*! Copyright (c) 2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2020-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
 const yargs = require('yargs')
 
-const { PoppyRequestHandler, DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
-const { lookUp } = require('poppy-robot-core/util/misc')
+const { createRequestHandler } = require('poppy-robot-core')
 
 const { getArgDesc, getUserConfiguration } = require('../cli-helper')
 
@@ -36,23 +35,24 @@ module.exports = _ => {
 // Perform the request to robot
 // ////////////////////////////////
 
-const perform = (
-  connect,
-  url,
+const perform = async (
   headerMsg,
   errorMsg,
-  { method = 'get', config = {} } = {}
+  url,
+  config = {}
 ) => {
-  const req = new PoppyRequestHandler(connect)
+  const reqHandler = await createRequestHandler(getUserConfiguration())
+  const hostname = reqHandler.settings.hostname
 
-  console.log(`>> ${headerMsg}`)
+  console.log(`>> ${headerMsg} (hostname/ip: ${hostname}).`)
 
-  return req.perform(url, {
-    method,
-    config: {
-      ...{ baseURL: `http://${connect.ip}` }, // hostname:8080 => hostname
-      ...config
-    }
+  const method = config.method || 'get'
+
+  return reqHandler.perform(url, method, {
+    baseURL: `http://${hostname}`,
+    headers: {},
+    responseType: 'text',
+    ...config
   })
 }
 
@@ -66,24 +66,12 @@ const COMMANDS = [{
   builder: (yargs) => {
     yargs.strict()
   },
-  handler: async (argv) => {
-    const connect = getUserConfiguration('connect')
-    const inputHostname = connect.ip || DEFAULT_CONNECTION_SETTINGS.ip
-
-    // lookup hostname, if needed
-    connect.ip = await lookUp(inputHostname)
-
-    return perform(
-      connect,
-      '/api/raw_logs',
-      `Get Logs (hostname/ip: ${inputHostname}).`,
-      'Unable to perform action',
-      {
-        method: 'post',
-        config: { headers: {}, data: 'id=0' }
-      }
-    ).then(res => { console.log(res.data) })
-  }
+  handler: async (argv) => perform(
+    'Get Logs',
+    'Unable to perform action',
+    '/api/raw_logs',
+    { method: 'post', data: 'id=0' }
+  ).then(res => { console.log(res.data) })
 }, {
   cmd: 'api [action]',
   desc: 'Start/Reset/Stop the robot API.',
@@ -97,60 +85,31 @@ const COMMANDS = [{
       .example('$0 api', 'Reset the robot API.')
       .example('$0 api stop', 'Stop the robot API.')
   },
-  handler: async (argv) => {
-    const connect = getUserConfiguration('connect')
-    const inputHostname = connect.ip || DEFAULT_CONNECTION_SETTINGS.ip
-
-    // lookup hostname, if needed
-    connect.ip = await lookUp(inputHostname)
-
-    const action = argv.action
-
-    return perform(
-      connect,
-      `/api/${action}`,
-      `${action} robot API (hostname/ip: ${inputHostname}).`,
-      'Unable to perform action'
-    )
-  }
+  handler: async (argv) => perform(
+    `${argv.action} robot API`,
+    'Unable to perform action',
+    `/api/${argv.action}`
+  )
 }, {
   cmd: 'reboot',
   desc: 'Reboot the Rapsberry.',
   builder: (yargs) => {
     yargs.strict()
   },
-  handler: async (argv) => {
-    const connect = getUserConfiguration('connect')
-    const inputHostname = connect.ip || DEFAULT_CONNECTION_SETTINGS.ip
-
-    // lookup hostname, if needed
-    connect.ip = await lookUp(inputHostname)
-
-    return perform(
-      connect,
-      '/reboot',
-      `Reboot the Rapsberry (hostname/ip: ${inputHostname}).`,
-      'Unable to reboot the Rapsberry'
-    )
-  }
+  handler: async (argv) => perform(
+    'Reboot the Rapsberry',
+    'Unable to reboot the Rapsberry',
+    '/reboot'
+  )
 }, {
   cmd: 'shutdown',
   desc: 'Shutdown the Rapsberry.',
   builder: (yargs) => {
     yargs.strict()
   },
-  handler: async (argv) => {
-    const connect = getUserConfiguration('connect')
-    const inputHostname = connect.ip || DEFAULT_CONNECTION_SETTINGS.ip
-
-    // lookup hostname, if needed
-    connect.ip = await lookUp(inputHostname)
-
-    return perform(
-      connect,
-      '/shutdown',
-      `Shutdown the Rapsberry (hostname/ip: ${inputHostname}).`,
-      'Unable to shutdown the Rapsberry'
-    )
-  }
+  handler: async (argv) => perform(
+    'Shutdown the Rapsberry',
+    'Unable to shutdown the Rapsberry',
+    '/shutdown'
+  )
 }]

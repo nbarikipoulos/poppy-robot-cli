@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 /**
  * This module is a simple wrapper of the poppy-robot-core module in order to:
@@ -10,7 +10,7 @@
  *
  * option | desc | value | default
  * --- | --- | --- | ---
- * -i/--ip | Set the Poppy IP/hostname | string | poppy.local
+ * -i/--ip | Set the Poppy hostname/ip | string | poppy.local
  * -p/--port | Set the port to the REST API served by the http server on Poppy | integer | 8080
  *
  * Note it re-exports all the exported features of interest of the poppy-robot-core module.
@@ -26,12 +26,12 @@
 const yargs = require('yargs')
 
 const {
-  createScript, createDescriptor, Script, Poppy,
+  createScript, Script, Poppy,
   ExtMotorRequest, RawMotorRequest, PoppyRequestHandler
 } = require('poppy-robot-core')
 
 const { addPoppyConnectionOptions } = require('./cli/cli-helper')
-const createPoppy = require('./lib/ext-poppy-factory')
+const { createPoppy, createRequestHandler, createDescriptor } = require('./lib/ext-poppy-factory')
 
 // ////////////////////////////////
 // Automatically add CLI options for
@@ -58,6 +58,7 @@ yargs
 
 module.exports = {
   createPoppy,
+  createRequestHandler,
   createScript,
   createDescriptor,
   Script,

@@ -1,4 +1,4 @@
-/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -8,9 +8,8 @@ const path = require('path')
 const yargs = require('yargs')
 const colors = require('colors')
 
-const { PoppyRequestHandler, DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
+const { createRequestHandler, DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
 const { createDescriptor } = require('poppy-robot-core')
-const { lookUp } = require('poppy-robot-core/util/misc')
 
 const { addOptions, getUserConfiguration } = require('../cli-helper')
 
@@ -43,7 +42,7 @@ module.exports = _ => yargs.command(
       .example(
         '$0 config',
         'Check connection to target robot using default settings' +
-          `(aka ${DEFAULT_CONNECTION_SETTINGS.ip}:${DEFAULT_CONNECTION_SETTINGS.port})`
+          `(aka ${DEFAULT_CONNECTION_SETTINGS.hostname}:${DEFAULT_CONNECTION_SETTINGS.port})`
       )
       .example(
         '$0 config --ip poppy1.local -s',
@@ -68,39 +67,33 @@ module.exports = _ => yargs.command(
 // ////////////////////////////////
 
 const handler = async (argv) => {
+  // Let's  store user's settings
+  const connect = getUserConfiguration()
+
   //
   // Check connection
   //
 
-  const config = getUserConfiguration()
-
-  const connect = Object.assign({}, config.connect)
-
-  const inputIp = connect.ip || DEFAULT_CONNECTION_SETTINGS.ip
-
-  // lookup hostname, if needed
-  const ip = await lookUp(connect.ip)
-  connect.ip = ip
-
-  const req = new PoppyRequestHandler(connect)
+  const reqHandler = await createRequestHandler(connect)
+  const settings = reqHandler.settings
 
   let testRestAPI = true
 
   try {
-    await req.perform('/motor/alias/list.json')
+    await reqHandler.getAliases()
   } catch (err) {
     testRestAPI = false
   }
 
-  console.log(`>> Connection to Poppy (hostname/ip: ${inputIp})`)
-  console.log(`  REST API (port ${req.getSettings().port}):\t ${_display(testRestAPI)}`)
+  console.log(`>> Connection to Poppy (hostname/ip: ${settings.hostname})`)
+  console.log(`  REST API (port ${settings.port}):\t ${_display(testRestAPI)}`)
 
   //
   // display robot structure
   //
 
   if (argv.M && testRestAPI) {
-    const descriptor = await createDescriptor(connect)
+    const descriptor = await createDescriptor(settings)
 
     const structure = {}
 
@@ -140,21 +133,16 @@ const handler = async (argv) => {
   //
 
   if (argv.s) {
-    // Do not serialize empty data...
-    if (!config.connect || Object.keys(config.connect).length === 0) {
-      delete config.connect
-    }
-
     console.log('>> Save settings in local .poppyrc file')
-    console.log('  connection settings: ', config.connect || 'default')
-    if (Object.keys(config).length !== 0) { // Do not serialize default data
+    console.log('  connection settings: ', connect || 'default')
+    if (Object.keys(connect).length !== 0) { // Do not serialize default data
       fs.writeFileSync(
         path.resolve(process.cwd(), '.poppyrc'),
-        JSON.stringify(config)
+        JSON.stringify({ connect })
       )
     } else {
       const msg = '  ' + colors.yellow.inverse('WARNING') +
-        ' poppyrc file not created (only default settings.)'
+        ' poppyrc file not created (only default settings used.)'
       console.log(msg)
     }
   }
