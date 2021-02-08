@@ -89,10 +89,16 @@ const handler = async (argv) => {
   console.log(`  REST API (port ${settings.port}):\t ${_display(testRestAPI)}`)
 
   //
-  // display robot structure
+  // Early exit
   //
 
-  if (argv.M && testRestAPI) {
+  if (!testRestAPI) { return }
+
+  //
+  // Display robot structure
+  //
+
+  if (argv.M) {
     const descriptor = await createDescriptor(settings)
 
     const structure = {}
@@ -129,7 +135,7 @@ const handler = async (argv) => {
   }
 
   //
-  // At last, Save settings
+  // Save settings
   //
 
   if (argv.s) {
@@ -141,9 +147,9 @@ const handler = async (argv) => {
         JSON.stringify({ connect })
       )
     } else {
-      const msg = '  ' + colors.yellow.inverse('WARNING') +
-        ' poppyrc file not created (only default settings used.)'
-      console.log(msg)
+      console.log(
+        `  ${colors.yellow.inverse('WARNING')} poppyrc file not created (only default settings used.)`
+      )
     }
   }
 }
