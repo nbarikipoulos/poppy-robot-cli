@@ -72,6 +72,7 @@ Enjoy, ;)
 <!-- toc -->
 
 - [TL;DR](#tldr)
+- [Prerequisite](#prerequisite)
 - [Getting Started](#getting-started)
   * [Using node.js/npm](#using-nodejsnpm)
     + [Installing node.js](#installing-nodejs)
@@ -99,6 +100,7 @@ Enjoy, ;)
   * [Common CLI Flags](#common-cli-flags)
   * [Poppy "Runtime Configuration" File](#poppy-runtime-configuration-file)
 - [API](#api)
+- [Known Limitations](#known-limitations)
 - [Credits](#credits)
 - [License](#license)
 
@@ -122,6 +124,10 @@ poppy -h
 ```
 
 To access to the help about available commands.
+
+## Prerequisite
+
+__This module requires Poppy software ^v3.0.0__ installed on robot.
 
 ## Getting Started
 
@@ -658,6 +664,11 @@ command line.
 ## API
 
 This module re-exports the [poppy-robot-core][core-link] module elements. See this module [api][core-link-api] for further details.
+
+## Known Limitations
+
+- __This module has been only tested with the Poppy Ergo Jr__ (aka with a set of dynamixel XL-320). As it communicates with the robot via the REST API of the pypot library, it should be usable with any robot of the poppy family.
+
 
 ## Credits
 
