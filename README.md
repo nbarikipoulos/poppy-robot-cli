@@ -2,8 +2,8 @@
 
 [![NPM version][npm-image]][npm-url]
 [![JavaScript Style Guide][standard-image]][standard-url]
-[![Dependency Status][david-image]][david-url]
-[![devDependency Status][david-dev-image]][david-dev-url]
+[![Language grade: JavaScript][lgtm-image]][lgtm-url]
+[![Maintainability][code-climate-image]][code-climate-url]
 
 This module allows to simply interact with robots of the [Poppy project](https://www.poppy-project.org/en/) family in command line.
 
@@ -687,7 +687,7 @@ The poppy-robot-cli is MIT licensed. See [LICENSE](./LICENSE.md).
 [standard-url]: https://standardjs.com
 [standard-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
 
-[david-image]: https://img.shields.io/david/nbarikipoulos/poppy-robot-cli.svg
-[david-url]: https://david-dm.org/nbarikipoulos/poppy-robot-cli
-[david-dev-image]: https://img.shields.io/david/dev/nbarikipoulos/poppy-robot-cli.svg
-[david-dev-url]: https://david-dm.org/nbarikipoulos/poppy-robot-cli?type=dev
+[lgtm-url]: https://lgtm.com/projects/g/nbarikipoulos/poppy-robot-cli
+[lgtm-image]: https://img.shields.io/lgtm/grade/javascript/g/nbarikipoulos/poppy-robot-cli.svg?logo=lgtm&logoWidth=18
+[code-climate-url]: https://codeclimate.com/github/nbarikipoulos/poppy-robot-cli/maintainability
+[code-climate-image]: https://api.codeclimate.com/v1/badges/1e23c37d39d4bcf8d6ce/maintainability
