@@ -99,7 +99,8 @@ const COMMANDS = [{
   handler: async (argv) => perform(
     'Reboot the Rapsberry',
     'Unable to reboot the Rapsberry',
-    '/reboot'
+    '/reboot',
+    { timeout: 2000 }
   )
 }, {
   cmd: 'shutdown',
@@ -110,6 +111,7 @@ const COMMANDS = [{
   handler: async (argv) => perform(
     'Shutdown the Rapsberry',
     'Unable to shutdown the Rapsberry',
-    '/shutdown'
+    '/shutdown',
+    { timeout: 2000 }
   )
 }]
