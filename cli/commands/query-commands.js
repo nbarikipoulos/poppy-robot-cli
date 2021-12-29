@@ -2,27 +2,19 @@
 
 'use strict'
 
-const yargs = require('yargs')
-
 const Table = require('cli-table')
 const treeify = require('treeify')
 
 const { addOptions, getPoppyInstance } = require('../cli-helper')
 const { prettifyError: prettify } = require('../../lib/utils')
 
-// ////////////////////////////////
-// ////////////////////////////////
-// Public API
-// ////////////////////////////////
-// ////////////////////////////////
-
-module.exports = _ => yargs.command(
-  'query',
-  'Query the state of Poppy motors.',
-  (yargs) => {
+module.exports = [{
+  cmd: 'query',
+  desc: 'Query the state of Poppy motors.',
+  builder: (yargs) => {
     addOptions(
-      'Query Options:',
-      ['motor', 'register', 'invert', 'tree']
+      ['motor', 'register', 'invert', 'tree'],
+      'Query Options:'
     )
 
     yargs
@@ -39,14 +31,8 @@ module.exports = _ => yargs.command(
         'Get the `present_position` and `upper_limit` register values of motors m1 and m6'
       )
   },
-  (argv) => query(argv) // Main job
-)
-
-// ////////////////////////////////
-// ////////////////////////////////
-// Private
-// ////////////////////////////////
-// ////////////////////////////////
+  handler: (argv) => query(argv) // Main job
+}]
 
 // ////////////////////////////////
 // The query command itself
@@ -95,21 +81,7 @@ const query = async (argv) => {
 
 // Display as tree
 const _tree = (data, descriptor) => {
-  const motorIds = Object.keys(data)
-  const registers = Object.keys(data[motorIds[0]])
-
-  const structure = descriptor.aliases
-    .map(alias => ({
-      name: alias.name,
-      motors: alias.motors
-        .filter(m => data[m])
-        .reduce((acc, m) => {
-          acc[m] = registers.length === 1
-            ? Object.values(data[m])[0]
-            : data[m] // should be copied...
-          return acc
-        }, {})
-    }))
+  const structure = getStructuredValues(descriptor, data)
     .filter(alias => Object.keys(alias.motors).length !== 0)
     .reduce((acc, alias) => {
       acc[alias.name] = alias.motors
@@ -127,6 +99,26 @@ const _tree = (data, descriptor) => {
   return tree
 }
 
+// Structure data with robot structure aka aliases/motors
+const getStructuredValues = (descriptor, data) => {
+  const motorIds = Object.keys(data)
+  const registers = Object.keys(data[motorIds[0]])
+
+  return descriptor.aliases
+    .map(alias => ({
+      name: alias.name,
+      motors: alias.motors
+        .filter(motor => data[motor])
+        .reduce((acc, motor) => {
+          // 1 register queried => compact motor name and value on a single line
+          acc[motor] = registers.length === 1
+            ? Object.values(data[motor])[0]
+            : data[motor] // should be copied...
+          return acc
+        }, {})
+    }))
+}
+
 // Display as table
 const _table = (data, invert = false) => {
   const motorIds = Object.keys(data)
@@ -135,13 +127,13 @@ const _table = (data, invert = false) => {
   const rows = invert ? motorIds : registers
   const cols = invert ? registers : motorIds
 
-  const table = new Table({
-    head: [].concat('', ...cols)
-  })
+  const value = (invert, col, row) => invert ? data[row][col] : data[col][row]
+
+  const table = new Table({ head: ['', ...cols] })
 
   for (const row of rows) {
     table.push({
-      [row]: cols.map(col => invert ? data[row][col] : data[col][row])
+      [row]: cols.map(col => value(invert, col, row))
     })
   }
 

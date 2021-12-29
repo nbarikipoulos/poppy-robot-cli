@@ -5,35 +5,29 @@
 const fs = require('fs')
 const path = require('path')
 
-const yargs = require('yargs')
-const colors = require('colors')
+const treeify = require('treeify')
 
 const { createRequestHandler, DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
 const { createDescriptor } = require('poppy-robot-core')
 
 const { addOptions, getUserConfiguration } = require('../cli-helper')
+const { createPrettify } = require('../../lib/utils')
 
-const treeify = require('treeify')
+const displayErr = createPrettify({ error: 'KO' })
 
-// ////////////////////////////////
-// ////////////////////////////////
-// Public API
-// ////////////////////////////////
-// ////////////////////////////////
-
-module.exports = _ => yargs.command(
-  'config',
-  'Display the Poppy motor configuration.',
-  (yargs) => {
+module.exports = {
+  cmd: 'config',
+  desc: 'Display the Poppy motor configuration.',
+  builder: (yargs) => {
     addOptions(
-      'Config Options:',
-      ['robot_structure', 'motor_details']
+      ['structure', 'details'],
+      'Config Options:'
     )
 
     // Add save CLI connection settings to the 'Poppy Settings' group
     addOptions(
-      'Poppy Connection Settings:',
-      ['saveConfig']
+      ['save'],
+      'Poppy Connection Settings:'
     )
 
     yargs
@@ -53,21 +47,15 @@ module.exports = _ => yargs.command(
         'Check connection and display the robot info/structure'
       )
   },
-  handler
-)
-
-// ////////////////////////////////
-// ////////////////////////////////
-// Private
-// ////////////////////////////////
-// ////////////////////////////////
+  handler: (argv) => perform(argv)
+}
 
 // ////////////////////////////////
 // The command itself
 // ////////////////////////////////
 
-const handler = async (argv) => {
-  // Let's  store user's settings
+const perform = async (argv) => {
+  // Let's get settings provided by user
   const connect = getUserConfiguration()
 
   //
@@ -75,59 +63,26 @@ const handler = async (argv) => {
   //
 
   const reqHandler = await createRequestHandler(connect)
+
+  const apiOk = await checkAPI(reqHandler)
+
   const settings = reqHandler.settings
-
-  let testRestAPI = true
-
-  try {
-    await reqHandler.getAliases()
-  } catch (err) {
-    testRestAPI = false
-  }
+  const displayTest = displayErr.prettify(apiOk ? 'ok' : 'error')
 
   console.log(`>> Connection to Poppy (hostname/ip: ${settings.hostname})`)
-  console.log(`  REST API (port ${settings.port}):\t ${_display(testRestAPI)}`)
+  console.log(`  REST API (port ${settings.port}):\t ${displayTest}`)
 
-  //
-  // Early exit
-  //
-
-  if (!testRestAPI) { return }
+  // "Early exit"
+  if (!apiOk) { return }
 
   //
   // Display robot structure
   //
 
   if (argv.M) {
-    const descriptor = await createDescriptor(settings)
-
-    const structure = {}
-
-    descriptor.aliases.forEach(alias => {
-      structure[alias.name] = alias.motors.reduce(
-        (acc, motorName) => {
-          let details = null
-          if (argv.d) {
-            const mDescriptor = descriptor.motors.find(m => m.name === motorName)
-            const range = [
-              mDescriptor.lower_limit,
-              mDescriptor.upper_limit
-            ].map(Math.round)
-            details = {
-              id: mDescriptor.id,
-              type: mDescriptor.model,
-              angle: `[${range}]`
-            }
-          }
-          acc[motorName] = details
-          return acc
-        },
-        {}
-      )
-    })
-
-    // At last, let display it
-
+    const descriptor = await createDescriptor(connect)
+    const structure = robotStructure(descriptor, argv.d)
+    // At last, let's display result
     let tree = ' Poppy\n'
     treeify.asLines(structure, true, (line) => { tree += `   ${line}\n` })
 
@@ -141,15 +96,11 @@ const handler = async (argv) => {
   if (argv.s) {
     console.log('>> Save settings in local .poppyrc file')
     console.log('  connection settings: ', connect || 'default')
-    if (Object.keys(connect).length !== 0) { // Do not serialize default data
-      fs.writeFileSync(
-        path.resolve(process.cwd(), '.poppyrc'),
-        JSON.stringify({ connect })
-      )
+    if (Object.keys(connect).length !== 0) { // i.e. do not serialize if only default data
+      save(connect)
     } else {
-      console.log(
-        `  ${colors.yellow.inverse('WARNING')} poppyrc file not created (only default settings used.)`
-      )
+      const msg = `${displayErr('info')} poppyrc file not created (only default settings used.)`
+      console.log(`  ${msg}`)
     }
   }
 }
@@ -158,4 +109,57 @@ const handler = async (argv) => {
 // Misc.
 // ////////////////////////////////
 
-const _display = (b) => b ? colors.green.inverse('OK') : colors.red.inverse('KO')
+const checkAPI = async (reqHandler) => {
+  let resultOfTest = true
+
+  try {
+    await reqHandler.getAliases()
+  } catch (err) {
+    resultOfTest = false
+  }
+
+  return resultOfTest
+}
+
+// Filter descriptor
+const robotStructure = (descriptor, showDetails) => {
+  const structure = {}
+
+  descriptor.aliases.forEach(alias => {
+    structure[alias.name] = alias.motors.reduce(
+      (acc, motorName) => {
+        let details = null
+        if (showDetails) {
+          const motorDescriptor = descriptor
+            .motors
+            .find(m => m.name === motorName)
+          details = getMotorDetails(motorDescriptor)
+        }
+        acc[motorName] = details
+        return acc
+      },
+      {}
+    )
+  })
+
+  return structure
+}
+
+// return { id, type, lower/upper limit }
+const getMotorDetails = (motorDescriptor) => {
+  const range = [
+    motorDescriptor.lower_limit,
+    motorDescriptor.upper_limit
+  ].map(Math.round)
+
+  return {
+    id: motorDescriptor.id,
+    type: motorDescriptor.model,
+    angle: `[${range}]`
+  }
+}
+
+const save = (connect) => fs.writeFileSync(
+  path.resolve(process.cwd(), '.poppyrc'),
+  JSON.stringify({ connect })
+)

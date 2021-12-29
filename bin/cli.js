@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -8,6 +8,7 @@ const yargs = require('yargs')
 
 const { version } = require('../package.json')
 
+const commands = require('../cli/commands')
 const { init, addPoppyConnectionOptions } = require('../cli/cli-helper')
 const { prettifyError: prettify } = require('../lib/utils')
 
@@ -54,17 +55,15 @@ const buildCLI = _ => {
   // Add common cli options for poppy settings
   addPoppyConnectionOptions()
 
-  // Add executing command
-  require('../cli/commands/exec-commands')()
-
-  // Add querying robot commands
-  require('../cli/commands/query-commands')()
-
-  // Add Configuration/Discovering robot commands
-  require('../cli/commands/config-command')()
-
-  // "Admin" commands (api start/stop, reboot, etc.)
-  require('../cli/commands/admin-commands')()
+  // Add commands
+  for (const command of commands) {
+    yargs.command(
+      command.cmd,
+      command.desc,
+      command.builder,
+      command.handler
+    )
+  }
 }
 
 // ////////////////////////////////

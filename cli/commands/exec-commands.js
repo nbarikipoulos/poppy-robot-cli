@@ -1,73 +1,20 @@
-/*! Copyright (c) 2018-2020 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
-const yargs = require('yargs')
-
 const { Script } = require('poppy-robot-core')
 
-const { addOptions, getPoppyInstance, getArgDesc } = require('../cli-helper')
+const { addOptions, addPositional, getPoppyInstance } = require('../cli-helper')
 
 const EXEC_CMD_GROUP_LABEL = 'Command Options:'
 
-// ////////////////////////////////
-// ////////////////////////////////
-// Public API
-// ////////////////////////////////
-// ////////////////////////////////
-
-module.exports = _ => {
-  for (const command of COMMANDS) {
-    yargs.command(
-      command.cmd,
-      command.desc,
-      command.builder,
-      command.handler
-    )
-  }
-}
-
-// ////////////////////////////////
-// ////////////////////////////////
-// Private
-// ////////////////////////////////
-// ////////////////////////////////
-
-// ...
-
-// ////////////////////////////////
-// Execute simple command
-// ////////////////////////////////
-
-async function exec (type, motors, options = {}) {
-  // Get already instantiaed poppy object a Poppy object
-  const poppy = getPoppyInstance()
-  //
-  // create a poppy script...
-  //
-
-  const script = new Script()
-    .select(...motors)
-
-  script[type](...Object.values(options))
-
-  //
-  // ... and execute it
-  //
-  await poppy.exec(script)
-}
-
-// ////////////////////////////////
-// Command "descriptors"
-// ////////////////////////////////
-
-const COMMANDS = [{
+module.exports = [{
   cmd: 'compliant',
   desc: 'Set state of selected motor(s) to compliant (i.e. handly drivable).',
   builder: (yargs) => {
     addOptions(
-      EXEC_CMD_GROUP_LABEL,
-      ['motor']
+      ['motor'],
+      EXEC_CMD_GROUP_LABEL
     )
 
     yargs
@@ -87,8 +34,8 @@ const COMMANDS = [{
   desc: 'Set state of selected motor(s) to stiff (i.e. programmatically drivable).',
   builder: (yargs) => {
     addOptions(
-      EXEC_CMD_GROUP_LABEL,
-      ['motor']
+      ['motor'],
+      EXEC_CMD_GROUP_LABEL
     )
 
     yargs
@@ -109,13 +56,12 @@ const COMMANDS = [{
     'Value must be in the [0, 1023] range',
   builder: (yargs) => {
     addOptions(
-      EXEC_CMD_GROUP_LABEL,
-      ['motor']
+      ['motor'],
+      EXEC_CMD_GROUP_LABEL
     )
 
     // Add the positional argument of this command
-    const desc = getArgDesc('speed')
-    yargs.positional('value', desc)
+    addPositional('speed')
 
     yargs
       .example(
@@ -133,13 +79,12 @@ const COMMANDS = [{
   desc: 'Rotate the target motor(s) by x degrees',
   builder: (yargs) => {
     addOptions(
-      EXEC_CMD_GROUP_LABEL,
-      ['motor', 'wait']
+      ['motor', 'wait'],
+      EXEC_CMD_GROUP_LABEL
     )
 
     // Add the positional argument of this command
-    const desc = getArgDesc('rotate')
-    yargs.positional('value', desc)
+    addPositional('rotate')
 
     yargs
       .example(
@@ -153,13 +98,12 @@ const COMMANDS = [{
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
     addOptions(
-      EXEC_CMD_GROUP_LABEL,
-      ['motor', 'wait']
+      ['motor', 'wait'],
+      EXEC_CMD_GROUP_LABEL
     )
 
     // Add the positional argument of this command
-    const desc = getArgDesc('position')
-    yargs.positional('value', desc)
+    addPositional('position')
 
     yargs
       .example(
@@ -173,13 +117,12 @@ const COMMANDS = [{
   desc: 'Set the led color of the selected motor(s)',
   builder: (yargs) => {
     addOptions(
-      EXEC_CMD_GROUP_LABEL,
-      ['motor']
+      ['motor'],
+      EXEC_CMD_GROUP_LABEL
     )
 
     // Add the positional argument of this command
-    const desc = getArgDesc('led')
-    yargs.positional('value', desc)
+    addPositional('led')
 
     yargs
       .example(
@@ -193,3 +136,25 @@ const COMMANDS = [{
   },
   handler: (argv) => exec('led', argv.motor, { led: argv.value })
 }]
+
+// ////////////////////////////////
+// Execute simple command
+// ////////////////////////////////
+
+const exec = async (type, motors, options = {}) => {
+  // Get already instantiaed poppy object a Poppy object
+  const poppy = getPoppyInstance()
+  //
+  // create a poppy script...
+  //
+
+  const script = new Script()
+    .select(...motors)
+
+  script[type](...Object.values(options))
+
+  //
+  // ... and execute it
+  //
+  await poppy.exec(script)
+}

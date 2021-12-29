@@ -2,7 +2,7 @@
 
 'use strict'
 
-const fs = require('fs')
+const { readFileSync } = require('fs')
 const path = require('path')
 
 const yargs = require('yargs')
@@ -11,7 +11,7 @@ const { createPoppy } = require('poppy-robot-core')
 
 const { prettifyError: prettify } = require('../lib/utils')
 
-const ARGUMENT_DESC = require('./arguments')
+const { get: getArg } = require('./arguments')
 
 const { DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
 
@@ -57,11 +57,8 @@ const init = async _ => {
       const connect = getUserConfiguration()
       POPPY_INSTANCE = await createPoppy({ connect })
 
-      ARGUMENT_DESC.motor.details.choices = ['all'].concat(
-        POPPY_INSTANCE.allMotorIds
-      )
+      getArg('motor').opt.choices.push(...POPPY_INSTANCE.allMotorIds)
     } catch (error) {
-      delete ARGUMENT_DESC.motor.details.choices
       const msg = prettify(
         'warning',
         'Unable to get data about the Poppy structure: use the config command to check connection to Poppy'
@@ -72,34 +69,38 @@ const init = async _ => {
   }
 }
 
-const addOptions = (
-  groupName,
-  optionKeys,
-  ...mandatoryOptionKeys
-) => {
-  const keys = []
+const addOptions = (optionNames, groupName) => {
+  for (const name of optionNames) {
+    const desc = getArg(name)
 
-  for (const longKey of optionKeys) {
-    const desc = getArgDesc(longKey)
-    const key = desc.key
-
-    keys.push(key)
-    yargs.options(key, desc.details)
-
-    if (
-      mandatoryOptionKeys.includes(longKey) // ...
-    ) {
-      yargs.demand(key, 'This option is mandatory.')
-    }
+    yargs.options(desc.key, desc.opt)
   }
 
-  // Group all these options in one group.
+  // Group options in group, if any.
   if (groupName) {
-    yargs.group(keys, groupName)
+    yargs.group(optionNames, groupName)
   }
 }
 
-const getArgDesc = (longKeyId) => ARGUMENT_DESC[longKeyId]
+const addPositional = (key) => {
+  const desc = getArg(key)
+  yargs.positional('value', desc.opt)
+}
+
+const RC_FILE = '.poppyrc'
+
+const loadRCFile = (file = RC_FILE) => {
+  let option
+  try {
+    const buffer = readFileSync(
+      path.resolve(process.cwd(), file),
+      'utf8'
+    )
+    option = JSON.parse(buffer)
+  } catch (error) { /* Do nothing */ }
+
+  return option || {}
+}
 
 const getUserConfiguration = _ => {
   const config = { connect: {} }
@@ -107,15 +108,10 @@ const getUserConfiguration = _ => {
   //
   // First, let read configuration from local .poppyrc file, if any
   //
-  try {
-    const configFile = path.resolve(process.cwd(), '.poppyrc')
-    const poppyrc = JSON.parse(fs.readFileSync(configFile, 'utf8'))
 
-    Object.assign(
-      config,
-      poppyrc
-    )
-  } catch (error) { /* Do nothing */ }
+  const poppyrc = loadRCFile()
+
+  Object.assign(config, poppyrc)
 
   //
   // On a second hand, let's update the config object with settings
@@ -125,16 +121,16 @@ const getUserConfiguration = _ => {
   const connect = config.connect
 
   for (const longKey of longKeys) {
-    const desc = getArgDesc(longKey)
+    const desc = getArg(longKey)
     const key = desc.key
 
     // Ensure that values have been passed by the cli
     // (yargs will set option to their default values if not provided).
-    for (const opt of [`-${key}`, `--${desc.details.alias}`]) {
+    for (const opt of [`-${key}`, `--${desc.opt.alias}`]) {
       const idx = process.argv.indexOf(opt) + 1
       if (idx > 0) {
         const value = process.argv[idx]
-        if (value === getArgDesc(longKey).details.default) {
+        if (value === getArg(longKey).opt.default) {
           delete connect[longKey]
         } else {
           // prop 'ip' renamed to 'hostname' (core v10)
@@ -143,12 +139,6 @@ const getUserConfiguration = _ => {
         break
       }
     }
-  }
-
-  // prop 'ip' renamed to 'hostname' (core v10)
-  if (connect.ip) {
-    connect.hostname = connect.hostname || connect.ip
-    delete connect.ip
   }
 
   // At last, clean-up the config object
@@ -168,11 +158,11 @@ const getUserConfiguration = _ => {
 
 module.exports = {
   getPoppyInstance,
-  getArgDesc,
   addOptions,
+  addPositional,
   addPoppyConnectionOptions: _ => addOptions(
-    'Poppy Connection Settings:',
-    ['ip', 'port']
+    ['ip', 'port'],
+    'Poppy Connection Settings:'
   ),
   getUserConfiguration,
   init
