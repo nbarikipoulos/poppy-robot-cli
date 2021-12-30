@@ -117,7 +117,7 @@ const getUserConfiguration = _ => {
   // On a second hand, let's update the config object with settings
   // from the cli (connection settings only), if needed.
   //
-  const longKeys = ['ip', 'port'] // Same as connect object properties
+  const longKeys = ['host', 'port'] // Same as connect object properties
   const connect = config.connect
 
   for (const longKey of longKeys) {
@@ -134,7 +134,7 @@ const getUserConfiguration = _ => {
           delete connect[longKey]
         } else {
           // prop 'ip' renamed to 'hostname' (core v10)
-          connect[longKey === 'ip' ? 'hostname' : longKey] = value
+          connect[longKey === 'ip' ? 'host' : longKey] = value
         }
         break
       }
@@ -161,7 +161,7 @@ module.exports = {
   addOptions,
   addPositional,
   addPoppyConnectionOptions: _ => addOptions(
-    ['ip', 'port'],
+    ['host', 'port'],
     'Poppy Connection Settings:'
   ),
   getUserConfiguration,

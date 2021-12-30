@@ -103,9 +103,9 @@ const ARGS = [{
     describe: 'The led color (or turn-off) value.'
   }
 }, {
-  key: 'i',
+  key: 'H',
   opt: {
-    alias: 'ip',
+    alias: 'host',
     nargs: 1,
     type: 'string',
     default: DEFAULT_CONNECTION_SETTINGS.hostname,

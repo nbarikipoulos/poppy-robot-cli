@@ -53,14 +53,14 @@ It provides:
     As example:
 
     ```shell
-    poppy rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
+    poppy rotate 30 -m m1 m2 --host 'poppy1.local' -p 8081
     ```
 
     will address this rotate command to a Poppy with hostname/ip and port of its REST api set to respectively
     'poppy1.local' and 8081. Note these additionnal flags can be used with poppy script (cf. [script](https://github.com/nbarikipoulos/poppy-robot-core#scripts) in [poppy-robot-core](https://github.com/nbarikipoulos/poppy-robot-core) module):
 
     ```shell
-    node myScript.js --ip 'poppy1.local' -p 8081
+    node myScript.js --host 'poppy1.local' -p 8081
     ```
 
 - Next to these common flags, a poppy rc file feature that allows persisting of these connection parameters into a dedicated file.
@@ -214,7 +214,7 @@ It will simply look up to a robot located at poppy.local and display its structu
 Note connection parameters (hostname/rest api port) could be easily changed (see details [section](#configuring-poppy)).
 
 ```shell
-poppy config -M --ip poppy1.local
+poppy config -M --host poppy1.local
 ```
 Typing:
 ```shell
@@ -620,7 +620,7 @@ In order to configure the connection to the Poppy robot, the poppy-robot-cli aut
 
 option | desc | value | default
 --- | --- | --- | --- |
--i/--ip | Set the Poppy hostname/ip | string | poppy.local
+-H/--host | Set the Poppy hostname/ip | string | poppy.local
 -p/--port | Set the http server port on Poppy | integer | 8080
 
 For the CLI mode, such options are available as other ones and typing -h will display them in help.
@@ -628,7 +628,7 @@ For the CLI mode, such options are available as other ones and typing -h will di
 As example,
 
 ```shell
-cli rotate 30 -m m1 m2 --ip 'poppy1.local' -p 8081
+cli rotate 30 -m m1 m2 --host 'poppy1.local' -p 8081
 ```
 
 will send this rotate by 30 degrees order to a Poppy with an hostname/ip and rest api port respectively set to 'poppy1.local' and 8081.
@@ -638,7 +638,7 @@ For script exectution , simply typing -h will display help about these options a
 As example,
 
 ```shell
-node myScript.js --ip poppy1.local -p 8081
+node myScript.js --host poppy1.local -p 8081
 ```
 
 will execute myScript looking for a Poppy with 'poppy1.local' as hostname and with an http server configured on port 8081.
@@ -649,7 +649,7 @@ To avoid typing the connection settings values every time, users can persist the
 Typing:
 
 ```shell
-poppy config --ip poppy1.local -p 8081 --save
+poppy config --host poppy1.local -p 8081 --save
 ```
 
 will create a local .poppyrc file which handles these settings. __This file will be used for each call of the poppy-robot-cli__ (in both CLI or script execution mode) __executed from this directory__.

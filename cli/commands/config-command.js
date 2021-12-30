@@ -39,7 +39,7 @@ module.exports = {
           `(aka ${DEFAULT_CONNECTION_SETTINGS.hostname}:${DEFAULT_CONNECTION_SETTINGS.port})`
       )
       .example(
-        '$0 config --ip poppy1.local -s',
+        '$0 config --host poppy1.local -s',
         'Check connection to robot with hostname \'poppy1.local\' and save settings to .poppyrc file'
       )
       .example(
