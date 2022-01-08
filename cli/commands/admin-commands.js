@@ -1,10 +1,10 @@
-/*! Copyright (c) 2020-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2020-2022 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
-const { createRequestHandler } = require('poppy-robot-core')
+const { createRequestHandler } = require('../../lib/ext-poppy-factory')
 
-const { addPositional, getUserConfiguration } = require('../cli-helper')
+const { addPositional } = require('../cli-helper')
 
 module.exports = [{
   cmd: 'logs',
@@ -62,19 +62,20 @@ module.exports = [{
 const perform = async (
   headerMsg,
   url,
-  config = {}
+  axiosConfig = {}
 ) => {
-  const reqHandler = await createRequestHandler(getUserConfiguration())
-  const hostname = reqHandler.settings.hostname
+  const reqHandler = await createRequestHandler()
 
-  console.log(`>> ${headerMsg} (hostname/ip: ${hostname}).`)
+  const host = reqHandler.settings.host
 
-  const method = config.method || 'get'
+  console.log(`>> ${headerMsg} (hostname/IP: ${host}).`)
+
+  const method = axiosConfig.method || 'get'
 
   return reqHandler.perform(url, method, {
-    baseURL: `http://${hostname}`,
+    baseURL: `http://${host}`,
     headers: {},
     responseType: 'text',
-    ...config
+    ...axiosConfig
   })
 }

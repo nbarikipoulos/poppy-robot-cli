@@ -1,67 +1,42 @@
-/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2022 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
-const { readFileSync } = require('fs')
+const fs = require('fs')
 const path = require('path')
 
 const yargs = require('yargs')
 
-const { createPoppy } = require('poppy-robot-core')
+const { createRequestHandler: coreCreateRequesHandler } = require('poppy-robot-core')
 
 const { prettifyError: prettify } = require('../lib/utils')
 
 const { get: getArg } = require('./arguments')
 
-const { DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
+// Connection options
+const connectOptions = ['host', 'port']
 
-/** Poppy instance.
- * Initialized once by init() call, and as it must be called first
- * */
-let POPPY_INSTANCE
-
-/** Accessor on Poppy Instance */
-const getPoppyInstance = _ => {
-  if (!POPPY_INSTANCE) {
-    const connect = {
-      ...DEFAULT_CONNECTION_SETTINGS,
-      ...getUserConfiguration()
-    }
-
-    const msg = prettify(
-      'error',
-      'Unable to connect to Poppy: use the config command to check connection to Poppy',
-      `hostname/ip: ${connect.ip}`,
-      `port: ${connect.port}`
-    )
-    throw new Error(msg)
-  }
-
-  return POPPY_INSTANCE
-}
+let conf
 
 // ////////////////////////////////
 // Utility functions
 // ////////////////////////////////
 
 // init CLI args,
-// initialize the POPPY_INSTANCE that will be used for any command and then
-// avoid to instantiate it twice.
-// Note in the case of the config command, this function does nothing.
 const init = async _ => {
   const skipGetPoppyStructure = !yargs.argv._.length ||
     ['config', 'reboot', 'shutdown', 'api', 'logs'].find(cmd => yargs.argv._.includes(cmd))
 
   if (!skipGetPoppyStructure) {
     try {
-      const connect = getUserConfiguration()
-      POPPY_INSTANCE = await createPoppy({ connect })
+      const req = await coreCreateRequesHandler(getUserConfiguration())
+      const motors = (await req.perform('/motors/list.json')).data.motors
 
-      getArg('motor').opt.choices.push(...POPPY_INSTANCE.allMotorIds)
+      getArg('motor').opt.choices.push(...motors)
     } catch (error) {
       const msg = prettify(
         'warning',
-        'Unable to get data about the Poppy structure: use the config command to check connection to Poppy'
+        'Unable to get data about the Poppy structure: use the config command to check the connection settings'
       )
 
       return Promise.reject(msg)
@@ -90,65 +65,81 @@ const addPositional = (key) => {
 const RC_FILE = '.poppyrc'
 
 const loadRCFile = (file = RC_FILE) => {
-  let option
+  let config
   try {
-    const buffer = readFileSync(
+    const buffer = fs.readFileSync(
       path.resolve(process.cwd(), file),
       'utf8'
     )
-    option = JSON.parse(buffer)
+    config = JSON.parse(buffer)
   } catch (error) { /* Do nothing */ }
 
-  return option || {}
+  return config || {}
 }
 
-const getUserConfiguration = _ => {
-  const config = { connect: {} }
-
-  //
-  // First, let read configuration from local .poppyrc file, if any
-  //
-
-  const poppyrc = loadRCFile()
-
-  Object.assign(config, poppyrc)
-
-  //
-  // On a second hand, let's update the config object with settings
-  // from the cli (connection settings only), if needed.
-  //
-  const longKeys = ['host', 'port'] // Same as connect object properties
-  const connect = config.connect
-
-  for (const longKey of longKeys) {
-    const desc = getArg(longKey)
-    const key = desc.key
-
-    // Ensure that values have been passed by the cli
-    // (yargs will set option to their default values if not provided).
-    for (const opt of [`-${key}`, `--${desc.opt.alias}`]) {
-      const idx = process.argv.indexOf(opt) + 1
-      if (idx > 0) {
-        const value = process.argv[idx]
-        if (value === getArg(longKey).opt.default) {
-          delete connect[longKey]
-        } else {
-          // prop 'ip' renamed to 'hostname' (core v10)
-          connect[longKey === 'ip' ? 'host' : longKey] = value
-        }
-        break
-      }
+const saveRCFile = (config, file = RC_FILE) => {
+  // Do not save default values
+  const toSave = {}
+  for (const option of connectOptions) {
+    const desc = getArg(option)
+    const value = config[option]
+    const defaultValue = desc?.opt?.default
+    // No default defined or values are different
+    if (value !== undefined && value !== defaultValue) {
+      toSave[option] = value
     }
   }
 
-  // At last, clean-up the config object
-  // if no connection properties have been set
-  if (Object.keys(connect).length === 0) {
-    delete config.connect
+  fs.writeFileSync(
+    path.resolve(process.cwd(), file),
+    JSON.stringify(toSave)
+  )
+}
+
+const getConf = _ => {
+  if (conf === undefined) {
+    const poppyrc = loadRCFile()
+    const cli = getConfigFromCLI()
+    conf = { ...poppyrc, ...cli }
   }
 
-  return config.connect || {}
+  return conf
 }
+
+// Get Connection settings from poppyrc/CLI
+const getUserConfiguration = (config = {}) => {
+  return { ...getConf(), ...config }
+}
+
+const getConfigFromCLI = _ => {
+  const result = {}
+
+  for (const option of connectOptions) {
+    const desc = getArg(option)
+    const value = yargs.argv[option]
+    const defaultValue = desc.opt.default
+
+    // Do not keep default settings if not explicitly filled by user
+    if (
+      value !== undefined &&
+      (value !== defaultValue || isProvidedViaCLI(desc))
+    ) {
+      result[option] = value
+    }
+  }
+
+  return result
+}
+
+const isProvidedViaCLI = (desc) => {
+  const found = (value) => process.argv.indexOf(value) !== -1
+  return found(`-${desc.key}`) || found(`--${desc.opt.alias}`)
+}
+
+const addPoppyConnectionOptions = _ => addOptions(
+  connectOptions,
+  'Poppy Connection Settings:'
+)
 
 // ////////////////////////////////
 // ////////////////////////////////
@@ -157,13 +148,10 @@ const getUserConfiguration = _ => {
 // ////////////////////////////////
 
 module.exports = {
-  getPoppyInstance,
   addOptions,
   addPositional,
-  addPoppyConnectionOptions: _ => addOptions(
-    ['host', 'port'],
-    'Poppy Connection Settings:'
-  ),
+  addPoppyConnectionOptions,
   getUserConfiguration,
+  saveRCFile,
   init
 }

@@ -1,11 +1,12 @@
-/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2022 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
 const Table = require('cli-table')
 const treeify = require('treeify')
 
-const { addOptions, getPoppyInstance } = require('../cli-helper')
+const { createPoppy } = require('../../lib/ext-poppy-factory')
+const { addOptions } = require('../cli-helper')
 const { prettifyError: prettify } = require('../../lib/utils')
 
 module.exports = [{
@@ -39,11 +40,10 @@ module.exports = [{
 // ////////////////////////////////
 
 const query = async (argv) => {
-  // Poppy instance
-  const poppy = getPoppyInstance()
+  const poppy = await createPoppy()
 
-  const motorIds = argv.motor.includes('all')
-    ? poppy.allMotorIds
+  const motorNames = argv.motor.includes('all')
+    ? poppy.motorNames
     : argv.motor
 
   const registers = argv.register
@@ -52,7 +52,7 @@ const query = async (argv) => {
   // Get data...
   //
 
-  const data = await poppy.query(motorIds, registers)
+  const data = await poppy.query(motorNames, registers)
     .catch(error => {
       throw new Error(prettify(
         'error',

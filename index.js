@@ -10,7 +10,7 @@
  *
  * option | desc | value | default
  * --- | --- | --- | ---
- * -i/--ip | Set the Poppy hostname/ip | string | poppy.local
+ * -H/--host | Set the Poppy IP/hostname | string | poppy.local
  * -p/--port | Set the port to the REST API served by the http server on Poppy | integer | 8080
  *
  * Note it re-exports all the exported features of interest of the poppy-robot-core module.

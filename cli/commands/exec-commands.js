@@ -1,10 +1,11 @@
-/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2022 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
 const { Script } = require('poppy-robot-core')
 
-const { addOptions, addPositional, getPoppyInstance } = require('../cli-helper')
+const { addOptions, addPositional } = require('../cli-helper')
+const { createPoppy } = require('../../lib/ext-poppy-factory')
 
 const EXEC_CMD_GROUP_LABEL = 'Command Options:'
 
@@ -142,8 +143,8 @@ module.exports = [{
 // ////////////////////////////////
 
 const exec = async (type, motors, options = {}) => {
-  // Get already instantiaed poppy object a Poppy object
-  const poppy = getPoppyInstance()
+  const poppy = await createPoppy()
+
   //
   // create a poppy script...
   //
@@ -156,5 +157,6 @@ const exec = async (type, motors, options = {}) => {
   //
   // ... and execute it
   //
+
   await poppy.exec(script)
 }

@@ -2,7 +2,7 @@
 
 'use strict'
 
-const { DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
+const { DEFAULT_SETTINGS } = require('poppy-robot-core')
 
 // key or alias
 const get = (name) => ARGS.find(arg => arg.key === name || arg?.opt.alias === name)
@@ -108,8 +108,8 @@ const ARGS = [{
     alias: 'host',
     nargs: 1,
     type: 'string',
-    default: DEFAULT_CONNECTION_SETTINGS.hostname,
-    describe: 'Set the Poppy IP/hostname.'
+    default: DEFAULT_SETTINGS.host,
+    describe: 'Hostname/IP of targeted Poppy.'
   }
 }, {
   key: 'p',
@@ -117,8 +117,8 @@ const ARGS = [{
     alias: 'port',
     type: 'number',
     nargs: 1,
-    default: DEFAULT_CONNECTION_SETTINGS.port,
-    describe: 'Set the port to the REST API served by the http server.'
+    default: DEFAULT_SETTINGS.port,
+    describe: 'Set the port of the pypot REST API.'
   }
 }, {
   key: 's',
@@ -126,7 +126,7 @@ const ARGS = [{
     alias: 'save',
     type: 'boolean',
     default: false,
-    describe: 'Save connection settings to a local .poppyrc file'
+    describe: 'Save connection settings to .poppyrc file'
   }
 }, {
   key: 'M',

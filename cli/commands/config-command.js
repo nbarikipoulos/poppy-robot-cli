@@ -1,16 +1,13 @@
-/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2018-2022 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
-const fs = require('fs')
-const path = require('path')
-
 const treeify = require('treeify')
 
-const { createRequestHandler, DEFAULT_CONNECTION_SETTINGS } = require('poppy-robot-core')
-const { createDescriptor } = require('poppy-robot-core')
+const { DEFAULT_SETTINGS } = require('poppy-robot-core')
+const { createRequestHandler, createDescriptor } = require('../../lib/ext-poppy-factory')
 
-const { addOptions, getUserConfiguration } = require('../cli-helper')
+const { addOptions, saveRCFile } = require('../cli-helper')
 const { createPrettify } = require('../../lib/utils')
 
 const displayErr = createPrettify({ error: 'KO' })
@@ -36,7 +33,7 @@ module.exports = {
       .example(
         '$0 config',
         'Check connection to target robot using default settings' +
-          `(aka ${DEFAULT_CONNECTION_SETTINGS.hostname}:${DEFAULT_CONNECTION_SETTINGS.port})`
+          `(aka ${DEFAULT_SETTINGS.host}:${DEFAULT_SETTINGS.port})`
       )
       .example(
         '$0 config --host poppy1.local -s',
@@ -55,21 +52,17 @@ module.exports = {
 // ////////////////////////////////
 
 const perform = async (argv) => {
-  // Let's get settings provided by user
-  const connect = getUserConfiguration()
-
   //
   // Check connection
   //
-
-  const reqHandler = await createRequestHandler(connect)
+  const reqHandler = await createRequestHandler()
 
   const apiOk = await checkAPI(reqHandler)
 
   const settings = reqHandler.settings
   const displayTest = displayErr.prettify(apiOk ? 'ok' : 'error')
 
-  console.log(`>> Connection to Poppy (hostname/ip: ${settings.hostname})`)
+  console.log(`>> Connection to Poppy (hostname/ip: ${settings.host})`)
   console.log(`  REST API (port ${settings.port}):\t ${displayTest}`)
 
   // "Early exit"
@@ -80,9 +73,11 @@ const perform = async (argv) => {
   //
 
   if (argv.M) {
-    const descriptor = await createDescriptor(connect)
+    const descriptor = await createDescriptor()
+
     const structure = robotStructure(descriptor, argv.d)
-    // At last, let's display result
+
+    // At last, let's display it
     let tree = ' Poppy\n'
     treeify.asLines(structure, true, (line) => { tree += `   ${line}\n` })
 
@@ -95,13 +90,7 @@ const perform = async (argv) => {
 
   if (argv.s) {
     console.log('>> Save settings in local .poppyrc file')
-    console.log('  connection settings: ', connect || 'default')
-    if (Object.keys(connect).length !== 0) { // i.e. do not serialize if only default data
-      save(connect)
-    } else {
-      const msg = `${displayErr('info')} poppyrc file not created (only default settings used.)`
-      console.log(`  ${msg}`)
-    }
+    saveRCFile(settings)
   }
 }
 
@@ -158,8 +147,3 @@ const getMotorDetails = (motorDescriptor) => {
     angle: `[${range}]`
   }
 }
-
-const save = (connect) => fs.writeFileSync(
-  path.resolve(process.cwd(), '.poppyrc'),
-  JSON.stringify({ connect })
-)
