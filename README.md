@@ -260,9 +260,9 @@ $poppy config -M
       ├─ m5
       └─ m6
 ```
-Adding -d flag will display details about motors:
+Adding -D flag will display details about motors:
 ```
-$poppy config -Md
+$poppy config -MD
 >> Connection to Poppy (hostname/ip: poppy.local)
   REST API (port 8080):  OK
 >> Structure: 

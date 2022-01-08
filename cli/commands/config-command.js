@@ -29,7 +29,7 @@ module.exports = {
 
     yargs
       .strict()
-      .implies('d', 'M')
+      .implies('D', 'M')
       .example(
         '$0 config',
         'Check connection to target robot using default settings' +
@@ -75,7 +75,7 @@ const perform = async (argv) => {
   if (argv.M) {
     const descriptor = await createDescriptor()
 
-    const structure = robotStructure(descriptor, argv.d)
+    const structure = robotStructure(descriptor, argv.D)
 
     // At last, let's display it
     let tree = ' Poppy\n'

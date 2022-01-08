@@ -1,4 +1,4 @@
-/*! Copyright (c) 2019-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
+/*! Copyright (c) 2019-2022 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
 
 'use strict'
 
@@ -137,7 +137,7 @@ const ARGS = [{
     describe: 'Display the robot structure (aliases and motors) and check connection to each motors.'
   }
 }, {
-  key: 'd',
+  key: 'D',
   opt: {
     alias: 'details',
     type: 'boolean',
