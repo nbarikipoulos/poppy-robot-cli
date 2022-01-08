@@ -25,16 +25,16 @@
   },
   "dependencies": {
     "cli-table": "^0.3.1",
-    "poppy-robot-core": "^10.0.0",
+    "poppy-robot-core": "^11.0.0",
     "treeify": "^1.1.0",
-    "yargs": "^16.2.0"
+    "yargs": "^17.3.1"
   },
   "devDependencies": {
     "markdown-toc": "^1.2.0",
     "standard": "*"
   },
   "optionalDependencies": {
-    "wix-msi": "^0.4.0"
+    "wix-msi": "^0.5.0"
   },
   "files": [
     "/lib",
@@ -48,6 +48,6 @@
     "url": "https://github.com/nbarikipoulos/poppy-robot-cli/issues"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   }
 }
