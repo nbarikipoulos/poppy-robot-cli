@@ -16,20 +16,18 @@ const { get: getArg } = require('./arguments')
 // Connection options
 const connectOptions = ['host', 'port']
 
-let conf
-
 // ////////////////////////////////
 // Utility functions
 // ////////////////////////////////
 
-// init CLI args,
+// init CLI args, aka list of motors when needed (-m option)
 const init = async _ => {
   const skipGetPoppyStructure = !yargs.argv._.length ||
     ['config', 'reboot', 'shutdown', 'api', 'logs'].find(cmd => yargs.argv._.includes(cmd))
 
   if (!skipGetPoppyStructure) {
     try {
-      const req = await coreCreateRequesHandler(getUserConfiguration())
+      const req = await coreCreateRequesHandler(configObject.getSettings())
       const motors = (await req.perform('/motors/list.json')).data.motors
 
       getArg('motor').opt.choices.push(...motors)
@@ -43,6 +41,15 @@ const init = async _ => {
     }
   }
 }
+
+const addPoppyConnectionOptions = _ => addOptions(
+  connectOptions,
+  'Poppy Connection Settings:'
+)
+
+// ////////////////////////////////
+// Utility functions for yargs builder
+// ////////////////////////////////
 
 const addOptions = (optionNames, groupName) => {
   for (const name of optionNames) {
@@ -61,6 +68,60 @@ const addPositional = (key) => {
   const desc = getArg(key)
   yargs.positional('value', desc.opt)
 }
+
+// ////////////////////////////////
+// User config utilities
+// ////////////////////////////////
+
+class Config {
+  constructor () {
+    // Config options from rc file and cli
+    this._conf = undefined
+  }
+
+  getSettings (config = {}) { return { ...this._config, ...config } }
+
+  get _config () {
+    if (this._conf === undefined) {
+      const poppyrc = loadRCFile()
+      const cli = getConfigFromCLI()
+      this._conf = { ...poppyrc, ...cli }
+    }
+
+    return this._conf
+  }
+}
+
+const configObject = new Config()
+
+const getConfigFromCLI = _ => {
+  const result = {}
+
+  for (const option of connectOptions) {
+    const desc = getArg(option)
+    const value = yargs.argv[option]
+    const defaultValue = desc.opt.default
+
+    // Do not keep default settings if not explicitly filled by user
+    if (
+      value !== undefined &&
+      (value !== defaultValue || isProvidedViaCLI(desc))
+    ) {
+      result[option] = value
+    }
+  }
+
+  return result
+}
+
+const isProvidedViaCLI = (desc) => {
+  const found = (value) => process.argv.indexOf(value) !== -1
+  return found(`-${desc.key}`) || found(`--${desc.opt.alias}`)
+}
+
+// ////////////////////////////////
+// poppyrc file utilities
+// ////////////////////////////////
 
 const RC_FILE = '.poppyrc'
 
@@ -96,51 +157,6 @@ const saveRCFile = (config, file = RC_FILE) => {
   )
 }
 
-const getConf = _ => {
-  if (conf === undefined) {
-    const poppyrc = loadRCFile()
-    const cli = getConfigFromCLI()
-    conf = { ...poppyrc, ...cli }
-  }
-
-  return conf
-}
-
-// Get Connection settings from poppyrc/CLI
-const getUserConfiguration = (config = {}) => {
-  return { ...getConf(), ...config }
-}
-
-const getConfigFromCLI = _ => {
-  const result = {}
-
-  for (const option of connectOptions) {
-    const desc = getArg(option)
-    const value = yargs.argv[option]
-    const defaultValue = desc.opt.default
-
-    // Do not keep default settings if not explicitly filled by user
-    if (
-      value !== undefined &&
-      (value !== defaultValue || isProvidedViaCLI(desc))
-    ) {
-      result[option] = value
-    }
-  }
-
-  return result
-}
-
-const isProvidedViaCLI = (desc) => {
-  const found = (value) => process.argv.indexOf(value) !== -1
-  return found(`-${desc.key}`) || found(`--${desc.opt.alias}`)
-}
-
-const addPoppyConnectionOptions = _ => addOptions(
-  connectOptions,
-  'Poppy Connection Settings:'
-)
-
 // ////////////////////////////////
 // ////////////////////////////////
 // Public API
@@ -151,7 +167,7 @@ module.exports = {
   addOptions,
   addPositional,
   addPoppyConnectionOptions,
-  getUserConfiguration,
+  configObject,
   saveRCFile,
   init
 }

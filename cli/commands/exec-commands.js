@@ -7,16 +7,11 @@ const { Script } = require('poppy-robot-core')
 const { addOptions, addPositional } = require('../cli-helper')
 const { createPoppy } = require('../../lib/ext-poppy-factory')
 
-const EXEC_CMD_GROUP_LABEL = 'Command Options:'
-
 module.exports = [{
   cmd: 'compliant',
   desc: 'Set state of selected motor(s) to compliant (i.e. handly drivable).',
   builder: (yargs) => {
-    addOptions(
-      ['motor'],
-      EXEC_CMD_GROUP_LABEL
-    )
+    addCmdOptions('motor')
 
     yargs
       .strict()
@@ -34,10 +29,7 @@ module.exports = [{
   cmd: 'stiff',
   desc: 'Set state of selected motor(s) to stiff (i.e. programmatically drivable).',
   builder: (yargs) => {
-    addOptions(
-      ['motor'],
-      EXEC_CMD_GROUP_LABEL
-    )
+    addCmdOptions('motor')
 
     yargs
       .strict()
@@ -56,10 +48,7 @@ module.exports = [{
   desc: 'Set the rotation speed of the selected motor(s).\n' +
     'Value must be in the [0, 1023] range',
   builder: (yargs) => {
-    addOptions(
-      ['motor'],
-      EXEC_CMD_GROUP_LABEL
-    )
+    addCmdOptions('motor')
 
     // Add the positional argument of this command
     addPositional('speed')
@@ -79,10 +68,7 @@ module.exports = [{
   cmd: 'rotate <value>',
   desc: 'Rotate the target motor(s) by x degrees',
   builder: (yargs) => {
-    addOptions(
-      ['motor', 'wait'],
-      EXEC_CMD_GROUP_LABEL
-    )
+    addCmdOptions('motor', 'wait')
 
     // Add the positional argument of this command
     addPositional('rotate')
@@ -98,10 +84,7 @@ module.exports = [{
   cmd: 'position <value>',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
-    addOptions(
-      ['motor', 'wait'],
-      EXEC_CMD_GROUP_LABEL
-    )
+    addCmdOptions('motor')
 
     // Add the positional argument of this command
     addPositional('position')
@@ -117,10 +100,7 @@ module.exports = [{
   cmd: 'led [value]',
   desc: 'Set the led color of the selected motor(s)',
   builder: (yargs) => {
-    addOptions(
-      ['motor'],
-      EXEC_CMD_GROUP_LABEL
-    )
+    addCmdOptions('motor')
 
     // Add the positional argument of this command
     addPositional('led')
@@ -160,3 +140,12 @@ const exec = async (type, motors, options = {}) => {
 
   await poppy.exec(script)
 }
+
+// ////////////////////////////////
+// Misc.
+// ////////////////////////////////
+
+const addCmdOptions = (...options) => addOptions(
+  options,
+  'Command Options:'
+)
