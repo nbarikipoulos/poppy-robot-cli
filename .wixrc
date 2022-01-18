@@ -3,6 +3,7 @@
     "uuid": "55F84AE0-B797-48EC-AC2B-A9EC8243480A",
     "icon": "./pack/msi/cli.png",
     "banner": "./pack/msi/cli.png",
-    "background": "./pack/msi/background.png"
+    "background": "./pack/msi/background.png",
+    "files": true
   }
 }

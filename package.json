@@ -35,7 +35,7 @@
     "standard": "*"
   },
   "optionalDependencies": {
-    "wix-msi": "^0.5.0"
+    "wix-msi": "^0.6.0"
   },
   "files": [
     "/lib",
