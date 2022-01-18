@@ -5,7 +5,7 @@
 const { DEFAULT_SETTINGS } = require('poppy-robot-core')
 
 // key or alias
-const get = (name) => ARGS.find(arg => arg.key === name || arg?.opt.alias === name)
+const get = (name) => ARGS.find(arg => arg.key === name || arg.opt?.alias === name)
 
 const ARGS = [{
   key: 'm',
@@ -164,6 +164,4 @@ const ARGS = [{
 // ////////////////////////////////
 // ////////////////////////////////
 
-module.exports = {
-  get
-}
+module.exports = { get }
