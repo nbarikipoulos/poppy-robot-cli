@@ -75,11 +75,9 @@ Enjoy, ;)
 - [Prerequisite](#prerequisite)
 - [Getting Started](#getting-started)
   * [Using node.js/npm](#using-nodejsnpm)
-    + [Installing node.js](#installing-nodejs)
-    + [Installing the poppy-robot-cli module](#installing-the-poppy-robot-cli-module)
   * [Standalone Executable](#standalone-executable)
     + [Windows](#windows)
-    + [Linux/MacOS](#linuxmacos)
+    + [Linux/MacOS/Others](#linuxmacosothers)
 - [Usage](#usage)
 - [CLI Mode](#cli-mode)
   * [Checking and Displaying Robot Configuration](#checking-and-displaying-robot-configuration)
@@ -111,7 +109,7 @@ Enjoy, ;)
 Intall it:
   - As a standalone executable:
     - Available on this [page](https://github.com/nbarikipoulos/poppy-robot-cli/releases/latest) for Windows,
-    - Or, in the end, read [here](#linuxmacos) for MacOS/Linux,
+    - Or, in the end, read [here](#linuxmacosothers) for MacOS/Linux/Others,
   - As a npm package:
     ```shell
     npm install poppy-robot-cli -g
@@ -139,40 +137,17 @@ This tool is delivered as:
 
 ### Using node.js/npm
 
-#### Installing node.js
-
-the poppy-robot-cli is intented to be used under a node.js 'environment' on your local computer. Thus it should be first installed (sic):
-
-- Downloading it from its [official site](https://nodejs.org/en/download/),
-- Or using a node version manager such as nvm (macos/linux version or Windows one are respectively available [here](https://github.com/creationix/nvm) and [there](https://github.com/coreybutler/nvm-windows)).
-
-Note a node.js release equal or higher to v12.0.0 is required.
-
-#### Installing the poppy-robot-cli module
-
-Once [node.js](https://nodejs.org/en/download/) installed, type:
-
 ```shell
-npm i poppy-robot-cli --global
+npm i poppy-robot-cli -g
 ```
 
-that will globally install the poppy-robot-cli module.
-
-To verify that it has been successfully installed, type:
-
-```shell
-npm list -g --depth=0
-├── npm@6.13.4
-└── poppy-robot-cli@8.0.0
-```
-
-Then, simply type:
+Then, simply typing:
 
 ```shell
 poppy -h
 ```
 
-will display the basic help about the poppy-robot-cli.
+will display basic help.
 
 ### Standalone Executable
 
@@ -186,18 +161,18 @@ As it automatically updates PATH environment variable, once installed, open a ne
 poppy -h
 ```
 
-#### Linux/MacOS
+#### Linux/MacOS/Others
 
 User can produce standalone executables of this module. 
-Note node.js is mandatory to produce these executables but it will not to launch them.
+Note node.js is mandatory to produce these executables.
 
-Typing the command below will produce executables named nodeX-linux-x64 and nodeX-macos-x64.
+Typing the command below will produce executables for linux and macOS (from and for an x64 architecture)
 
 ```shell
-npx pkg .
+npx pkg . --targets linux-x64,macos-x64
 ```
 
-Note it could be performed whatever your OS.
+Read [here](https://github.com/vercel/pkg#targets) about arm architecture, macos arm or cross platform.
 
 ## Usage
 
