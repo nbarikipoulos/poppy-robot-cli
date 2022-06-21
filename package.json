@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "cli-table": "^0.3.11",
-    "poppy-robot-core": "^11.0.0",
+    "poppy-robot-core": "^11.1.0",
     "colors": "1.4.0",
     "treeify": "^1.1.0",
     "yargs": "^17.3.1"

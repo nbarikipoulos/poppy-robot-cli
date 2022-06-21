@@ -86,8 +86,8 @@ Enjoy, ;)
     + [compliant](#compliant)
     + [stiff](#stiff)
     + [speed](#speed)
+    + [goto](#goto)
     + [rotate](#rotate)
-    + [position](#position)
     + [led](#led)
   * [Admin Commands](#admin-commands)
     + [Getting Logs](#getting-logs)
@@ -358,8 +358,8 @@ name | description
 [compliant](#compliant) | Set the state of motor(s) to 'compliant' _i.e._ make them handly drivable
 [stiff](#compliant) | Set the state of motor(s) to 'stiff' _i.e._ make them programmatically drivable
 [speed](#speed) | Set the speed of target motor(s)
+[goto](#goto) | Move the selected motor(s) to a given angle.
 [rotate](#rotate) | Rotate the selected motor(s) by x degrees
-[position](#position) | Move the selected motor(s) to a given position.
 [led](#led) | Set the led color of selected motor(s)
 
 Note **all these commands have a common optional flag '-m' in order to select the target motors**.
@@ -449,13 +449,49 @@ Examples:
     poppy speed 500 -m m1 m2
     ```
 
+#### goto
+
+```shell
+cli goto <value> [-w]
+```
+
+This command sets the target angle of the selected motor(s) _i.e._ it will move motor(s) to a given angle.
+
+&nbsp; | desc | value | default | mandatory
+--- | --- | --- | --- | ---
+value | the target angle to reach (in degree)| integer | n.a. | yes
+
+option | desc | value | default | mandatory
+--- | --- | --- | --- | ---
+-w | wait until the motor(s) will reach this new positions  | boolean | false | no
+
+Examples:
+
+- Simultaneously move all motors to the angle 0 degree:
+
+    ```shell
+    poppy goto 0
+    ```
+
+- Sequentially move all motors to the angle 0 degree:
+
+    ```shell
+    poppy goto 0 -w
+    ```
+
+- Sequentially move the motors m1 and m2 to the 0 degree position:
+
+    ```shell
+    poppy goto 90 -m m1 m2 -w
+    ```
+
 #### rotate
 
 ```shell
 poppy rotate <value> [-w]
 ```
 
-This command rotates the target motor(s) by x degrees from the current position.
+This command rotates the target motor(s) by x degrees from their current angle.
 
 &nbsp; | desc | value | default | mandatory
 --- | --- | --- | --- | ---
@@ -471,42 +507,6 @@ Examples:
 
     ```shell
     cli rotate -30 -m m1 m2 -w
-    ```
-
-#### position
-
-```shell
-cli positon <value> [-w]
-```
-
-This command sets the target position of the selected motor(s) _i.e._ it will move motor(s) to a given position.
-
-&nbsp; | desc | value | default | mandatory
---- | --- | --- | --- | ---
-value | the target position to reach (in degree)| integer | n.a. | yes
-
-option | desc | value | default | mandatory
---- | --- | --- | --- | ---
--w | wait until the motor(s) will reach this new positions  | boolean | false | no
-
-Examples:
-
-- Simultaneously move all motors to the position 0 degree:
-
-    ```shell
-    poppy position 0
-    ```
-
-- Sequentially move all motors to the position 0 degree:
-
-    ```shell
-    poppy position 0 -w
-    ```
-
-- Sequentially move the motors m1 and m2 to the 0 degree position:
-
-    ```shell
-    poppy position 90 -m m1 m2 -w
     ```
 
 #### led

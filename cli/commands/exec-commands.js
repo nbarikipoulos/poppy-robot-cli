@@ -79,21 +79,21 @@ module.exports = [{
   },
   handler: (argv) => exec('rotate', argv.motor, { angle: argv.value, wait: argv.wait })
 }, {
-  cmd: 'position <value>',
+  cmd: 'goto <value>',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
     addCmdOptions('motor')
 
     // Add the positional argument of this command
-    addPositional('position')
+    addPositional('goto')
 
     yargs
       .example(
-        '$0 position 0 -m m1 m2 -w',
-        'Move the motors m1 and m2 to the 0 degree position and wait until each motors will reach its new position.'
+        '$0 goto 0 -m m1 m2 -w',
+        'Move the motors m1 and m2 to 0 degree and wait until each motors will reach its new position.'
       )
   },
-  handler: (argv) => exec('position', argv.motor, { position: argv.value, wait: argv.wait })
+  handler: (argv) => exec('goto', argv.motor, { position: argv.value, wait: argv.wait })
 }, {
   cmd: 'led [value]',
   desc: 'Set the led color of the selected motor(s)',
@@ -120,7 +120,7 @@ module.exports = [{
 // Execute simple command
 // ////////////////////////////////
 
-const exec = async (type, motors, options = {}) => {
+const exec = async (action, motors, options = {}) => {
   const poppy = await createPoppy()
 
   //
@@ -130,7 +130,7 @@ const exec = async (type, motors, options = {}) => {
   const script = new Script()
     .select(...motors)
 
-  script[type](...Object.values(options))
+  script[action](...Object.values(options))
 
   //
   // ... and execute it

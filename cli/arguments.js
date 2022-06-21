@@ -70,10 +70,10 @@ const ARGS = [{
     describe: 'Rotate the selected motor(s) by x degrees.'
   }
 }, {
-  key: 'position', // positional
+  key: 'goto', // positional
   opt: {
     type: 'number',
-    describe: 'Move the selected motor(s) to a given position.'
+    describe: 'Move the selected motor(s) to a given angle.'
   }
 }, {
   key: 'w',
