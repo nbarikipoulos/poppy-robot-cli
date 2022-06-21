@@ -97,7 +97,7 @@ const getConfigFromCLI = _ => {
 
   for (const option of connectOptions) {
     const desc = getArg(option)
-    const value = yargs.argv[option]
+    const value = yargs.argv[option] ?? yargs.argv[desc.key]
     const defaultValue = desc.opt.default
 
     // Do not keep default settings if not explicitly filled by user
