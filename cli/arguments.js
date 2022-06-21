@@ -1,5 +1,3 @@
-/*! Copyright (c) 2019-2022 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
-
 'use strict'
 
 const { DEFAULT_SETTINGS } = require('poppy-robot-core')

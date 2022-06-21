@@ -1,5 +1,3 @@
-/*! Copyright (c) 2018-2021 Nicolas Barriquand <nicolas.barriquand@outlook.fr>. MIT licensed. */
-
 /**
  * This module is a simple wrapper of the poppy-robot-core module in order to:
  *
