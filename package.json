@@ -21,7 +21,8 @@
   "scripts": {
     "gendoc": "markdown-toc -i README.md",
     "pack": "wix-msi poppy",
-    "test": "standard"
+    "lint": "standard",
+    "test": "npm run lint"
   },
   "dependencies": {
     "cli-table": "^0.3.11",
