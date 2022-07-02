@@ -2,7 +2,7 @@
 
 const { Script } = require('poppy-robot-core')
 
-const { addOptions, addPositional } = require('../cli-helper')
+const { addOptions, addPositional, addConnectionOptionsGroup } = require('../cli-helper')
 const { createPoppy } = require('../../lib/ext-poppy-factory')
 
 module.exports = [{
@@ -10,6 +10,8 @@ module.exports = [{
   desc: 'Set state of selected motor(s) to compliant (i.e. handly drivable).',
   builder: (yargs) => {
     addCmdOptions('motor')
+
+    addConnectionOptionsGroup()
 
     yargs
       .strict()
@@ -28,6 +30,8 @@ module.exports = [{
   desc: 'Set state of selected motor(s) to stiff (i.e. programmatically drivable).',
   builder: (yargs) => {
     addCmdOptions('motor')
+
+    addConnectionOptionsGroup()
 
     yargs
       .strict()
@@ -51,6 +55,8 @@ module.exports = [{
     // Add the positional argument of this command
     addPositional('speed')
 
+    addConnectionOptionsGroup()
+
     yargs
       .example(
         '$0 speed 100',
@@ -71,6 +77,8 @@ module.exports = [{
     // Add the positional argument of this command
     addPositional('rotate')
 
+    addConnectionOptionsGroup()
+
     yargs
       .example(
         '$0 rotate -30 -m m1 m2 -w',
@@ -87,6 +95,8 @@ module.exports = [{
     // Add the positional argument of this command
     addPositional('goto')
 
+    addConnectionOptionsGroup()
+
     yargs
       .example(
         '$0 goto 0 -m m1 m2 -w',
@@ -102,6 +112,8 @@ module.exports = [{
 
     // Add the positional argument of this command
     addPositional('led')
+
+    addConnectionOptionsGroup()
 
     yargs
       .example(

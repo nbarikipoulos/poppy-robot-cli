@@ -2,12 +2,15 @@
 
 const { createRequestHandler } = require('../../lib/ext-poppy-factory')
 
-const { addPositional } = require('../cli-helper')
+const { addPositional, addConnectionOptionsGroup } = require('../cli-helper')
 
 module.exports = [{
   cmd: 'logs',
   desc: 'Get logs of the robot.',
-  builder: (yargs) => yargs.strict(),
+  builder: (yargs) => {
+    addConnectionOptionsGroup('host')
+    yargs.strict()
+  },
   handler: async (argv) => perform(
     'Get Logs',
     '/api/raw_logs',
@@ -19,6 +22,8 @@ module.exports = [{
   builder: (yargs) => {
     // Add the positional argument of this command
     addPositional('api')
+
+    addConnectionOptionsGroup('host')
 
     yargs
       .strict()
@@ -33,6 +38,7 @@ module.exports = [{
   cmd: 'reboot',
   desc: 'Reboot the Rapsberry.',
   builder: (yargs) => {
+    addConnectionOptionsGroup('host')
     yargs.strict()
   },
   handler: async (argv) => perform(
@@ -44,6 +50,7 @@ module.exports = [{
   cmd: 'shutdown',
   desc: 'Shutdown the Rapsberry.',
   builder: (yargs) => {
+    addConnectionOptionsGroup('host')
     yargs.strict()
   },
   handler: (argv) => perform(

@@ -4,7 +4,7 @@ const Table = require('cli-table')
 const treeify = require('treeify')
 
 const { createPoppy } = require('../../lib/ext-poppy-factory')
-const { addOptions } = require('../cli-helper')
+const { addOptions, addConnectionOptionsGroup } = require('../cli-helper')
 const { prettifyError: prettify } = require('../../lib/utils')
 
 module.exports = [{
@@ -15,6 +15,7 @@ module.exports = [{
       ['motor', 'register', 'invert', 'tree'],
       'Query Options:'
     )
+    addConnectionOptionsGroup()
 
     yargs
       .example(

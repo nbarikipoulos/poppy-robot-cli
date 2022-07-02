@@ -11,9 +11,6 @@ const { prettifyError: prettify } = require('../lib/utils')
 
 const { get: getArg } = require('./arguments')
 
-// Connection options
-const connectOptions = ['host', 'port']
-
 // ////////////////////////////////
 // Utility functions
 // ////////////////////////////////
@@ -40,8 +37,10 @@ const init = async _ => {
   }
 }
 
-const addPoppyConnectionOptions = _ => addOptions(
-  connectOptions,
+const CONNECTION_OPTIONS = ['host', 'port']
+
+const addConnectionOptionsGroup = (...options) => addOptions(
+  options.length ? options : CONNECTION_OPTIONS,
   'Poppy Connection Settings:'
 )
 
@@ -95,7 +94,7 @@ const configObject = new Config()
 const getConfigFromCLI = _ => {
   const result = {}
 
-  for (const option of connectOptions) {
+  for (const option of CONNECTION_OPTIONS) {
     const desc = getArg(option)
     const value = yargs.argv[option] ?? yargs.argv[desc.key]
     const defaultValue = desc.opt.default
@@ -139,7 +138,7 @@ const loadRCFile = (file = RC_FILE) => {
 const saveRCFile = (config, file = RC_FILE) => {
   // Do not save default values
   const toSave = {}
-  for (const option of connectOptions) {
+  for (const option of CONNECTION_OPTIONS) {
     const desc = getArg(option)
     const value = config[option]
     const defaultValue = desc?.opt?.default
@@ -164,7 +163,7 @@ const saveRCFile = (config, file = RC_FILE) => {
 module.exports = {
   addOptions,
   addPositional,
-  addPoppyConnectionOptions,
+  addConnectionOptionsGroup,
   configObject,
   saveRCFile,
   init

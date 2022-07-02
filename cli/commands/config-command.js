@@ -5,7 +5,7 @@ const treeify = require('treeify')
 const { DEFAULT_SETTINGS } = require('poppy-robot-core')
 const { createRequestHandler, createDescriptor } = require('../../lib/ext-poppy-factory')
 
-const { addOptions, saveRCFile } = require('../cli-helper')
+const { addOptions, addConnectionOptionsGroup, saveRCFile } = require('../cli-helper')
 const { createPrettify } = require('../../lib/utils')
 
 const displayErr = createPrettify({ error: 'KO' })
@@ -22,8 +22,10 @@ module.exports = {
     // Add save CLI connection settings to the 'Poppy Settings' group
     addOptions(
       ['save'],
-      'Poppy Connection Settings:'
+      'Others:'
     )
+
+    addConnectionOptionsGroup()
 
     yargs
       .strict()

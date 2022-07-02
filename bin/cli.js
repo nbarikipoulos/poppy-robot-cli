@@ -7,7 +7,7 @@ const yargs = require('yargs')
 const { version } = require('../package.json')
 
 const commands = require('../cli/commands')
-const { init, addPoppyConnectionOptions } = require('../cli/cli-helper')
+const { init } = require('../cli/cli-helper')
 const { prettifyError: prettify } = require('../lib/utils')
 
 // ////////////////////////////////
@@ -49,11 +49,7 @@ const help = _ => yargs
     process.exit(1)
   })
 
-const buildCLI = _ => {
-  // Add common cli options for poppy settings
-  addPoppyConnectionOptions()
-
-  // Add commands
+const buildCLI = _ => { // Add commands
   for (const command of commands) {
     yargs.command(
       command.cmd,
