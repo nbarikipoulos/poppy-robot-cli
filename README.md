@@ -54,13 +54,13 @@ Will display in a table the value of the registers for all motors.
 
 ## Documentation
 
-A detailed documentation is available on this page: 
+A full documentation about both intallation and usage is available [here][docs]. 
 
 ## Advanced Uses
 
-This module faces the objects and the factories of the [poppy-robot-core](https://github.com/nbarikipoulos/poppy-robot-core).
-Furthermore, factories are wrapped in order ease connection settings adding dedicated flag or persisting them in a files.
-check documentation for detailed instructions.
+This module faces the objects and the factories of the [poppy-robot-core][core-link] as well as it introduces new features to ease connection settings.
+
+Check the dedicated [documentation][docs-core] for detailed instructions.
 
 ## Known Limitations
 
@@ -75,9 +75,10 @@ check documentation for detailed instructions.
 
 The poppy-robot-cli is MIT licensed. See [LICENSE](./LICENSE.md).
 
+[docs]: https://nbarikipoulos.github.io/poppy-robot-cli
+[docs-core]: https://nbarikipoulos.github.io/poppy-robot-cli/core
+
 [core-link]: https://github.com/nbarikipoulos/poppy-robot-core#readme
-[core-link-api]: https://github.com/nbarikipoulos/poppy-robot-core/blob/master/doc/api.md
-[core-link-script]: https://github.com/nbarikipoulos/poppy-robot-core#writing-scripts
 
 [npm-url]: https://www.npmjs.com/package/poppy-robot-cli
 [npm-image]: https://img.shields.io/npm/v/poppy-robot-cli.svg
