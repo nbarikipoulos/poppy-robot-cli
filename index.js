@@ -28,7 +28,7 @@ const {
   ExtMotorRequest, RawMotorRequest, PoppyRequestHandler
 } = require('poppy-robot-core')
 
-const { addPoppyConnectionOptions } = require('./cli/cli-helper')
+const { addConnectionOptionsGroup } = require('./cli/cli-helper')
 const { createPoppy, createRequestHandler, createDescriptor } = require('./lib/ext-poppy-factory')
 
 // ////////////////////////////////
@@ -42,7 +42,7 @@ yargs
   .help('h')
 
 // Add common cli options for poppy settings
-addPoppyConnectionOptions()
+addConnectionOptionsGroup()
 
 yargs
   .wrap(yargs.terminalWidth())
