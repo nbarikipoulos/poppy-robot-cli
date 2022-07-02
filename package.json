@@ -19,21 +19,25 @@
     "dynamixel xl-320"
   ],
   "scripts": {
-    "gendoc": "markdown-toc -i README.md",
     "pack": "wix-msi poppy",
     "lint": "standard",
-    "test": "npm run lint"
+    "test": "npm run lint",
+    "gendoc": "npm run docs:build && npm run docs:deploy",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:deploy": "push-dir --dir=docs/.vitepress/dist --branch=gh-pages"
   },
   "dependencies": {
     "cli-table": "^0.3.11",
-    "poppy-robot-core": "^11.1.0",
     "colors": "1.4.0",
+    "poppy-robot-core": "^11.1.0",
     "treeify": "^1.1.0",
     "yargs": "^17.3.1"
   },
   "devDependencies": {
-    "markdown-toc": "^1.2.0",
-    "standard": "*"
+    "push-dir": "^0.4.1",
+    "standard": "*",
+    "vitepress": "^1.0.0-alpha.4"
   },
   "optionalDependencies": {
     "wix-msi": "^0.6.0"

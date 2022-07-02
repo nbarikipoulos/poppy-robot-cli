@@ -1,38 +1,45 @@
-# Poppy Robot CLI
+---
+title: Query Command
+---
 
-[![NPM version][npm-image]][npm-url]
-[![JavaScript Style Guide][standard-image]][standard-url]
-[![Language grade: JavaScript][lgtm-image]][lgtm-url]
-[![Maintainability][code-climate-image]][code-climate-url]
+# Query
 
-This project allows to simply monitor and interact with robots of the [Poppy project](https://www.poppy-project.org/en/) family in command line.
+## Overview
 
-It provides a simple tool (provided as a npm module or a standalone executable) to query and send basic set of instructions to the registers of motors and then, to allow performing unary 'action' such as move, speed settings, and so on... simply typing in a command line terminal.
-
-As example, typing :
+This command allows querying the registers of the motors of the robot.
 
 ```shell
-poppy stiff
-poppy speed 120
-poppy rotate -90 -m m1
-poppy position 0 -m m2 m3 m4 m5 m6
+poppy config [-Ith] [-r registers] [-m motors] [-H hostname] [-P port]
 ```
 
-Will:
-- Switch all motors to stiff state,
-- Set up their speed to 120,
-- Rotate by -90 degrees the motor m1,
-- At last, move the other motors to position 0.
-    
-Typing:
+## Options
+
+&nbsp; | desccription | value | default | mandatory
+--- | --- | --- | --- | ---
+\<value\> | Target angle to reach (in degree) |integer | n.a. | yes
+-I/--invert | Invert table presentation | boolean | false | no
+-t/--tree |  Display querying result as a tree | boolean | false | no
+-r/--register | Select registers to query.| name of register(*) | (**) | no
+-m/--motor | Select the targeted motors.| name of motors \| 'all' | 'all' | no
+-H/--host | Set the Poppy hostname/IP | string | poppy.local | no
+-p/--port | Set the REST API port on Poppy | integer | 8080 | no
+-h/--help | Display help about this command | boolean | false | no
+
+(*) To selected in the list below.
+(**) Registers selected by default are: 'compliant', 'lower_limit', 'present_position', 'goal_position', 'upper_limit', 'moving_speed' and 'present_temperature'.
+
+
+## Examples
+
+- Typing
 
 ```shell
 poppy query
 ```
 
-Will display in a table the value of the registers for all motors.
+Will return data about all 'default' for all motors.
 
-```shell
+```
 ┌─────────────────────┬───────┬────────┬───────┬───────┬───────┬───────┐
 │                     │ m1    │ m2     │ m3    │ m4    │ m5    │ m6    │
 ├─────────────────────┼───────┼────────┼───────┼───────┼───────┼───────┤
@@ -52,39 +59,45 @@ Will display in a table the value of the registers for all motors.
 └─────────────────────┴───────┴────────┴───────┴───────┴───────┴───────┘
 ```
 
-## Documentation
+- Typing:
 
-A detailed documentation is available on this page: 
+```shell
+poppy query -m m2 m3 m4 m5 -r present_position goal_position -I
+```
 
-## Advanced Uses
+Will display the values for registers 'present_position' and 'goal_position' of the motors m2 to m5:
 
-This module faces the objects and the factories of the [poppy-robot-core](https://github.com/nbarikipoulos/poppy-robot-core).
-Furthermore, factories are wrapped in order ease connection settings adding dedicated flag or persisting them in a files.
-check documentation for detailed instructions.
+```shell
+poppy query -m m2 m3 m4 m5 -r present_position goal_position -I
+┌────┬──────────────────┬───────────────┐
+│    │ present_position │ goal_position │
+├────┼──────────────────┼───────────────┤
+│ m2 │ -89              │ -90           │
+├────┼──────────────────┼───────────────┤
+│ m3 │ 86.4             │ 90            │
+├────┼──────────────────┼───────────────┤
+│ m4 │ -1.3             │ 0             │
+├────┼──────────────────┼───────────────┤
+│ m5 │ -94.9            │ -90           │
+└────┴──────────────────┴───────────────┘
+```
 
-## Known Limitations
+- Typing:
 
-- __This module has been only tested with the Poppy Ergo Jr__ (aka with a set of dynamixel XL-320). As it communicates with the robot via the REST API of the pypot library, it should be usable with any robot of the poppy family.
+```shell
+poppy query -r compliant -t
+```
 
+Will display the values for the register 'compliant' as a tree in accordance with the 'structure' of the robot:
 
-## Credits
-
-- Nicolas Barriquand ([nbarikipoulos](https://github.com/nbarikipoulos))
-
-## License
-
-The poppy-robot-cli is MIT licensed. See [LICENSE](./LICENSE.md).
-
-[core-link]: https://github.com/nbarikipoulos/poppy-robot-core#readme
-[core-link-api]: https://github.com/nbarikipoulos/poppy-robot-core/blob/master/doc/api.md
-[core-link-script]: https://github.com/nbarikipoulos/poppy-robot-core#writing-scripts
-
-[npm-url]: https://www.npmjs.com/package/poppy-robot-cli
-[npm-image]: https://img.shields.io/npm/v/poppy-robot-cli.svg
-[standard-url]: https://standardjs.com
-[standard-image]: https://img.shields.io/badge/code_style-standard-brightgreen.svg
-
-[lgtm-url]: https://lgtm.com/projects/g/nbarikipoulos/poppy-robot-cli
-[lgtm-image]: https://img.shields.io/lgtm/grade/javascript/g/nbarikipoulos/poppy-robot-cli.svg?logo=lgtm&logoWidth=18
-[code-climate-url]: https://codeclimate.com/github/nbarikipoulos/poppy-robot-cli/maintainability
-[code-climate-image]: https://api.codeclimate.com/v1/badges/1e23c37d39d4bcf8d6ce/maintainability
+```shell
+Poppy
+ ├─ base
+ │  ├─ m1: true
+ │  ├─ m2: true
+ │  └─ m3: true
+ └─ tip
+    ├─ m4: false
+    ├─ m5: false
+    └─ m6: false
+```
