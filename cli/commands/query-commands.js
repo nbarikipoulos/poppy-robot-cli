@@ -41,24 +41,20 @@ module.exports = [{
 const query = async (argv) => {
   const poppy = await createPoppy()
 
-  const motorNames = argv.motor.includes('all')
-    ? poppy.motorNames
-    : argv.motor
-
-  const registers = argv.register
-
   //
   // Get data...
   //
 
-  const data = await poppy.query(motorNames, registers)
-    .catch(error => {
-      throw new Error(prettify(
-        'error',
-        'Unable to perform querying. Check connection settings',
-        `Request URL: ${error.config.url}`
-      ))
-    })
+  const data = await poppy.query({
+    motors: argv.motor,
+    registers: argv.register
+  }).catch(error => {
+    throw new Error(prettify(
+      'error',
+      'Unable to perform querying. Check connection settings',
+      `Request URL: ${error.config.url}`
+    ))
+  })
 
   //
   // ...and display them, if any
