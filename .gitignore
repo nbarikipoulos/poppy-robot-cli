@@ -2,4 +2,6 @@ node_modules/
 build/
 docs/.vitepress/dist/
 
+.poppyrc
+
 .DS_Store
