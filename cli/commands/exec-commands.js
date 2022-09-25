@@ -90,7 +90,7 @@ module.exports = [{
   cmd: 'goto <value>',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
-    addCmdOptions('motor')
+    addCmdOptions('motor', 'wait')
 
     // Add the positional argument of this command
     addPositional('goto')
