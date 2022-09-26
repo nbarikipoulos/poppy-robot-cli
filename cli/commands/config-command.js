@@ -12,7 +12,7 @@ const displayErr = createPrettify({ error: 'KO' })
 
 module.exports = {
   cmd: 'config',
-  desc: 'Display the Poppy motor configuration.',
+  desc: 'Check connection settings/display the configuration of the robot.',
   builder: (yargs) => {
     addOptions(
       ['structure', 'details'],

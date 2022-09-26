@@ -1,8 +1,8 @@
 'use strict'
 
 module.exports = [
-  './admin-commands',
   './config-command',
+  './query-commands',
   './exec-commands',
-  './query-commands'
+  './admin-commands'
 ].map(require).flat()

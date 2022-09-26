@@ -9,7 +9,7 @@ const { prettifyError: prettify } = require('../../lib/utils')
 
 module.exports = [{
   cmd: 'query',
-  desc: 'Query the state of Poppy motors.',
+  desc: 'Query registers of motors.',
   builder: (yargs) => {
     addOptions(
       ['motor', 'register', 'invert', 'tree'],
