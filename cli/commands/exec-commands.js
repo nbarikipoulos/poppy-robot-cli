@@ -72,7 +72,7 @@ module.exports = [{
   cmd: 'rotate <value>',
   desc: 'Rotate the target motor(s) by x degrees',
   builder: (yargs) => {
-    addCmdOptions('motor', 'wait')
+    addCmdOptions('motor', 'duration', 'wait')
 
     // Add the positional argument of this command
     addPositional('rotate')
@@ -82,15 +82,19 @@ module.exports = [{
     yargs
       .example(
         '$0 rotate -30 -m m1 m2 -w',
-        'Rotate the motors m1 and m2 by -30 degrees and wait until each motors will reach its new position.'
+        'Rotate the motors m1 and m2 by -30 degrees and wait until wait until the end of the movement.'
+      )
+      .example(
+        '$0 rotate 30 -m m6 -d 2.5',
+        'Rotate the motor m6 by 30 degrees in 2.5s.'
       )
   },
-  handler: (argv) => exec('rotate', argv.motor, { angle: argv.value, wait: argv.wait })
+  handler: (argv) => exec('rotate', argv.motor, { angle: argv.value, duration: argv.duration, wait: argv.wait })
 }, {
   cmd: 'goto <value>',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
-    addCmdOptions('motor', 'wait')
+    addCmdOptions('motor', 'duration', 'wait')
 
     // Add the positional argument of this command
     addPositional('goto')
@@ -100,10 +104,14 @@ module.exports = [{
     yargs
       .example(
         '$0 goto 0 -m m1 m2 -w',
-        'Move the motors m1 and m2 to 0 degree and wait until each motors will reach its new position.'
+        'Move the motors m1 and m2 to 0 degree and wait until the end of the movement.'
+      )
+      .example(
+        '$0 goto 90 -m m6 -d 2.5',
+        'Move the motor m6 to position 90 degrees in 2.5s.'
       )
   },
-  handler: (argv) => exec('goto', argv.motor, { position: argv.value, wait: argv.wait })
+  handler: (argv) => exec('goto', argv.motor, { position: argv.value, duration: argv.duration, wait: argv.wait })
 }, {
   cmd: 'led [value]',
   desc: 'Set the led color of the selected motor(s)',
@@ -136,7 +144,7 @@ const exec = async (action, motors, options = {}) => {
   const poppy = await createPoppy()
 
   //
-  // create a poppy script...
+  // Create a poppy script...
   //
 
   const script = new Script()

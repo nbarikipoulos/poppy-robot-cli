@@ -76,6 +76,13 @@ const ARGS = [{
     describe: 'Move the selected motor(s) to a given angle.'
   }
 }, {
+  key: 'd',
+  opt: {
+    alias: 'duration',
+    type: 'number',
+    describe: 'Set-up duration of the movement (in s.)'
+  }
+}, {
   key: 'w',
   opt: {
     alias: 'wait',

@@ -37,7 +37,7 @@ to display basic help.
 
 ### Windows
 
-A standalone executable that does __not require node.js__ intalled at all, is available as a Windows installer [here][windows-msi].
+A standalone executable that does __not require node.js__ installed at all, is available as a Windows installer [here][windows-msi].
 
 As it automatically updates thePATH environment variable, once installed, open a new command terminal and then type:
 

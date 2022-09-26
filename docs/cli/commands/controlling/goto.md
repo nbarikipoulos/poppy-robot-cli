@@ -9,7 +9,7 @@ title: Goto Command
 This command sets the target position/angle of the selected motor(s).
 
 ```shell
-cli goto <value> [-wh] [-m motors] [-H hostname] [-P port]
+poppy goto <value> [-wh] [-d duration] [-m motors] [-H hostname] [-P port]
 ```
 
 ## Options
@@ -17,6 +17,7 @@ cli goto <value> [-wh] [-m motors] [-H hostname] [-P port]
 &nbsp; | desccription | value | default | mandatory
 --- | --- | --- | --- | ---
 \<value\> | Target angle to reach (in degree) |integer | n.a. | yes
+-d/--duration | Set duration of the movement | number | n.a. | no
 -w/--wait | Wait until motor(s) reachs new position  | boolean | false | no
 -m/--motor | Select the targeted motors.| name of motors \| 'all' | 'all' | no
 -H/--host | Set the Poppy hostname/IP | string | poppy.local | no
@@ -25,17 +26,12 @@ cli goto <value> [-wh] [-m motors] [-H hostname] [-P port]
 
 ## Examples
 
-- Simultaneously move all motors to the angle 0 degree:
+- Move all motors to the angle 0 degree:
 ```shell
 poppy goto 0
 ```
 
-- Sequentially move all motors to the angle 0 degree:
+- Move the motors m1 and m2 to the angle 90 degrees in 3 seconds:
 ```shell
-poppy goto 0 -w
-```
-
-- Sequentially move the motors m1 and m2 to to 90 degree:
-```shell
-poppy goto 90 -m m1 m2 -w
+poppy goto 90 -m m1 m2 -d 3
 ```

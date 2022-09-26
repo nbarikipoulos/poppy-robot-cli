@@ -47,12 +47,12 @@ It allows:
   poppy stiff
   poppy speed 120
   poppy rotate -90 -m m1
-  poppy position 0 -m m2 m3 m4 m5 m6
+  poppy goto 0 -m m2 m3 m4 m5 m6 -d 2
   ```
 
   Will:
   - Switch all motors to stiff state,
   - Set up their speed to 120,
   - Rotate by -90 degrees the motor m1,
-  - At last, move the other motors to position 0.
+  - At last, move the other motors to position 0 in 2s.
 
