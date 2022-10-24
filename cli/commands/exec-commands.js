@@ -53,7 +53,7 @@ module.exports = [{
     addCmdOptions('motor')
 
     // Add the positional argument of this command
-    addPositional('speed')
+    addPositional('speed_positional')
 
     addConnectionOptionsGroup()
 

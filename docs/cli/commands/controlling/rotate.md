@@ -26,7 +26,7 @@ poppy rotate <value> [-wh] [-d duration] [-m motors] [-H hostname] [-P port]
 
 ## Examples
 
-- Simultanoueslit rotate all motors by 10 degrees:
+- Simultaneously rotate all motors by 10 degrees:
 ```shell
 poppy rotate 10
 ```

@@ -7,7 +7,10 @@
 
 This project allows to simply monitor and interact with robots of the [Poppy project](https://www.poppy-project.org/en/) family in command line.
 
-It provides a simple tool (provided as a npm module or a standalone executable) to query and send basic set of instructions to the registers of motors and then, to allow performing unary 'action' such as move, speed settings, and so on... simply typing in a command line terminal.
+It provides a CLI tool (provided as a npm module or a standalone executable)
+- To query and send basic set of instructions to the registers of motors and then, to allow performing unary 'action' such as move, speed settings, and so on...,
+- To drive the robot via keyboard.
+
 
 As example, typing :
 
@@ -18,19 +21,27 @@ poppy rotate -90 -m m1
 poppy goto 0 -m m2 m3 m4 m5 m6 -d 2
 ```
 
-Will:
+Performs:
 - Switch all motors to stiff state,
 - Set up their speed to 120,
 - Rotate by -90 degrees the motor m1,
 - At last, move the other motors to position 0 in 2s.
-    
+
 Typing:
+
+```shell
+poppy drive
+```
+allows to simply drive the robot via the keyboard _i.e._ selecting motor(s), rotating them, applying simple 'posture', and so on.
+
+
+At last,
 
 ```shell
 poppy query
 ```
 
-Will display in a table the value of the registers for all motors.
+displays in a table the value of the registers for all motors.
 
 ```shell
 ┌─────────────────────┬───────┬────────┬───────┬───────┬───────┬───────┐

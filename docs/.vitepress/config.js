@@ -4,7 +4,7 @@
 // NavBar
 // /////////////////////////
 
-const nav = _ => [
+const nav = [
   { text: 'CLI', link: '/cli/', activeMatch: '/cli/'  },
   { text: 'Core Module', link: '/core/', activeMatch: '/core/' },
 ]
@@ -17,7 +17,7 @@ const collapsible = true
 
 // CLI
 
-const install = _ => ({
+const install = {
   text: 'Getting Started',
   collapsible,
   items: [
@@ -26,9 +26,9 @@ const install = _ => ({
     { text: 'Install', link: '/cli/install/install'},
     { text: 'Usage', link: '/cli/install/usage'}
   ]
-})
+}
 
-const commands = _ => [{
+const commands = [{
   text: 'Config Command',
   collapsible,
   items: [
@@ -49,7 +49,8 @@ const commands = _ => [{
     { text: 'speed', link: '/cli/commands/controlling/speed' },
     { text: 'goto', link: '/cli/commands/controlling/goto' },
     { text: 'rotate', link: '/cli/commands/controlling/rotate' },
-    { text: 'led', link: '/cli/commands/controlling/led' }
+    { text: 'led', link: '/cli/commands/controlling/led' },
+    { text: 'drive', link: '/cli/commands/controlling/drive' }
   ]
 },{
   text: 'Admin Commands',
@@ -62,26 +63,25 @@ const commands = _ => [{
   ]
 }]
 
-const connection = _ => ({
+const connection = {
   text: 'Connect to Robot',
   collapsible,
   items: [
     { text: 'Via CLI Flags', link: '/cli/connection/cli' },
     { text: 'Persisting Settings', link: '/cli/connection/persisting' }
   ]
-})
+}
 
 // CORE
 
-const core = _ => ({
+const core = {
   text: 'API',
   collapsible,
   items: [
     { text: 'Wrapped Factories', link: '/core/factories' },
     { text: 'Exposed API', link: '/core/lib' }
   ]
-})
-
+}
 
 // /////////////////////////
 // Public API
@@ -90,7 +90,7 @@ const core = _ => ({
 module.exports = {
   lang: 'en-US',
   title: 'Poppy CLI',
-  description: ' Command line tool to interact with Poppy robot',
+  description: 'Command line tool to interact with Poppy robot',
   base: '/poppy-robot-cli/',
   themeConfig: {
     logo: '/cli.png',
@@ -101,16 +101,10 @@ module.exports = {
       message: 'Released under the MIT License.',
       copyright: 'Copyright © 2018-2022 Nicolas Barriquand'
     },
-    nav: nav(),
+    nav,
     sidebar: {
-      '/cli': [
-        install(),
-        ...commands(),
-        connection()
-      ],
-      '/core' : [
-        core()
-      ]
+      '/cli': [install, ...commands, connection],
+      '/core' : [core]
     }
   }
 }

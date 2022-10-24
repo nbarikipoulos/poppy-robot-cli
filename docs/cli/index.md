@@ -18,7 +18,7 @@ It allows:
   poppy query
   ```
 
-  Will display in a table the value of the registers for all motors.
+  displays in a table the value of the registers for all motors.
 
   ```shell
   ┌─────────────────────┬───────┬────────┬───────┬───────┬───────┬───────┐
@@ -50,9 +50,13 @@ It allows:
   poppy goto 0 -m m2 m3 m4 m5 m6 -d 2
   ```
 
-  Will:
+  Performs the following actions:
   - Switch all motors to stiff state,
   - Set up their speed to 120,
   - Rotate by -90 degrees the motor m1,
   - At last, move the other motors to position 0 in 2s.
 
+- At last, to simply select and drive the motors via keyboard:
+```shell
+poppy drive
+```
