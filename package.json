@@ -19,6 +19,8 @@
     "dynamixel xl-320"
   ],
   "scripts": {
+    "build:prerelease": "npm run test && npm run docs:build && npm run pack",
+    "build:release": "npm run build:prerelease && npm run docs:deploy",
     "pack": "wix-msi poppy",
     "lint": "standard",
     "test": "npm run lint",
