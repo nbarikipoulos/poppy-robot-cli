@@ -1,0 +1,1 @@
+import{_ as a,c as e,o as l,a as s}from"./app.96771aa4.js";const m=JSON.parse('{"title":"TL;DR","description":"","frontmatter":{"title":"TL;DR"},"headers":[],"relativePath":"cli/install/tldr.md"}'),t={name:"cli/install/tldr.md"},n=s("",7),o=[n];function p(c,r,i,d,_,u){return l(),e("div",null,o)}const b=a(t,[["render",p]]);export{m as __pageData,b as default};
