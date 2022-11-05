@@ -17,16 +17,10 @@ const CONNECTION_OPTIONS = ['host', 'port']
 
 // init CLI args, aka list of motors when needed (-m option)
 const init = async _ => {
-  const argv = process.argv
+  const argv = process.argv.slice(2)
 
-  const skipGetPoppyStructure = argv.length <= 2 ||
-    [
-      'config',
-      'reboot',
-      'shutdown',
-      'api',
-      'logs'
-    ].includes(argv[2])
+  const skipGetPoppyStructure = argv.length === 0 ||
+    ['config', 'reboot', 'shutdown', 'api', 'logs'].includes(argv[0])
 
   if (!skipGetPoppyStructure) {
     try {

@@ -34,7 +34,10 @@ const { createPoppy, createRequestHandler, createDescriptor } = require('./lib/e
 // Poppy configuration to any script
 // ////////////////////////////////
 
-configObject.add(process.argv, 'raw')
+configObject.add(
+  process.argv.slice(2),
+  'raw'
+)
 
 // ////////////////////////////////
 // ////////////////////////////////
