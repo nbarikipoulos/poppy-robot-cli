@@ -15,7 +15,7 @@
  *
  * @module poppy-robot-cli
  * @typicalname P
- * @version 11.0.0
+ * @version 11.1.0
  * @see {@link https://github.com/nbarikipoulos/poppy-robot-core.git}
  */
 
