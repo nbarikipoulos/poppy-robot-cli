@@ -21,14 +21,12 @@
 
 'use strict'
 
-const yargs = require('yargs')
-
 const {
   createScript, Script, Poppy,
   ExtMotorRequest, RawMotorRequest, PoppyRequestHandler
 } = require('poppy-robot-core')
 
-const { addConnectionOptionsGroup } = require('./cli/cli-helper')
+const { configObject } = require('./cli/cli-helper')
 const { createPoppy, createRequestHandler, createDescriptor } = require('./lib/ext-poppy-factory')
 
 // ////////////////////////////////
@@ -36,17 +34,7 @@ const { createPoppy, createRequestHandler, createDescriptor } = require('./lib/e
 // Poppy configuration to any script
 // ////////////////////////////////
 
-yargs
-  .locale('en')
-  .alias('h', 'help')
-  .help('h')
-
-// Add common cli options for poppy settings
-addConnectionOptionsGroup()
-
-yargs
-  .wrap(yargs.terminalWidth())
-  .parse()
+configObject.add(process.argv, 'raw')
 
 // ////////////////////////////////
 // ////////////////////////////////

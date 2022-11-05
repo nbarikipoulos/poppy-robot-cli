@@ -2,16 +2,19 @@
 
 const { createRequestHandler } = require('../../lib/ext-poppy-factory')
 
-const { addPositional, addConnectionOptionsGroup } = require('../cli-helper')
+const { createYargsHelper } = require('../cli-helper')
 
 module.exports = [{
   cmd: 'logs',
   desc: 'Get logs of the robot.',
   builder: (yargs) => {
-    addConnectionOptionsGroup('host')
-    yargs.strict()
+    const helper = createYargsHelper(yargs)
+
+    helper.addConnectionOptionsGroup('host')
+      .yargs
+      .strict()
   },
-  handler: async (argv) => perform(
+  handler: (argv) => perform(
     'Get Logs',
     '/api/raw_logs',
     { method: 'post', data: 'id=0' }
@@ -20,26 +23,31 @@ module.exports = [{
   cmd: 'api [action]',
   desc: 'Start/Reset/Stop the robot API.',
   builder: (yargs) => {
+    const helper = createYargsHelper(yargs)
+
     // Add the positional argument of this command
-    addPositional('api')
-
-    addConnectionOptionsGroup('host')
-
-    yargs
+    helper.addPositional('api', 'action')
+      .addConnectionOptionsGroup('host')
+      .yargs
       .strict()
       .example('$0 api', 'Reset the robot API.')
       .example('$0 api stop', 'Stop the robot API.')
   },
-  handler: async (argv) => perform(
-    `${argv.action} robot API`,
-    `/api/${argv.action}`
-  )
+  handler: (argv) => {
+    return perform(
+      `${argv.action} robot API`,
+      `/api/${argv.action}`
+    )
+  }
 }, {
   cmd: 'reboot',
   desc: 'Reboot the Rapsberry.',
   builder: (yargs) => {
-    addConnectionOptionsGroup('host')
-    yargs.strict()
+    const helper = createYargsHelper(yargs)
+
+    helper.addConnectionOptionsGroup('host')
+      .yargs
+      .strict()
   },
   handler: async (argv) => perform(
     'Reboot the Rapsberry',
@@ -50,8 +58,11 @@ module.exports = [{
   cmd: 'shutdown',
   desc: 'Shutdown the Rapsberry.',
   builder: (yargs) => {
-    addConnectionOptionsGroup('host')
-    yargs.strict()
+    const helper = createYargsHelper(yargs)
+
+    helper.addConnectionOptionsGroup('host')
+      .yargs
+      .strict()
   },
   handler: (argv) => perform(
     'Shutdown the Rapsberry',

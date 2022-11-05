@@ -4,20 +4,20 @@ const Table = require('cli-table')
 const treeify = require('treeify')
 
 const { createPoppy } = require('../../lib/ext-poppy-factory')
-const { addOptions, addConnectionOptionsGroup } = require('../cli-helper')
+const { createYargsHelper } = require('../cli-helper')
 const { prettifyError: prettify } = require('../../lib/utils')
 
 module.exports = [{
   cmd: 'query',
   desc: 'Query registers of motors.',
   builder: (yargs) => {
-    addOptions(
-      ['motor', 'register', 'invert', 'tree'],
-      'Query Options:'
-    )
-    addConnectionOptionsGroup()
+    const helper = createYargsHelper(yargs)
+    const flags = ['motor', 'register', 'invert', 'tree']
 
-    yargs
+    helper.addOptions(flags, 'Query Options:')
+      .addConnectionOptionsGroup()
+      .yargs
+      .strict()
       .example(
         '$0 query -r compliant',
         'Get the `compliant` register value of all motors'

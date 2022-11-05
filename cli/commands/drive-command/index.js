@@ -3,7 +3,7 @@
 const readline = require('readline')
 const { createScript } = require('poppy-robot-core')
 
-const { addConnectionOptionsGroup, addOptions } = require('../../cli-helper')
+const { createYargsHelper } = require('../../cli-helper')
 const { createPoppy } = require('../../../lib/ext-poppy-factory')
 
 const getKeyBinding = require('./keys')
@@ -14,14 +14,12 @@ module.exports = {
   cmd: 'drive',
   desc: 'Drive robot with keyboard.',
   builder: (yargs) => {
-    addOptions(
-      ['angle', 'speed'],
-      'Settings:'
-    )
+    const helper = createYargsHelper(yargs)
 
-    addConnectionOptionsGroup()
-
-    yargs.strict()
+    helper.addOptions(['angle', 'speed'], 'Settings:')
+      .addConnectionOptionsGroup()
+      .yargs
+      .strict()
   },
   handler: (argv) => drive({ speed: argv.speed, angle: argv.angle })
 }

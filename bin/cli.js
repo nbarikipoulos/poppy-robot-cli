@@ -7,7 +7,7 @@ const yargs = require('yargs')
 const { version } = require('../package.json')
 
 const commands = require('../cli/commands')
-const { init } = require('../cli/cli-helper')
+const { init, configObject } = require('../cli/cli-helper')
 const { prettifyError: prettify } = require('../lib/utils')
 
 // ////////////////////////////////
@@ -19,6 +19,7 @@ const { prettifyError: prettify } = require('../lib/utils')
 init()
   .catch(console.log)
   .then(_ => {
+    yargs.middleware((argv) => configObject.add(argv, 'yargs'))
     buildCLI()
     help()
     parse()
@@ -39,8 +40,9 @@ const help = _ => yargs
   .alias('h', 'help')
   .help('h')
   .fail((message, error, yargs) => {
-    if (error) { // Something is rotten in my poppy...
-      console.log(error.message)
+    if (error) { // Something is rotten with my poppy...
+      console.log(configObject.toString())
+      console.log(prettify('error', error.cause ?? error.message))
     }
     if (message) { // ... or in cli parsing
       console.log(yargs.help())
@@ -64,9 +66,7 @@ const buildCLI = _ => { // Add commands
 // Parse cli
 // ////////////////////////////////
 
-const parse = _ => {
-  yargs
-    .wrap(yargs.terminalWidth())
-    .strict()
-    .parse()
-}
+const parse = _ => yargs
+  .wrap(yargs.terminalWidth())
+  .strict()
+  .parse()

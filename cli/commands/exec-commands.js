@@ -1,19 +1,21 @@
 'use strict'
 
-const { Script } = require('poppy-robot-core')
+const { createScript } = require('poppy-robot-core')
 
-const { addOptions, addPositional, addConnectionOptionsGroup } = require('../cli-helper')
+const { createYargsHelper } = require('../cli-helper')
 const { createPoppy } = require('../../lib/ext-poppy-factory')
+
+const COMMAND_OPTIONS_LABEL = 'Command Options:'
 
 module.exports = [{
   cmd: 'compliant',
   desc: 'Set state of selected motor(s) to compliant (i.e. handly drivable).',
   builder: (yargs) => {
-    addCmdOptions('motor')
+    const helper = createYargsHelper(yargs)
 
-    addConnectionOptionsGroup()
-
-    yargs
+    helper.addOptions(['motor'], COMMAND_OPTIONS_LABEL)
+      .addConnectionOptionsGroup()
+      .yargs
       .strict()
       .example(
         '$0 compliant',
@@ -29,11 +31,11 @@ module.exports = [{
   cmd: 'stiff',
   desc: 'Set state of selected motor(s) to stiff (i.e. programmatically drivable).',
   builder: (yargs) => {
-    addCmdOptions('motor')
+    const helper = createYargsHelper(yargs)
 
-    addConnectionOptionsGroup()
-
-    yargs
+    helper.addOptions(['motor'], COMMAND_OPTIONS_LABEL)
+      .addConnectionOptionsGroup()
+      .yargs
       .strict()
       .example(
         '$0 stiff',
@@ -50,14 +52,13 @@ module.exports = [{
   desc: 'Set the rotation speed of the selected motor(s).\n' +
     'Value must be in the [0, 1023] range',
   builder: (yargs) => {
-    addCmdOptions('motor')
+    const helper = createYargsHelper(yargs)
 
-    // Add the positional argument of this command
-    addPositional('speed_positional')
-
-    addConnectionOptionsGroup()
-
-    yargs
+    helper.addOptions(['motor'], COMMAND_OPTIONS_LABEL)
+      .addPositional('speed_positional')
+      .addConnectionOptionsGroup()
+      .yargs
+      .strict()
       .example(
         '$0 speed 100',
         'Set the rotation speed of all motors to 100 (slower).'
@@ -72,14 +73,14 @@ module.exports = [{
   cmd: 'rotate <value>',
   desc: 'Rotate the target motor(s) by x degrees',
   builder: (yargs) => {
-    addCmdOptions('motor', 'duration', 'wait')
+    const helper = createYargsHelper(yargs)
+    const flags = ['motor', 'duration', 'wait']
 
-    // Add the positional argument of this command
-    addPositional('rotate')
-
-    addConnectionOptionsGroup()
-
-    yargs
+    helper.addOptions(flags, COMMAND_OPTIONS_LABEL)
+      .addPositional('rotate')
+      .addConnectionOptionsGroup()
+      .yargs
+      .strict()
       .example(
         '$0 rotate -30 -m m1 m2 -w',
         'Rotate the motors m1 and m2 by -30 degrees and wait until wait until the end of the movement.'
@@ -94,14 +95,14 @@ module.exports = [{
   cmd: 'goto <value>',
   desc: 'Set the target position of the selected motor(s)',
   builder: (yargs) => {
-    addCmdOptions('motor', 'duration', 'wait')
+    const helper = createYargsHelper(yargs)
+    const flags = ['motor', 'duration', 'wait']
 
-    // Add the positional argument of this command
-    addPositional('goto')
-
-    addConnectionOptionsGroup()
-
-    yargs
+    helper.addOptions(flags, COMMAND_OPTIONS_LABEL)
+      .addPositional('goto')
+      .addConnectionOptionsGroup()
+      .yargs
+      .strict()
       .example(
         '$0 goto 0 -m m1 m2 -w',
         'Move the motors m1 and m2 to 0 degree and wait until the end of the movement.'
@@ -116,14 +117,13 @@ module.exports = [{
   cmd: 'led [value]',
   desc: 'Set the led color of the selected motor(s)',
   builder: (yargs) => {
-    addCmdOptions('motor')
+    const helper = createYargsHelper(yargs)
 
-    // Add the positional argument of this command
-    addPositional('led')
-
-    addConnectionOptionsGroup()
-
-    yargs
+    helper.addOptions(['motor'], COMMAND_OPTIONS_LABEL)
+      .addPositional('led')
+      .addConnectionOptionsGroup()
+      .yargs
+      .strict()
       .example(
         '$0 led',
         'Turn off the led of all motors.'
@@ -147,8 +147,7 @@ const exec = async (action, motors, options = {}) => {
   // Create a poppy script...
   //
 
-  const script = new Script()
-    .select(...motors)
+  const script = createScript(motors)
 
   script[action](...Object.values(options))
 
@@ -158,12 +157,3 @@ const exec = async (action, motors, options = {}) => {
 
   await poppy.exec(script)
 }
-
-// ////////////////////////////////
-// Misc.
-// ////////////////////////////////
-
-const addCmdOptions = (...options) => addOptions(
-  options,
-  'Command Options:'
-)
