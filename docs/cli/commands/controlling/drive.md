@@ -6,11 +6,15 @@ title: Drive Command
 
 ## Overview
 
-This command allows to drive the robot using keyboard.
+This command allows to simply drive the robot using keyboard.
 
 ```shell
 poppy drive [-h] [-a angle] [-s speed] [-H hostname] [-P port]
 ```
+
+Below the "commands"/shorcuts for a Poppy Ergo Jr
+
+![Key binding for Ergo Jr](/drive-ergo.png)
 
 ## Options
 

@@ -39,7 +39,7 @@
   "devDependencies": {
     "gh-pages": "^4.0.0",
     "standard": "17.0.0",
-    "vitepress": "^1.0.0-alpha.16"
+    "vitepress": "^1.0.0-alpha.27"
   },
   "optionalDependencies": {
     "wix-msi": "^0.6.1"
