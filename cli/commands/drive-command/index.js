@@ -67,29 +67,52 @@ const drive = (config) => createPoppy()
       output: process.stdout
     })
 
-    rl.on('line', async line => {
-      const action = ACTIONS.find(action => action.isMatching(line.trim()))
-
-      if (action) {
-        let msg
-        try {
-          msg = await action.cb(INSTANCE)
-        } catch (error) { msg = prettify('info', error.message) }
-
-        console.log(msg)
-      }
-
-      rl.prompt()
-    }).on('close', async _ => {
-      await INSTANCE.poppy.exec( // !t0
-        createScript('all').compliant().led('off')
-      )
-      console.log('See you soon.')
-    })
+    rl.on('line', onLine)
+      .on('close', onClose)
 
     console.log('Type ?/help to display help.')
     rl.prompt()
   })
+
+// readline cbs
+
+const onLine = async (line) => {
+  const action = ACTIONS.find(action => action.isMatching(line.trim()))
+
+  if (action) {
+    let msg
+    try {
+      msg = await action.cb(INSTANCE)
+    } catch (error) { msg = prettify('info', error.message) }
+
+    console.log(msg)
+  }
+
+  rl.prompt()
+}
+
+const onClose = async _ => {
+  await INSTANCE.poppy.exec( // !t0
+    createScript('all').compliant().led('off')
+  )
+  console.log('See you soon.')
+}
+
+// key listener
+
+const keyListener = async (str, key) => {
+  if (rl.line.length) { // Early exit
+    return
+  }
+
+  const action = ACTIONS.find(action => action.isKeyMatching(str, key))
+  if (action) {
+    await readline.clearLine(process.stdout, 0)
+    await readline.cursorTo(process.stdout, -1)
+    rl.write(null, { ctrl: true, name: 'u' })
+    rl.write(`${action.id}\n`)
+  }
+}
 
 // ////////////////////////////////////
 // Utilities
@@ -128,23 +151,5 @@ class PoppyHandler {
     }
 
     return this.poppy.exec(script)
-  }
-}
-
-// ////////////////////////////////////
-// Key listener
-// ////////////////////////////////////
-
-const keyListener = async (str, key) => {
-  if (rl.line.length) { // Early exit
-    return
-  }
-
-  const action = ACTIONS.find(action => action.isKeyMatching(str, key))
-  if (action) {
-    await readline.clearLine(process.stdout, 0)
-    await readline.cursorTo(process.stdout, -1)
-    rl.write(null, { ctrl: true, name: 'u' })
-    rl.write(`${action.id}\n`)
   }
 }
