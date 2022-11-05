@@ -2,9 +2,10 @@
 
 const readline = require('readline')
 const { createScript } = require('poppy-robot-core')
+const { createPoppy } = require('../../../lib/ext-poppy-factory')
 
 const { createYargsHelper } = require('../../cli-helper')
-const { createPoppy } = require('../../../lib/ext-poppy-factory')
+const { prettifyError: prettify } = require('../../../lib/utils')
 
 const getKeyBinding = require('./keys')
 
@@ -16,12 +17,20 @@ module.exports = {
   builder: (yargs) => {
     const helper = createYargsHelper(yargs)
 
-    helper.addOptions(['angle', 'speed'], 'Settings:')
+    helper.addOptions(['angle', 'speed', 'light'], 'Settings:')
       .addConnectionOptionsGroup()
       .yargs
       .strict()
+      .example(
+        '$0 drive -l off',
+        'Deactivate led on motor selection.'
+      )
   },
-  handler: (argv) => drive({ speed: argv.speed, angle: argv.angle })
+  handler: (argv) => drive({
+    speed: argv.speed,
+    angle: argv.angle,
+    led: argv.light
+  })
 }
 
 // ////////////////////////////////
@@ -33,16 +42,19 @@ let rl
 
 const drive = (config) => createPoppy()
   .then(async poppy => {
-    INSTANCE = new PoppyHandler(poppy)
-
-    await INSTANCE.exec(
+    // t0 settings for poppy
+    await poppy.exec(
       createScript('all')
         .speed(config.speed)
+        .led('off')
         .stiff()
     )
 
     // Init key binding
     ACTIONS = getKeyBinding(poppy.descriptor, config)
+
+    // Poppy handler
+    INSTANCE = new PoppyHandler(poppy, config)
 
     // Main job
 
@@ -59,14 +71,18 @@ const drive = (config) => createPoppy()
       const action = ACTIONS.find(action => action.isMatching(line.trim()))
 
       if (action) {
-        const msg = await action.cb(INSTANCE)
+        let msg
+        try {
+          msg = await action.cb(INSTANCE)
+        } catch (error) { msg = prettify('info', error.message) }
+
         console.log(msg)
       }
 
       rl.prompt()
     }).on('close', async _ => {
-      await INSTANCE.exec(
-        createScript('all').compliant()
+      await INSTANCE.poppy.exec( // !t0
+        createScript('all').compliant().led('off')
       )
       console.log('See you soon.')
     })
@@ -81,9 +97,9 @@ const drive = (config) => createPoppy()
 
 // Handle poppy instance & selected motors.
 class PoppyHandler {
-  constructor (poppy) {
+  constructor (poppy, config) {
     this._poppy = poppy
-    this._motors = 'all'
+    this._config = config
   }
 
   get poppy () { return this._poppy }
@@ -94,9 +110,25 @@ class PoppyHandler {
       : this._motors
   }
 
-  set motors (motors) { this._motors = motors }
+  set motors (motors) {
+    if (this._config.led !== 'off') {
+      const script = createScript(this._motors ?? 'all')
+        .led('off')
+        .select(motors)
+        .led(this._config.led)
+      this.poppy.exec(script) // !t0
+    }
 
-  exec (script) { return this._poppy.exec(script) }
+    this._motors = motors
+  }
+
+  exec (script) {
+    if (this._motors === undefined) {
+      throw new Error('Select at least one motor.')
+    }
+
+    return this.poppy.exec(script)
+  }
 }
 
 // ////////////////////////////////////

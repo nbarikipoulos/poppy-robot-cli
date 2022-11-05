@@ -5,6 +5,17 @@ const { DEFAULT_SETTINGS } = require('poppy-robot-core')
 // first, check 'alias'. On a second hand, use 'key' (for positional)
 const get = (name) => ARGS.find(arg => arg.opt?.alias === name || arg.key === name)
 
+const LEDs = [
+  'off',
+  'red',
+  'green',
+  'blue',
+  'yellow',
+  'cyan',
+  'pink',
+  'white'
+]
+
 const ARGS = [{
   key: 'm',
   opt: {
@@ -95,16 +106,7 @@ const ARGS = [{
   opt: {
     type: 'string',
     default: 'off',
-    choices: [
-      'off',
-      'red',
-      'green',
-      'blue',
-      'yellow',
-      'cyan',
-      'pink',
-      'white'
-    ],
+    choices: LEDs,
     describe: 'The led color (or turn-off) value.'
   }
 }, {
@@ -122,6 +124,15 @@ const ARGS = [{
     type: 'number',
     default: 10,
     describe: 'Value of the angle for rotation actions.'
+  }
+}, {
+  key: 'l',
+  opt: {
+    alias: 'light',
+    type: 'string',
+    choices: LEDs,
+    default: 'blue',
+    describe: 'Activate led of selected motor(s).'
   }
 }, {
   key: 'H',

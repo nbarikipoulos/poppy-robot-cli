@@ -174,7 +174,7 @@ const rotPlus = (config) => {
   const desc = `Rotate selected motor(s) by ${config.angle} degrees`
 
   const cb = (p) => p.exec(
-    createScript(...p.motors)
+    createScript(p.motors)
       .rotate(config.angle, true)
       .speed(config.speed)
   ).then(_ => `Motor(s) '${p.motors}' rotated by ${config.angle} degrees`)
@@ -195,7 +195,7 @@ const rotMinus = (config) => {
   const desc = `Rotate selected motor(s) by -${config.angle} degrees`
 
   const cb = (p) => p.exec(
-    createScript(...p.motors)
+    createScript(p.motors)
       .rotate(0 - config.angle, true)
       .speed(config.speed)
   ).then(_ => `Motor(s) '${p.motors}' rotated by -${config.angle} degrees`)
@@ -267,7 +267,7 @@ const zero = (speed) => createCmd(
   'Move selected motors to position 0',
   ['zero'],
   (p) => p.exec(
-    createScript(...p.motors)
+    createScript(p.motors)
       .goto(0, true)
       .speed(speed)
   ).then(_ => `motors ${p.motors} moved to position 0`),
