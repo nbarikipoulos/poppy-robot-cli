@@ -19,15 +19,13 @@ const CONNECTION_OPTIONS = ['host', 'port']
 const init = async _ => {
   const argv = process.argv.slice(2)
 
-  const skipGetPoppyStructure = argv.length === 0 ||
-    ['config', 'reboot', 'shutdown', 'api', 'logs'].includes(argv[0])
+  const skipGetPoppyStructure = argv.length === 0 || // poppy
+    ['config', 'reboot', 'shutdown', 'api', 'logs'].includes(argv[0]) ||
+    ['--version', '-h', '--help'].includes(argv[0]) // poppy -h/--help/--version
 
   if (!skipGetPoppyStructure) {
     try {
-      const config = configObject.getSettings(getConfigFromRawCli(argv))
-
-      const req = await coreCreateRequesHandler(config)
-      const motors = (await req.perform('/motors/list.json')).data.motors
+      const motors = await getMotorsFromRawCLI(argv)
 
       getArg('motor').opt.choices.push(...motors)
     } catch (error) {
@@ -35,7 +33,6 @@ const init = async _ => {
         'warning',
         'Unable to get data about the Poppy structure: use the config command to check the connection settings'
       )
-
       return Promise.reject(msg)
     }
   }
@@ -207,6 +204,15 @@ const isProvidedViaCLI = (desc) => {
     }
   }
   return value
+}
+
+const getMotorsFromRawCLI = async (argv) => {
+  const config = configObject.getSettings(getConfigFromRawCli(argv))
+
+  const req = await coreCreateRequesHandler(config)
+  const motors = (await req.perform('/motors/list.json')).data.motors
+
+  return motors
 }
 
 const configObject = new Config()
